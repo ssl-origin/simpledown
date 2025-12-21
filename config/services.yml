@@ -1,0 +1,46 @@
+services:
+    mundophpbb.simpledown.listener:
+        class: mundophpbb\simpledown\event\listener
+        arguments:
+            - '@template'
+            - '@controller.helper'
+            - '@language'
+        tags:
+            - { name: event.listener }
+
+    mundophpbb.simpledown.controller:
+        class: mundophpbb\simpledown\controller\main_controller
+        arguments:
+            - '@config'
+            - '@controller.helper'
+            - '@dbal.conn'
+            - '@language'
+            - '@log'
+            - '@request'
+            - '@template'
+            - '@user'
+            - '@path_helper'
+            - '%core.root_path%'
+            - '%core.php_ext%'
+            - '%core.table_prefix%'
+        tags:
+            - { name: controller.service_arguments }
+
+    mundophpbb.simpledown.admin_controller:
+        class: mundophpbb\simpledown\controller\admin_controller
+        arguments:
+            - '@config'
+            - '@dbal.conn'
+            - '@language'
+            - '@log'
+            - '@request'
+            - '@template'
+            - '@user'
+            - '@path_helper'
+            - '%core.root_path%'
+            - '%core.php_ext%'
+            - '%core.table_prefix%'
+        tags:
+            - { name: controller.service_arguments }
+            
+        

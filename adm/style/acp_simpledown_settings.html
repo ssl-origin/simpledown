@@ -1,0 +1,99 @@
+<!-- INCLUDE overall_header.html -->
+
+<h1>{L_ACP_SIMPLEDOWN_TITLE} - {L_ACP_SIMPLEDOWN_SETTINGS}</h1>
+
+<form id="acp_simpledown" method="post" action="{U_ACTION}" enctype="multipart/form-data">
+    {S_FORM_TOKEN}
+
+    <!-- CONFIGURAÇÕES GERAIS -->
+    <fieldset>
+        <legend>{L_ACP_SIMPLEDOWN_SETTINGS}</legend>
+        <dl>
+            <dt><label for="max_upload_size">{L_ACP_SIMPLEDOWN_MAX_UPLOAD_SIZE}:</label><br />
+                <span>{L_ACP_SIMPLEDOWN_MAX_UPLOAD_SIZE_EXPLAIN}</span>
+            </dt>
+            <dd><input type="number" id="max_upload_size" name="max_upload_size" value="{MAX_UPLOAD_SIZE}" min="1" max="500" step="1" /> MB</dd>
+        </dl>
+        <p class="submit-buttons">
+            <input class="button1" type="submit" name="config_submit" value="{L_ACP_SIMPLEDOWN_SAVE_CONFIG}" />
+        </p>
+    </fieldset>
+
+    <!-- ADICIONAR / EXCLUIR CATEGORIA -->
+    <fieldset>
+        <legend>{L_ACP_SIMPLEDOWN_ADD_CATEGORY}</legend>
+        <dl>
+            <dt><label for="cat_name">{L_ACP_SIMPLEDOWN_CATEGORY_NAME}:</label></dt>
+            <dd><input type="text" id="cat_name" name="cat_name" maxlength="255" /></dd>
+        </dl>
+        <p class="submit-buttons">
+            <input class="button1" type="submit" name="add_cat" value="{L_ACP_SIMPLEDOWN_ADD_CATEGORY}" />
+        </p>
+        <dl>
+            <dt><label for="delete_category">{L_ACP_SIMPLEDOWN_DELETE_CATEGORY}:</label></dt>
+            <dd>
+                <select id="delete_category" name="delete_category">
+                    <option value="0">{L_ACP_SIMPLEDOWN_SELECT_CATEGORY_TO_DELETE}</option>
+                    <!-- BEGIN delete_categories -->
+                    <option value="{delete_categories.ID}">{delete_categories.NAME}</option>
+                    <!-- END delete_categories -->
+                </select>
+                <input class="button2" type="submit" name="delete_cat_submit" value="{L_ACP_SIMPLEDOWN_DELETE}" />
+            </dd>
+        </dl>
+        <!-- IF not delete_categories -->
+        <p>{L_ACP_SIMPLEDOWN_NO_CATEGORIES_YET}</p>
+        <!-- ENDIF -->
+    </fieldset>
+
+    <!-- ADICIONAR ARQUIVO -->
+    <fieldset>
+        <legend>{L_ACP_SIMPLEDOWN_ADD_FILE}</legend>
+
+        <div class="security-notices">
+            <!-- Avisos de segurança -->
+            <div class="warning-box">
+                <strong><i class="fas fa-exclamation-triangle"></i> {L_ACP_SIMPLEDOWN_SECURITY_WARNING_TITLE}</strong><br />
+                {L_ACP_SIMPLEDOWN_SECURITY_WARNING_TEXT_1}<br />
+                {L_ACP_SIMPLEDOWN_SECURITY_WARNING_TEXT_2}
+            </div>
+            <!-- Arquivos permitidos -->
+            <div class="allowed-box">
+                <strong><i class="fas fa-check-circle"></i> {L_ACP_SIMPLEDOWN_ALLOWED_FILES_TITLE}</strong><br />
+                {L_ACP_SIMPLEDOWN_ALLOWED_FILES_TEXT_1}
+            </div>
+        </div>
+
+        <dl>
+            <dt><label for="file_name">{L_ACP_SIMPLEDOWN_FILE_NAME}:</label></dt>
+            <dd><input type="text" id="file_name" name="file_name" maxlength="255" /></dd>
+        </dl>
+        <dl>
+            <dt><label for="file_desc">{L_ACP_SIMPLEDOWN_DESCRIPTION}:</label></dt>
+            <dd><textarea id="file_desc" name="file_desc" rows="3" cols="40"></textarea></dd>
+        </dl>
+        <dl>
+            <dt><label for="category">{L_ACP_SIMPLEDOWN_CATEGORY}:</label></dt>
+            <dd>
+                <select id="category" name="category">
+                    <option value="0">{L_ACP_SIMPLEDOWN_NO_CATEGORY}</option>
+                    <!-- BEGIN categories -->
+                    <option value="{categories.ID}">{categories.NAME}</option>
+                    <!-- END categories -->
+                </select>
+            </dd>
+        </dl>
+        <dl>
+            <dt><label for="file_upload">{L_ACP_SIMPLEDOWN_UPLOAD_FILE}:</label></dt>
+            <dd><input type="file" id="file_upload" name="file_upload" /></dd>
+        </dl>
+        <p class="submit-buttons">
+            <input class="button1" type="submit" name="submit" value="{L_ACP_SIMPLEDOWN_UPLOAD_FILE}" />
+        </p>
+    </fieldset>
+
+    {S_FORM_TOKEN}
+</form>
+
+<!-- INCLUDECSS @mundophpbb_simpledown/acp_simpledown.css -->
+<!-- INCLUDE overall_footer.html -->

@@ -1,0 +1,27 @@
+mundophpbb_simpledown_index:
+    path: /downloads
+    defaults: { _controller: mundophpbb.simpledown.controller:handle }
+
+mundophpbb_simpledown_download:
+    path: /downloads/download/{id}
+    defaults: { _controller: mundophpbb.simpledown.controller:download }
+    requirements:
+        id: \d+
+
+mundophpbb_simpledown_preview:
+    path: /downloads/preview/{id}
+    defaults: { _controller: mundophpbb.simpledown.controller:preview }
+    requirements:
+        id: \d+
+
+mundophpbb_simpledown_details:
+    path: /downloads/details/{id}
+    defaults: { _controller: mundophpbb.simpledown.controller:details }
+    requirements:
+        id: \d+
+        
+mundophpbb_simpledown_details:
+    path: /downloads/details/{id}
+    defaults: { _controller: mundophpbb.simpledown.controller:details }
+    requirements:
+        id: \d+

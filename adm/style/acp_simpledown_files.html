@@ -1,0 +1,117 @@
+<!-- INCLUDE overall_header.html -->
+
+<h1>{L_ACP_SIMPLEDOWN_TITLE} - {L_ACP_SIMPLEDOWN_EXISTING_FILES}</h1>
+
+<form id="acp_simpledown" method="post" action="{U_ACTION}" enctype="multipart/form-data">
+    {S_FORM_TOKEN}
+
+    <!-- MODO EDIÇÃO DE ARQUIVO -->
+    <!-- IF S_EDIT_MODE -->
+    <fieldset>
+        <legend>{L_ACP_SIMPLEDOWN_EDIT_DESCRIPTION}: <strong>{EDIT_FILE_NAME}</strong></legend>
+        <input type="hidden" name="action" value="edit" />
+        <input type="hidden" name="id" value="{EDIT_FILE_ID}" />
+        <dl>
+            <dt><label for="edit_file_name">{L_ACP_SIMPLEDOWN_FILE_NAME}:</label><br />
+                <span>{L_ACP_SIMPLEDOWN_FILE_NAME_EXPLAIN}</span>
+            </dt>
+            <dd><input type="text" id="edit_file_name" name="edit_file_name" value="{EDIT_FILE_NAME}" maxlength="255" size="50" /></dd>
+        </dl>
+        <dl>
+            <dt><label for="edit_file_desc">{L_ACP_SIMPLEDOWN_DESCRIPTION}:</label></dt>
+            <dd><textarea id="edit_file_desc" name="edit_file_desc" rows="5" cols="60">{EDIT_FILE_DESC}</textarea></dd>
+        </dl>
+        <dl>
+            <dt><label for="edit_category">{L_ACP_SIMPLEDOWN_CATEGORY}:</label></dt>
+            <dd>
+                <select id="edit_category" name="edit_category">
+                    <option value="0">{L_ACP_SIMPLEDOWN_NO_CATEGORY}</option>
+                    <!-- BEGIN categories -->
+                    <option value="{categories.ID}" <!-- IF categories.ID == EDIT_FILE_CAT_ID -->selected="selected"<!-- ENDIF -->>{categories.NAME}</option>
+                    <!-- END categories -->
+                </select>
+            </dd>
+        </dl>
+        <p class="submit-buttons">
+            <input class="button1" type="submit" name="submit_edit" value="{L_ACP_SIMPLEDOWN_SAVE_CHANGES}" />
+            <input class="button2" type="button" onclick="window.location.href='{U_ACTION}';" value="{L_ACP_SIMPLEDOWN_CANCEL}" />
+        </p>
+    </fieldset>
+    <!-- ENDIF -->
+
+    <!-- LISTAGEM DE ARQUIVOS -->
+    <fieldset>
+        <legend>{L_ACP_SIMPLEDOWN_EXISTING_FILES}</legend>
+
+        <!-- Paginação no topo -->
+        <!-- IF ACP_TOTAL_PAGES > 1 -->
+        <div class="acp-pagination">
+            <span>{L_ACP_SIMPLEDOWN_PAGINATION_INFO}: {ACP_CURRENT_PAGE} / {ACP_TOTAL_PAGES}</span>
+            <div class="acp-pagination-buttons">
+                <!-- IF ACP_PREV_PAGE -->
+                <a href="{ACP_PREV_PAGE}" class="button2">&laquo; {L_PREVIOUS}</a>
+                <!-- ENDIF -->
+                <!-- IF ACP_NEXT_PAGE -->
+                <a href="{ACP_NEXT_PAGE}" class="button2">{L_NEXT} &raquo;</a>
+                <!-- ENDIF -->
+            </div>
+        </div>
+        <!-- ENDIF -->
+
+        <!-- IF .files -->
+        <table class="table1 compact-table">
+            <thead>
+                <tr>
+                    <th style="width: 40%; text-align: left;">{L_ACP_SIMPLEDOWN_FILE_NAME}</th>
+                    <th style="width: 20%; text-align: center;">{L_ACP_SIMPLEDOWN_CATEGORY}</th>
+                    <th style="width: 20%; text-align: center;">{L_ACP_SIMPLEDOWN_DOWNLOADS} / {L_ACP_SIMPLEDOWN_SIZE}</th>
+                    <th style="width: 20%; text-align: center;">{L_ACP_SIMPLEDOWN_ACTIONS}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- BEGIN files -->
+                <tr>
+                    <td style="text-align: left; vertical-align: middle; padding: 12px 18px;">
+                        <strong>{files.NAME}</strong><br />
+                        <span style="color: #666; font-size: 0.9em;">{files.DESC}</span><br />
+                        <small style="color: #999; font-size: 0.85em;">
+                            <i class="icon fa-fw {files.FILE_ICON}" aria-hidden="true"></i> {files.REAL_NAME}
+                        </small>
+                    </td>
+                    <td style="text-align: center; vertical-align: middle; padding: 12px 18px;">{files.CAT}</td>
+                    <td style="text-align: center; vertical-align: middle; padding: 12px 18px;">
+                        {files.DOWNLOADS} / {files.SIZE}
+                    </td>
+                    <td style="text-align: center; vertical-align: middle; padding: 12px 18px;">
+                        <a href="{files.U_EDIT}" class="button2" style="padding: 6px 12px; font-size: 0.9em; margin: 0 4px;">{L_ACP_SIMPLEDOWN_EDIT}</a>
+                        <a href="{files.U_DELETE}" class="button2" style="padding: 6px 12px; font-size: 0.9em; margin: 0 4px;">{L_ACP_SIMPLEDOWN_DELETE}</a>
+                    </td>
+                </tr>
+                <!-- END files -->
+            </tbody>
+        </table>
+        <!-- ELSE -->
+        <p>{L_ACP_SIMPLEDOWN_NO_FILES_YET}</p>
+        <!-- ENDIF -->
+
+        <!-- Paginação no rodapé -->
+        <!-- IF ACP_TOTAL_PAGES > 1 -->
+        <div class="acp-pagination" style="margin-top: 20px;">
+            <span>{L_ACP_SIMPLEDOWN_PAGINATION_INFO}: {ACP_CURRENT_PAGE} / {ACP_TOTAL_PAGES}</span>
+            <div class="acp-pagination-buttons">
+                <!-- IF ACP_PREV_PAGE -->
+                <a href="{ACP_PREV_PAGE}" class="button2">&laquo; {L_PREVIOUS}</a>
+                <!-- ENDIF -->
+                <!-- IF ACP_NEXT_PAGE -->
+                <a href="{ACP_NEXT_PAGE}" class="button2">{L_NEXT} &raquo;</a>
+                <!-- ENDIF -->
+            </div>
+        </div>
+        <!-- ENDIF -->
+    </fieldset>
+
+    {S_FORM_TOKEN}
+</form>
+
+<!-- INCLUDECSS @mundophpbb_simpledown/acp_simpledown.css -->
+<!-- INCLUDE overall_footer.html -->
