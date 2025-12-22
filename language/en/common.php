@@ -7,18 +7,20 @@
  * @license http://opensource.org/licenses/gpl-license.php GNU General Public License, version 2.
  */
 
-if (!defined('IN_PHPBB')) {
+if (!defined('IN_PHPBB'))
+{
     exit;
 }
 
-if (empty($lang) || !is_array($lang)) {
+if (empty($lang) || !is_array($lang))
+{
     $lang = array();
 }
 
 $lang = array_merge($lang, array(
-    // General titles and messages
+    // Title and general messages
     'SIMPLEDOWN_TITLE'                  => 'Downloads',
-    'SIMPLEDOWN_NO_CATEGORY'            => 'No Category',
+    'SIMPLEDOWN_NO_CATEGORY'           => 'No Category',
     'SIMPLEDOWN_SHOW_ALL_CATEGORIES'    => 'Show all categories',
     'SIMPLEDOWN_NO_DOWNLOADS_AVAILABLE' => 'No downloads available.',
     'SIMPLEDOWN_NO_CATEGORIES_YET'      => 'No categories yet.',
@@ -39,7 +41,7 @@ $lang = array_merge($lang, array(
     'SIMPLEDOWN_CATEGORY'               => 'Category',
 
     // Image preview
-    'SIMPLEDOWN_PREVIEW_IMAGE'          => 'Preview image',
+    'SIMPLEDOWN_PREVIEW_IMAGE'          => 'Image preview',
     'SIMPLEDOWN_IMAGE_PREVIEW_ALT'      => 'Image preview',
 
     // Search
@@ -59,4 +61,17 @@ $lang = array_merge($lang, array(
 
     // Logs
     'LOG_SIMPLEDOWN_FILE_DOWNLOADED'    => 'SimpleDown file downloaded: %s',
+
+    // Empty search
+    'SIMPLEDOWN_CLEAR_SEARCH'           => 'Clear search',
+    'SIMPLEDOWN_SEARCH_EMPTY'           => 'No results found for your search...',
+    'SIMPLEDOWN_SEARCH_EMPTY_HINT'      => 'Try using different terms or removing some filters.',
+    'SIMPLEDOWN_PAGINATION_INFO'        => 'Page {CURRENT} of {TOTAL}',
+
+    // Version badge
+    'SIMPLEDOWN_VERSION'                => 'Version',
+    'SIMPLEDOWN_NO_VERSION'             => 'No version', // For when no version is available
+    
+    'L_PREVIOUS'                        => 'Previous',
+    'L_NEXT'                            => 'Next',
 ));
