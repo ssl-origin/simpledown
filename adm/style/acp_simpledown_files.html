@@ -22,6 +22,12 @@
             <dd><textarea id="edit_file_desc" name="edit_file_desc" rows="5" cols="60">{EDIT_FILE_DESC}</textarea></dd>
         </dl>
         <dl>
+            <dt><label for="edit_file_version">{L_ACP_SIMPLEDOWN_VERSION}:</label><br />
+                <span>{L_ACP_SIMPLEDOWN_VERSION_EXPLAIN}</span>
+            </dt>
+            <dd><input type="text" id="edit_file_version" name="edit_file_version" value="{EDIT_FILE_VERSION}" maxlength="50" size="20" /></dd>
+        </dl>
+        <dl>
             <dt><label for="edit_category">{L_ACP_SIMPLEDOWN_CATEGORY}:</label></dt>
             <dd>
                 <select id="edit_category" name="edit_category">
@@ -30,6 +36,17 @@
                     <option value="{categories.ID}" <!-- IF categories.ID == EDIT_FILE_CAT_ID -->selected="selected"<!-- ENDIF -->>{categories.NAME}</option>
                     <!-- END categories -->
                 </select>
+            </dd>
+        </dl>
+        <dl>
+            <dt><label>{L_ACP_SIMPLEDOWN_REPLACE_FILE}:</label><br />
+                <span>{L_ACP_SIMPLEDOWN_REPLACE_FILE_EXPLAIN}</span>
+            </dt>
+            <dd>
+                <input type="checkbox" id="replace_file" name="replace_file" value="1" onchange="document.getElementById('replace_upload_div').style.display = this.checked ? 'block' : 'none';" />
+                <div id="replace_upload_div" style="display: none; margin-top: 10px;">
+                    <input type="file" name="replace_upload" />
+                </div>
             </dd>
         </dl>
         <p class="submit-buttons">
@@ -42,6 +59,34 @@
     <!-- LISTAGEM DE ARQUIVOS -->
     <fieldset>
         <legend>{L_ACP_SIMPLEDOWN_EXISTING_FILES}</legend>
+
+        <!-- Caixa destacada para "Itens por página" -->
+        <div style="margin: 20px 0; padding: 10px 16px; background: var(--light-bg); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); display: inline-flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+            <label for="perpage_select" style="font-weight: 600; color: var(--text); white-space: nowrap;">{L_ACP_SIMPLEDOWN_ITEMS_PER_PAGE}:</label>
+            <form method="get" action="{U_ACTION}" style="margin: 0;">
+                <input type="hidden" name="mode" value="files" />
+                <select id="perpage_select" name="perpage" onchange="this.form.submit()"
+                        style="padding: 8px 12px; font-size: 0.95em; border: 1px solid var(--border); border-radius: 8px; background: var(--bg); color: var(--text); box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: all 0.3s ease; min-width: 90px; cursor: pointer;">
+                    <option value="10" <!-- IF PERPAGE == 10 -->selected<!-- ENDIF -->>10</option>
+                    <option value="20" <!-- IF PERPAGE == 20 -->selected<!-- ENDIF -->>20</option>
+                    <option value="50" <!-- IF PERPAGE == 50 -->selected<!-- ENDIF -->>50</option>
+                    <option value="100" <!-- IF PERPAGE == 100 -->selected<!-- ENDIF -->>100</option>
+                    <option value="0" <!-- IF PERPAGE == 0 -->selected<!-- ENDIF -->>{L_ALL}</option>
+                </select>
+            </form>
+        </div>
+
+        <!-- Campo de busca dinâmica -->
+        <div style="margin: 15px 0; display: flex; align-items: center; gap: 10px;">
+            <label for="search_input" style="font-weight: 600; color: var(--text);">{L_ACP_SIMPLEDOWN_SEARCH_FILES}:</label>
+            <input type="text" id="search_input" placeholder="{L_ACP_SIMPLEDOWN_SEARCH_PLACEHOLDER}"
+                   style="padding: 8px 14px; width: 300px; max-width: 100%; border: 1px solid var(--border); border-radius: 8px; background: var(--bg); box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: all 0.3s ease;" />
+        </div>
+
+        <!-- Total de arquivos -->
+        <div style="margin: 10px 0; font-weight: 600; color: var(--text);">
+            {L_ACP_SIMPLEDOWN_TOTAL_FILES}: <strong style="color: var(--primary); font-size: 1.1em;">{TOTAL_FILES}</strong>
+        </div>
 
         <!-- Paginação no topo -->
         <!-- IF ACP_TOTAL_PAGES > 1 -->
@@ -62,9 +107,10 @@
         <table class="table1 compact-table">
             <thead>
                 <tr>
-                    <th style="width: 40%; text-align: left;">{L_ACP_SIMPLEDOWN_FILE_NAME}</th>
-                    <th style="width: 20%; text-align: center;">{L_ACP_SIMPLEDOWN_CATEGORY_NAME}</th>
-                    <th style="width: 20%; text-align: center;">{L_ACP_SIMPLEDOWN_DOWNLOADS} / {L_ACP_SIMPLEDOWN_SIZE}</th>
+                    <th style="width: 35%; text-align: left;">{L_ACP_SIMPLEDOWN_FILE_NAME}</th>
+                    <th style="width: 15%; text-align: center;">{L_ACP_SIMPLEDOWN_VERSION}</th>
+                    <th style="width: 15%; text-align: center;">{L_ACP_SIMPLEDOWN_CATEGORY_NAME}</th>
+                    <th style="width: 15%; text-align: center;">{L_ACP_SIMPLEDOWN_DOWNLOADS} / {L_ACP_SIMPLEDOWN_SIZE}</th>
                     <th style="width: 20%; text-align: center;">{L_ACP_SIMPLEDOWN_ACTIONS}</th>
                 </tr>
             </thead>
@@ -78,6 +124,7 @@
                             <i class="icon fa-fw {files.FILE_ICON}" aria-hidden="true"></i> {files.REAL_NAME}
                         </small>
                     </td>
+                    <td style="text-align: center; vertical-align: middle; padding: 12px 18px;">{files.VERSION}</td>
                     <td style="text-align: center; vertical-align: middle; padding: 12px 18px;">{files.CAT}</td>
                     <td style="text-align: center; vertical-align: middle; padding: 12px 18px;">
                         {files.DOWNLOADS} / {files.SIZE}
@@ -112,6 +159,22 @@
 
     {S_FORM_TOKEN}
 </form>
+
+<!-- Busca dinâmica (somente pelo nome do arquivo) -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('search_input');
+    const rows = document.querySelectorAll('.compact-table tbody tr');
+    searchInput.addEventListener('input', function() {
+        const filter = searchInput.value.toLowerCase().trim();
+        rows.forEach(row => {
+            const name = row.querySelector('td:first-child strong')?.textContent.toLowerCase() || '';
+            const match = name.includes(filter);
+            row.style.display = match ? '' : 'none';
+        });
+    });
+});
+</script>
 
 <!-- INCLUDECSS @mundophpbb_simpledown/acp_simpledown.css -->
 <!-- INCLUDE overall_footer.html -->

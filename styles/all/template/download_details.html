@@ -12,41 +12,40 @@
         </p>
     </div>
 
-    <!-- Card expandido de detalhes -->
     <div class="simpledown-card details-card-expanded">
         <div class="card-content details-card-content">
             <div class="details-text-fullwidth">
-                <!-- Descrição completa -->
-                <!-- IF FILE_DESC and FILE_DESC != L_SIMPLEDOWN_NO_DESCRIPTION -->
+                <!-- IF FILE_DESC -->
                 <p class="file-description-full">{FILE_DESC}</p>
                 <!-- ELSE -->
                 <p class="file-description-full no-description">{L_SIMPLEDOWN_NO_DESCRIPTION}</p>
                 <!-- ENDIF -->
 
-                <!-- Linha única com infos -->
-                <div class="details-single-info-row">
-                    <span class="details-file-name">
-                        <i class="icon fa-fw {FILE_ICON}"></i>
-                        {FILE_REALNAME}
-                    </span>
-                    <span class="info-downloads">
-                        <i class="icon fa-download fa-fw"></i> {FILE_DOWNLOADS} {L_SIMPLEDOWN_DOWNLOADS_LOWER}
-                    </span>
-                    <span class="info-size">
-                        <i class="icon fa-hdd-o fa-fw"></i> {FILE_SIZE}
-                    </span>
-
-                    <!-- Botão PREVER: apenas ícone, só para imagens -->
-                    <!-- IF HAS_THUMBNAIL -->
-                    <span class="preview-btn" data-preview-url="{U_PREVIEW}" onclick="openImageModal(this)" title="{L_SIMPLEDOWN_PREVIEW_IMAGE}">
-                        <i class="icon fa-eye fa-fw"></i>
-                    </span>
-                    <!-- ENDIF -->
-                </div>
+<!-- Linha única com infos -->
+<div class="details-single-info-row">
+    <span class="details-file-name">
+        <i class="icon fa-fw {FILE_ICON}"></i>
+        <span class="file-realname-truncate">{FILE_REALNAME}</span>
+    </span>
+    <span class="info-downloads">
+        <i class="icon fa-download fa-fw"></i> {FILE_DOWNLOADS} {L_SIMPLEDOWN_DOWNLOADS_LOWER}
+    </span>
+    <span class="info-size">
+        <i class="icon fa-hdd-o fa-fw"></i> {FILE_SIZE}
+    </span>
+    <!-- Versão sempre visível -->
+    <span class="info-version">
+        <i class="icon fa-tag fa-fw version-icon"></i> {L_SIMPLEDOWN_VERSION} {VERSION_DISPLAY}
+    </span>
+    <!-- IF HAS_THUMBNAIL -->
+    <span class="preview-btn" onclick="openImageModal('{U_PREVIEW}')" title="{L_SIMPLEDOWN_PREVIEW_IMAGE}">
+        <i class="icon fa-eye fa-fw"></i>
+    </span>
+    <!-- ENDIF -->
+</div>
             </div>
         </div>
 
-        <!-- Botão BAIXAR centralizado -->
         <div class="card-footer details-card-footer">
             <a href="{U_DOWNLOAD}" class="download-btn">
                 <i class="icon fa-download fa-fw"></i> {L_DOWNLOAD_BUTTON}
@@ -59,7 +58,6 @@
     </div>
 </div>
 
-<!-- Modal de pré-visualização de imagem -->
 <div id="image-modal" class="image-modal">
     <div class="modal-image-wrapper">
         <span class="modal-close" onclick="closeImageModal()">&times;</span>
@@ -68,28 +66,20 @@
 </div>
 
 <script>
-function openImageModal(element) {
-    const src = element.getAttribute('data-preview-url');
-    if (!src) return;
-
+function openImageModal(src) {
     const modal = document.getElementById('image-modal');
     const img = document.getElementById('modal-image');
     img.src = src;
     modal.style.display = 'flex';
     document.body.style.overflow = 'hidden';
 }
-
 function closeImageModal() {
     document.getElementById('image-modal').style.display = 'none';
     document.body.style.overflow = 'auto';
 }
-
-// Fechar ao clicar no fundo
 window.addEventListener('click', function(event) {
     const modal = document.getElementById('image-modal');
-    if (event.target === modal) {
-        closeImageModal();
-    }
+    if (event.target === modal) closeImageModal();
 });
 </script>
 

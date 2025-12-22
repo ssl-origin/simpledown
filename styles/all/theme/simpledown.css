@@ -179,15 +179,39 @@
 }
 .preview-btn:hover { color: #2980b9; }
 
-/* Nome do arquivo abaixo */
+/* Nome do arquivo + ícone + versão (tudo na mesma linha) */
 .file-name-below {
-    color: #555555;
-    margin-top: auto;
     display: flex;
     align-items: center;
-    font-size: 1em;
+    flex-wrap: nowrap;
+    gap: 8px;
+    margin-top: 8px;
+    font-size: 0.95em;
+    color: #555555;
+    overflow: hidden;
 }
-.file-name-below i { margin-right: 8px; }
+.file-name-below i { margin-right: 4px; }
+.file-realname-truncate {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+}
+
+/* Badge de versão (inline) */
+.version-badge {
+    flex-shrink: 0;
+    font-size: 0.8em;
+    font-weight: 600;
+    background: #3498db;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 10px;
+    line-height: 1.2;
+    vertical-align: middle;
+    white-space: nowrap;
+}
 
 /* Ícones por tipo de arquivo */
 .file-name-below i.fa-file-pdf { color: #e74c3c; }
@@ -201,7 +225,7 @@
 .file-name-below i.fa-file-lines { color: #7f8c8d; }
 .file-name-below i.fa-file { color: #95a5a6; }
 
-/* Rodapé do card - botões lado a lado, centralizados e dentro do card */
+/* Rodapé do card */
 .card-footer {
     padding: 18px 35px 22px;
     display: flex;
@@ -213,7 +237,7 @@
     border-top: 1px solid #eee;
 }
 
-/* Botões com largura flexível */
+/* Botões */
 .details-btn-small,
 .download-btn {
     flex: 1;
@@ -230,29 +254,24 @@
     box-shadow: 0 4px 12px rgba(0,0,0,0.12);
     transition: none !important;
     white-space: nowrap;
-    text-decoration: none !important; /* Remove sublinhado dos botões */
+    text-decoration: none !important;
 }
-
 .details-btn-small {
     background: #2980b9;
     border: 1px solid #1f6f9b;
     color: #ffffff !important;
 }
-
 .download-btn {
     background: linear-gradient(to bottom, #5cb85c, #449d44);
     border: 1px solid #398439;
     color: #ffffff !important;
 }
-
 .details-btn-small i,
 .download-btn i {
     margin-right: 10px;
     font-size: 1.2em;
     color: #ffffff !important;
 }
-
-/* Garante que não haja sublinhado no hover */
 .details-btn-small:hover,
 .download-btn:hover,
 .details-btn-small:focus,
@@ -264,39 +283,16 @@
 
 /* Responsivo - botões */
 @media (max-width: 768px) {
-    .card-footer {
-        padding: 16px 25px 20px;
-        gap: 20px;
-    }
-    .details-btn-small,
-    .download-btn {
-        padding: 11px 18px;
-        font-size: 1em;
-        max-width: 160px;
-    }
+    .card-footer { padding: 16px 25px 20px; gap: 20px; }
+    .details-btn-small, .download-btn { padding: 11px 18px; font-size: 1em; max-width: 160px; }
 }
 @media (max-width: 480px) {
-    .card-footer {
-        padding: 14px 20px 18px;
-        gap: 16px;
-    }
-    .details-btn-small,
-    .download-btn {
-        padding: 10px 16px;
-        font-size: 0.98em;
-        max-width: 140px;
-    }
+    .card-footer { padding: 14px 20px 18px; gap: 16px; }
+    .details-btn-small, .download-btn { padding: 10px 16px; font-size: 0.98em; max-width: 140px; }
 }
 @media (max-width: 360px) {
-    .card-footer {
-        flex-wrap: wrap;
-        gap: 12px;
-    }
-    .details-btn-small,
-    .download-btn {
-        flex: 1 1 100%;
-        max-width: none;
-    }
+    .card-footer { flex-wrap: wrap; gap: 12px; }
+    .details-btn-small, .download-btn { flex: 1 1 100%; max-width: none; }
 }
 
 /* Cabeçalho da categoria */
@@ -460,7 +456,7 @@
     border: 1px solid #eee;
 }
 
-/* Link "Voltar para Downloads" - estilo simples, sem sublinhado */
+/* Link "Voltar para Downloads" */
 .back-link {
     text-align: center;
     margin: 20px 0 60px;
@@ -468,7 +464,7 @@
 }
 .back-link a {
     color: #3498db;
-    text-decoration: none; /* Sem sublinhado */
+    text-decoration: none;
     padding: 12px 30px;
     border: 2px solid #3498db;
     border-radius: 12px;
@@ -478,7 +474,7 @@
 .back-link a:hover {
     background: #3498db;
     color: white;
-    text-decoration: none; /* Sem sublinhado no hover */
+    text-decoration: none;
 }
 
 /* Responsivo geral */
@@ -500,7 +496,7 @@
     .file-name-uppercase { font-size: 1.9em; }
 }
 
-/* Container para título do arquivo + categoria na mesma linha */
+/* Título do arquivo + categoria na mesma linha */
 .file-title-with-category {
     display: flex;
     align-items: baseline;
@@ -508,7 +504,6 @@
     margin: 8px 0 12px 0;
     flex-wrap: wrap;
 }
-
 .file-title {
     font-size: 1.35em;
     font-weight: 700;
@@ -521,12 +516,11 @@
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
-
 .file-category-label {
     font-size: 0.92em;
     font-weight: 400;
-    color: #777777;              /* cinza suave */
-    text-transform: lowercase;   /* tudo em minúsculas */
+    color: #777777;
+    text-transform: lowercase;
     white-space: nowrap;
     opacity: 0.9;
 }
@@ -545,32 +539,60 @@
 /* Cores dos ícones na página de detalhes */
 .details-single-info-row i {
     margin-right: 8px;
-    font-size: 1.3em; /* um pouco maior para destacar */
+    font-size: 1.3em;
 }
-
-/* Downloads (verde) */
-.details-single-info-row .info-downloads i.fa-download {
-    color: #2ecc71;
-}
-
-/* Tamanho (roxo) */
-.details-single-info-row .info-size i.fa-hdd-o {
-    color: #9b59b6;
-}
-
-/* Ícone do tipo de arquivo (cor por extensão) */
-.details-single-info-row .details-file-name i {
-    font-size: 1.4em;
-}
+.details-single-info-row .info-downloads i.fa-download { color: #2ecc71; }
+.details-single-info-row .info-size i.fa-hdd-o { color: #9b59b6; }
+.details-single-info-row .details-file-name i { font-size: 1.4em; }
 
 /* Cores específicas por tipo de arquivo */
-.details-single-info-row i.fa-file-pdf       { color: #e74c3c; }
-.details-single-info-row i.fa-file-image     { color: #3498db; }
-.details-single-info-row i.fa-file-word      { color: #2980b9; }
-.details-single-info-row i.fa-file-excel     { color: #27ae60; }
+.details-single-info-row i.fa-file-pdf { color: #e74c3c; }
+.details-single-info-row i.fa-file-image { color: #3498db; }
+.details-single-info-row i.fa-file-word { color: #2980b9; }
+.details-single-info-row i.fa-file-excel { color: #27ae60; }
 .details-single-info-row i.fa-file-powerpoint { color: #e67e22; }
-.details-single-info-row i.fa-file-archive   { color: #9b59b6; }
-.details-single-info-row i.fa-file-audio     { color: #f1c40f; }
-.details-single-info-row i.fa-file-video     { color: #c0392b; }
-.details-single-info-row i.fa-file-lines     { color: #7f8c8d; }
-.details-single-info-row i.fa-file           { color: #95a5a6; }
+.details-single-info-row i.fa-file-archive { color: #9b59b6; }
+.details-single-info-row i.fa-file-audio { color: #f1c40f; }
+.details-single-info-row i.fa-file-video { color: #c0392b; }
+.details-single-info-row i.fa-file-lines { color: #7f8c8d; }
+.details-single-info-row i.fa-file { color: #95a5a6; }
+
+/* Versão na página de detalhes */
+.info-version {
+    font-size: 0.95em;
+    color: #555;
+    white-space: nowrap;
+}
+.info-version .version-icon {
+    color: #e67e22 !important;
+    font-size: 1.2em;
+    margin-right: 6px;
+}
+.info-version:hover .version-icon {
+    color: #d35400 !important;
+}
+/* Truncamento do nome real na página de detalhes */
+.details-file-name {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1; /* Ocupa espaço disponível */
+    min-width: 0; /* Permite truncar */
+}
+
+.file-realname-truncate {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+}
+
+/* Garante que os outros itens não sejam empurrados */
+.info-downloads,
+.info-size,
+.info-version,
+.preview-btn {
+    flex-shrink: 0; /* Não encolhem */
+    white-space: nowrap;
+}

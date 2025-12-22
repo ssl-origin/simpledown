@@ -1,7 +1,5 @@
 <!-- INCLUDE overall_header.html -->
 <!-- INCLUDECSS @mundophpbb_simpledown/simpledown.css -->
-
-<!-- Fonte Bai Jamjuree -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -18,25 +16,20 @@
             <div class="search-box-wrapper">
                 <div class="search-box-outer">
                     <input type="text" id="search-input" class="simpledown-search-input" placeholder="{L_SIMPLEDOWN_SEARCH_PLACEHOLDER}" />
-                    <button type="button" class="search-clear-btn external-clear-btn" id="search-clear-btn" onclick="clearSearch();" title="Limpar busca">
+                    <button type="button" class="search-clear-btn external-clear-btn" id="search-clear-btn" onclick="clearSearch();" title="{L_SIMPLEDOWN_CLEAR_SEARCH}">
                         <i class="icon fa-times fa-fw"></i>
                     </button>
                 </div>
             </div>
-
             <div class="filter-select-wrapper">
                 <select id="category-filter" class="category-filter-select" onchange="applyFilters();">
                     <option value="all" selected>{L_SIMPLEDOWN_SHOW_ALL_CATEGORIES}</option>
                     <!-- BEGIN dropdown_categories -->
                     <option value="{dropdown_categories.ID}">{dropdown_categories.NAME}</option>
                     <!-- END dropdown_categories -->
-                    <!-- IF .dropdown_categories -->
-                    <!-- ELSE -->
-                    <option value="0" disabled>{L_SIMPLEDOWN_NO_CATEGORIES_YET}</option>
-                    <!-- ENDIF -->
+                    <!-- IF .dropdown_categories --><!-- ELSE --><option value="0" disabled>{L_SIMPLEDOWN_NO_CATEGORIES_YET}</option><!-- ENDIF -->
                 </select>
             </div>
-
             <div class="filter-select-wrapper">
                 <select id="sort-filter" class="category-filter-select" onchange="applyFilters();">
                     <option value="" selected disabled>{L_SIMPLEDOWN_SORT_DEFAULT}</option>
@@ -58,28 +51,22 @@
                 const categoryValue = document.getElementById('category-filter').value;
                 const sortValue = document.getElementById('sort-filter').value || 'downloads-desc';
                 const searchValue = document.getElementById('search-input').value.trim().toLowerCase();
-
                 if (sortValue && sortValue !== '') {
                     document.cookie = "simpledown_sort=" + sortValue + "; path=/; max-age=" + (30*24*60*60);
                 }
-
                 const grid = document.querySelector('.downloads-grid');
                 const cards = Array.from(grid.querySelectorAll('.simpledown-card'));
-
                 let hasVisible = false;
                 cards.forEach(card => {
                     const catId = card.getAttribute('data-cat-id');
                     const title = card.querySelector('.file-title')?.textContent.toLowerCase() || '';
                     const desc = card.querySelector('.file-description')?.textContent.toLowerCase() || '';
-
                     const matchesCategory = categoryValue === 'all' || catId === categoryValue;
                     const matchesSearch = searchValue === '' || title.includes(searchValue) || desc.includes(searchValue);
-
                     const show = matchesCategory && matchesSearch;
                     card.style.display = show ? 'block' : 'none';
                     if (show) hasVisible = true;
                 });
-
                 // Ordenação
                 const visibleCards = cards.filter(card => card.style.display !== 'none');
                 visibleCards.sort((a, b) => {
@@ -102,11 +89,8 @@
                     }
                     return cmp;
                 });
-
                 visibleCards.forEach(card => grid.appendChild(card));
-
                 setupPagination();
-
                 const emptyMessage = document.getElementById('search-empty-message');
                 if (emptyMessage) emptyMessage.style.display = hasVisible ? 'none' : 'block';
             }
@@ -136,19 +120,15 @@
                 const grid = document.querySelector('.downloads-grid');
                 const pagination = document.querySelector('.pagination-global');
                 if (!pagination) return;
-
                 const cards = Array.from(grid.querySelectorAll('.simpledown-card'));
                 const visibleCards = cards.filter(c => c.style.display !== 'none');
                 const totalItems = visibleCards.length;
-
                 if (totalItems <= ITEMS_PER_PAGE || totalItems === 0) {
                     pagination.style.display = 'none';
                     return;
                 }
-
                 const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
                 let currentPage = 1;
-
                 function showPage(page) {
                     let index = 0;
                     cards.forEach(card => {
@@ -158,10 +138,9 @@
                             if (show) index++;
                         }
                     });
-
-                    pagination.querySelector('.pagination-info').textContent = `Página ${page} de ${totalPages}`;
+                    pagination.querySelector('.pagination-info').textContent = '{L_SIMPLEDOWN_PAGINATION_INFO}'.replace('{CURRENT}', page).replace('{TOTAL}', totalPages);
                     let buttonsHTML = '';
-                    if (page > 1) buttonsHTML += `<button onclick="changePage(${page-1})">&laquo; Anterior</button>`;
+                    if (page > 1) buttonsHTML += `<button onclick="changePage(${page-1})">&laquo; {L_PREVIOUS}</button>`;
                     for (let i = 1; i <= totalPages; i++) {
                         if (i === page || i <= 3 || i > totalPages - 3 || Math.abs(i - page) <= 2) {
                             buttonsHTML += `<button class="${i === page ? 'active' : ''}" onclick="changePage(${i})">${i}</button>`;
@@ -169,15 +148,13 @@
                             buttonsHTML += `<span>...</span>`;
                         }
                     }
-                    if (page < totalPages) buttonsHTML += `<button onclick="changePage(${page+1})">Próxima &raquo;</button>`;
+                    if (page < totalPages) buttonsHTML += `<button onclick="changePage(${page+1})">{L_NEXT} &raquo;</button>`;
                     pagination.querySelector('.pagination-buttons').innerHTML = buttonsHTML;
                 }
-
                 window.changePage = function(page) {
                     currentPage = page;
                     showPage(page);
                 };
-
                 pagination.style.display = 'flex';
                 showPage(1);
             }
@@ -204,42 +181,52 @@
 
         <!-- Grade única com todos os arquivos -->
         <div class="downloads-grid">
-<!-- BEGIN categories -->
-    <!-- BEGIN files -->
-    <div class="simpledown-card" data-cat-id="{categories.ID}">
-        <div class="card-content">
-            <!-- Nome do arquivo + categoria na mesma linha -->
-            <div class="file-title-with-category">
-                <h3 class="file-title">{categories.files.NAME}</h3>
-                <span class="file-category-label">{categories.NAME}</span>
-            </div>
+            <!-- BEGIN categories -->
+                <!-- BEGIN files -->
+                <div class="simpledown-card" data-cat-id="{categories.ID}">
+                    <div class="card-content">
+                        <!-- Nome do arquivo exibido -->
+                        <h3 class="file-title">{categories.files.NAME}</h3>
 
-            <p class="file-description">{categories.files.DESC}</p>
-            <div class="file-info-row">
-                <span><i class="icon fa-download fa-fw"></i> {categories.files.DOWNLOADS}</span>
-                <!-- IF categories.files.FILE_ICON == 'fa-file-image' -->
-                <span class="preview-btn" data-preview-url="{categories.files.U_PREVIEW}" onclick="openImageModal(this)" title="{L_SIMPLEDOWN_PREVIEW_IMAGE}">
-                    <i class="icon fa-eye fa-fw"></i>
-                </span>
-                <!-- ENDIF -->
-                <span><i class="icon fa-hdd-o fa-fw"></i> {categories.files.SIZE}</span>
-            </div>
-            <span class="file-name-below">
-                <i class="icon fa-fw {categories.files.FILE_ICON}" aria-hidden="true"></i>
-                {categories.files.REAL_NAME}
-            </span>
-        </div>
-        <div class="card-footer">
-            <a href="{categories.files.U_DETAILS}" class="details-btn-small">
-                <i class="icon fa-info-circle fa-fw"></i> {L_SIMPLEDOWN_DETAILS_BUTTON}
-            </a>
-            <a href="{categories.files.U_DOWNLOAD}" class="download-btn">
-                <i class="icon fa-download fa-fw"></i> {L_DOWNLOAD_BUTTON}
-            </a>
-        </div>
-    </div>
-    <!-- END files -->
-<!-- END categories -->
+                        <!-- Categoria -->
+                        <span class="file-category-label">
+                            <strong>{L_SIMPLEDOWN_CATEGORY}:</strong> {categories.NAME}
+                        </span>
+
+                        <p class="file-description">{categories.files.DESC}</p>
+
+                        <div class="file-info-row">
+                            <span><i class="icon fa-download fa-fw"></i> {categories.files.DOWNLOADS}</span>
+                            <!-- IF categories.files.FILE_ICON == 'fa-file-image' -->
+                            <span class="preview-btn" data-preview-url="{categories.files.U_PREVIEW}" onclick="openImageModal(this)" title="{L_SIMPLEDOWN_PREVIEW_IMAGE}">
+                                <i class="icon fa-eye fa-fw"></i>
+                            </span>
+                            <!-- ENDIF -->
+                            <span><i class="icon fa-hdd-o fa-fw"></i> {categories.files.SIZE}</span>
+                        </div>
+
+                        <!-- Nome real + ícone + versão (tudo na mesma linha) -->
+                        <!-- Nome real + ícone + versão (tudo na mesma linha) -->
+<span class="file-name-below">
+    <i class="icon fa-fw {categories.files.FILE_ICON}" aria-hidden="true"></i>
+    <span class="file-realname-truncate">{categories.files.REAL_NAME}</span>
+    <!-- IF categories.files.VERSION -->
+    <span class="version-badge">v{categories.files.VERSION}</span>
+    <!-- ENDIF -->
+</span>
+                    </div>
+
+                    <div class="card-footer">
+                        <a href="{categories.files.U_DETAILS}" class="details-btn-small">
+                            <i class="icon fa-info-circle fa-fw"></i> {L_SIMPLEDOWN_DETAILS_BUTTON}
+                        </a>
+                        <a href="{categories.files.U_DOWNLOAD}" class="download-btn">
+                            <i class="icon fa-download fa-fw"></i> {L_DOWNLOAD_BUTTON}
+                        </a>
+                    </div>
+                </div>
+                <!-- END files -->
+            <!-- END categories -->
         </div>
 
         <!-- Paginação global -->
@@ -251,9 +238,9 @@
         <!-- Mensagem de busca vazia -->
         <div class="simpledown-search-empty" id="search-empty-message" style="display: none;">
             <div class="simpledown-empty-state">
-                <p>Nada encontrado para a sua pesquisa...</p>
+                <p>{L_SIMPLEDOWN_SEARCH_EMPTY}</p>
                 <p style="font-size: 1.2em; margin-top: 12px; color: #777;">
-                    Tente usar outros termos ou remover alguns filtros.
+                    {L_SIMPLEDOWN_SEARCH_EMPTY_HINT}
                 </p>
             </div>
         </div>
@@ -280,19 +267,15 @@
                 const modal = document.getElementById('image-modal');
                 const img = document.getElementById('modal-image');
                 img.src = src;
-                img.onload = () => {
-                    modal.style.display = 'flex';
-                };
+                img.onload = () => modal.style.display = 'flex';
                 img.onerror = () => {
                     console.error('Erro ao carregar imagem:', src);
                     modal.style.display = 'none';
                 };
             }
-
             function closeImageModal() {
                 document.getElementById('image-modal').style.display = 'none';
             }
-
             window.addEventListener('click', function(event) {
                 const modal = document.getElementById('image-modal');
                 if (event.target === modal) closeImageModal();

@@ -12,11 +12,9 @@
         </p>
     </div>
 
-    <!-- Card expandido de detalhes -->
     <div class="simpledown-card details-card-expanded">
         <div class="card-content details-card-content">
             <div class="details-text-fullwidth">
-                <!-- Descrição completa -->
                 <!-- IF FILE_DESC -->
                 <p class="file-description-full">{FILE_DESC}</p>
                 <!-- ELSE -->
@@ -35,7 +33,12 @@
                     <span class="info-size">
                         <i class="icon fa-hdd-o fa-fw"></i> {FILE_SIZE}
                     </span>
-                    <!-- Botão PREVER: apenas ícone, só para imagens -->
+
+                    <!-- Versão: aparece sempre (mesmo se vazia mostra "Sem versão") -->
+                    <span class="info-version">
+                        <i class="icon fa-tag fa-fw"></i> {L_SIMPLEDOWN_VERSION} {FILE_VERSION}
+                    </span>
+
                     <!-- IF HAS_THUMBNAIL -->
                     <span class="preview-btn" onclick="openImageModal('{U_PREVIEW}')" title="{L_SIMPLEDOWN_PREVIEW_IMAGE}">
                         <i class="icon fa-eye fa-fw"></i>
@@ -45,7 +48,6 @@
             </div>
         </div>
 
-        <!-- Botão BAIXAR centralizado -->
         <div class="card-footer details-card-footer">
             <a href="{U_DOWNLOAD}" class="download-btn">
                 <i class="icon fa-download fa-fw"></i> {L_DOWNLOAD_BUTTON}
@@ -58,7 +60,6 @@
     </div>
 </div>
 
-<!-- Modal de pré-visualização de imagem -->
 <div id="image-modal" class="image-modal">
     <div class="modal-image-wrapper">
         <span class="modal-close" onclick="closeImageModal()">&times;</span>
@@ -72,20 +73,15 @@ function openImageModal(src) {
     const img = document.getElementById('modal-image');
     img.src = src;
     modal.style.display = 'flex';
-    document.body.style.overflow = 'hidden'; // Evita scroll da página
+    document.body.style.overflow = 'hidden';
 }
-
 function closeImageModal() {
     document.getElementById('image-modal').style.display = 'none';
     document.body.style.overflow = 'auto';
 }
-
-// Fechar ao clicar no fundo
 window.addEventListener('click', function(event) {
     const modal = document.getElementById('image-modal');
-    if (event.target === modal) {
-        closeImageModal();
-    }
+    if (event.target === modal) closeImageModal();
 });
 </script>
 

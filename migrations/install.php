@@ -31,7 +31,7 @@ class install extends \phpbb\db\migration\migration
                 'ACP_SIMPLEDOWN_TITLE',
                 [
                     'module_basename' => '\mundophpbb\simpledown\acp\main_module',
-                    'modes' => ['settings', 'files'], // Adiciona os dois modos
+                    'modes' => ['settings', 'files'],
                 ],
             ]],
             ['config.add', ['simpledown_max_upload_size', 100]],
@@ -44,21 +44,22 @@ class install extends \phpbb\db\migration\migration
             'add_tables' => [
                 $this->table_prefix . 'simpledown_categories' => [
                     'COLUMNS' => [
-                        'id'   => ['UINT', null, 'auto_increment'],
+                        'id' => ['UINT', null, 'auto_increment'],
                         'name' => ['VCHAR:255', ''],
                     ],
                     'PRIMARY_KEY' => 'id',
                 ],
                 $this->table_prefix . 'simpledown_files' => [
                     'COLUMNS' => [
-                        'id'            => ['UINT', null, 'auto_increment'],
-                        'file_name'     => ['VCHAR:255', ''],
+                        'id' => ['UINT', null, 'auto_increment'],
+                        'file_name' => ['VCHAR:255', ''],
                         'file_realname' => ['VCHAR:255', ''],
-                        'file_desc'     => ['TEXT', ''],
-                        'category_id'   => ['UINT', 0],
-                        'downloads'     => ['UINT', 0],
-                        'file_size'     => ['UINT', 0],
-                        'file_hash'     => ['VCHAR:32', ''],
+                        'file_desc' => ['TEXT', ''],
+                        'version' => ['VCHAR:50', null], // Nova coluna
+                        'category_id' => ['UINT', 0],
+                        'downloads' => ['UINT', 0],
+                        'file_size' => ['UINT', 0],
+                        'file_hash' => ['VCHAR:32', ''],
                     ],
                     'PRIMARY_KEY' => 'id',
                 ],
@@ -93,7 +94,6 @@ class install extends \phpbb\db\migration\migration
             $base_dir . 'cache/',
             $base_dir . 'thumbs/',
         ];
-
         foreach ($dirs_to_clean as $dir) {
             if (is_dir($dir)) {
                 $files = glob($dir . '*');
