@@ -184,13 +184,15 @@
     display: flex;
     align-items: center;
     flex-wrap: nowrap;
-    gap: 8px;
+    gap: 6px; /* Ajustado: antes era 8px */
     margin-top: 8px;
     font-size: 0.95em;
     color: #555555;
     overflow: hidden;
 }
-.file-name-below i { margin-right: 4px; }
+.file-name-below i {
+    margin-right: 3px !important; /* Ajustado: antes era 4px */
+}
 .file-realname-truncate {
     flex: 1;
     overflow: hidden;
@@ -571,15 +573,15 @@
 .info-version:hover .version-icon {
     color: #d35400 !important;
 }
+
 /* Truncamento do nome real na página de detalhes */
 .details-file-name {
     display: flex;
     align-items: center;
-    gap: 8px;
-    flex: 1; /* Ocupa espaço disponível */
-    min-width: 0; /* Permite truncar */
+    gap: 6px; /* Ajustado: antes era 8px */
+    flex: 1;
+    min-width: 0;
 }
-
 .file-realname-truncate {
     flex: 1;
     overflow: hidden;
@@ -593,6 +595,6 @@
 .info-size,
 .info-version,
 .preview-btn {
-    flex-shrink: 0; /* Não encolhem */
+    flex-shrink: 0;
     white-space: nowrap;
 }
