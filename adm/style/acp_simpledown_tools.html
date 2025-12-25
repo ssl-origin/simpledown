@@ -1,0 +1,97 @@
+<!-- INCLUDE overall_header.html -->
+
+<h1>{L_ACP_SIMPLEDOWN_TITLE} - {L_ACP_SIMPLEDOWN_TOOLS}</h1>
+
+<div id="acp_simpledown">
+    <fieldset>
+        <legend>{L_ACP_SIMPLEDOWN_TOOLS}</legend>
+        
+        <h2>{L_ACP_SIMPLEDOWN_THUMBNAILS_MANAGEMENT}</h2>
+        <p>{L_ACP_SIMPLEDOWN_THUMBNAILS_EXPLAIN_SIMPLE}</p>
+
+        <dl>
+            <dt><label for="thumb_select">{L_ACP_SIMPLEDOWN_AVAILABLE_THUMBS}</label></dt>
+            <dd>
+                <select id="thumb_select" name="thumb_select">
+                    <option value="">{L_ACP_SIMPLEDOWN_SELECT_ONE_THUMB}</option>
+                    <!-- BEGIN thumbs -->
+                    <option value="{thumbs.FILENAME}" data-preview="{thumbs.PREVIEW_URL}">
+                        {thumbs.FILENAME} ({thumbs.SIZE})
+                    </option>
+                    <!-- END thumbs -->
+                </select>
+            </dd>
+        </dl>
+
+        <!-- Container de pré-visualização e exclusão -->
+        <div id="thumb-preview-container" style="margin-top: 20px; text-align: center; display: none; padding: 15px; border: 1px dashed #ccc; background: #f9f9f9; border-radius: 8px;">
+            <p><strong>{L_ACP_SIMPLEDOWN_PREVIEW_TITLE}</strong></p>
+            <img id="preview-img" src="" alt="{L_ACP_SIMPLEDOWN_THUMB_PREVIEW}" style="max-width: 100%; height: auto; max-height: 150px; border: 3px solid #fff; box-shadow: 0 0 10px rgba(0,0,0,0.1);" />
+            
+            <br /><br />
+            
+            <p class="submit-buttons" style="margin: 0; padding: 0; background: none; border: none;">
+                <a href="#" id="delete-thumb-btn" class="button2 danger">
+                    <i class="icon fa-trash fa-fw" aria-hidden="true"></i> {L_ACP_SIMPLEDOWN_DELETE_THIS_THUMB}
+                </a>
+            </p>
+        </div>
+
+        <!-- Mensagem quando não há miniaturas -->
+        <!-- IF not S_HAS_THUMBS -->
+        <div class="errorbox">
+            <p>{L_ACP_SIMPLEDOWN_NO_THUMBS_FOUND}</p>
+        </div>
+        <!-- ENDIF -->
+        
+    </fieldset>
+</div>
+
+<script>
+(function() {
+    document.addEventListener('DOMContentLoaded', () => {
+        const select = document.getElementById('thumb_select');
+        const container = document.getElementById('thumb-preview-container');
+        const previewImg = document.getElementById('preview-img');
+        const deleteBtn = document.getElementById('delete-thumb-btn');
+
+        if (select && container && previewImg && deleteBtn) {
+            select.addEventListener('change', function() {
+                const selectedOption = this.options[this.selectedIndex];
+                const filename = this.value;
+                const previewUrl = selectedOption.dataset.preview;
+
+                if (filename && previewUrl) {
+                    // Evita cache do navegador
+                    previewImg.src = previewUrl + '?t=' + new Date().getTime();
+                    previewImg.alt = filename; // Acessibilidade
+                    
+                    // Link de exclusão com confirmação do phpBB
+                    deleteBtn.href = '{U_ACTION}&action=delete_thumb&filename=' + encodeURIComponent(filename);
+                    
+                    container.style.display = 'block';
+                } else {
+                    container.style.display = 'none';
+                    previewImg.src = '';
+                    previewImg.alt = '';
+                    deleteBtn.href = '#';
+                }
+            });
+        }
+    });
+})();
+</script>
+
+<style>
+    .danger { 
+        color: #bc2a4d !important; 
+        border-color: #bc2a4d !important; 
+    }
+    .danger:hover { 
+        background-color: #bc2a4d !important; 
+        color: #fff !important; 
+    }
+</style>
+
+<!-- INCLUDECSS @mundophpbb_simpledown/acp_simpledown.css -->
+<!-- INCLUDE overall_footer.html -->

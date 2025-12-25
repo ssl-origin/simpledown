@@ -1,5 +1,12 @@
 <!-- INCLUDE overall_header.html -->
-<!-- INCLUDECSS @mundophpbb_simpledown/simpledown.css -->
+
+<!-- INCLUSÃO CONDICIONAL DO TEMA CLARO/ESCURO -->
+<!-- IF S_SIMPLEDOWN_THEME == 'dark' -->
+    <!-- INCLUDECSS @mundophpbb_simpledown/simpledown_dark.css -->
+<!-- ELSE -->
+    <!-- INCLUDECSS @mundophpbb_simpledown/simpledown_light.css -->
+<!-- ENDIF -->
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -15,8 +22,8 @@
         <div class="simpledown-top-controls">
             <div class="search-box-wrapper">
                 <div class="search-box-outer">
-                    <input type="text" id="search-input" class="simpledown-search-input" placeholder="{L_SIMPLEDOWN_SEARCH_PLACEHOLDER}" />
-                    <button type="button" class="search-clear-btn external-clear-btn" id="search-clear-btn" onclick="clearSearch();" title="{L_SIMPLEDOWN_CLEAR_SEARCH}">
+                    <input type="text" id="search-input" class="simpledown-search-input" placeholder="{L_SIMPLEDOWN_SEARCH_PLACEHOLDER}" autocomplete="off" />
+                    <button type="button" class="search-clear-btn external-clear-btn" id="search-clear-btn" title="{L_SIMPLEDOWN_CLEAR_SEARCH}">
                         <i class="icon fa-times fa-fw"></i>
                     </button>
                 </div>
@@ -27,7 +34,9 @@
                     <!-- BEGIN dropdown_categories -->
                     <option value="{dropdown_categories.ID}">{dropdown_categories.NAME}</option>
                     <!-- END dropdown_categories -->
-                    <!-- IF .dropdown_categories --><!-- ELSE --><option value="0" disabled>{L_SIMPLEDOWN_NO_CATEGORIES_YET}</option><!-- ENDIF -->
+                    <!-- IF not .dropdown_categories -->
+                    <option value="0" disabled>{L_SIMPLEDOWN_NO_CATEGORIES_YET}</option>
+                    <!-- ENDIF -->
                 </select>
             </div>
             <div class="filter-select-wrapper">
@@ -43,161 +52,6 @@
             </div>
         </div>
 
-        <!-- Script completo de filtros, busca e paginação -->
-        <script>
-            const ITEMS_PER_PAGE = {ITEMS_PER_PAGE};
-
-            function applyFilters() {
-                const categoryValue = document.getElementById('category-filter').value;
-                const sortValue = document.getElementById('sort-filter').value || 'downloads-desc';
-                const searchValue = document.getElementById('search-input').value.trim().toLowerCase();
-
-                if (sortValue && sortValue !== '') {
-                    document.cookie = "simpledown_sort=" + sortValue + "; path=/; max-age=" + (30*24*60*60);
-                }
-
-                const grid = document.querySelector('.downloads-grid');
-                const cards = Array.from(grid.querySelectorAll('.simpledown-card'));
-                let hasVisible = false;
-
-                cards.forEach(card => {
-                    const catId = card.getAttribute('data-cat-id');
-                    const title = card.querySelector('.file-title')?.textContent.toLowerCase() || '';
-                    const desc = card.querySelector('.file-description')?.textContent.toLowerCase() || '';
-                    const matchesCategory = categoryValue === 'all' || catId === categoryValue;
-                    const matchesSearch = searchValue === '' || title.includes(searchValue) || desc.includes(searchValue);
-                    const show = matchesCategory && matchesSearch;
-
-                    card.style.display = show ? 'block' : 'none';
-                    if (show) hasVisible = true;
-                });
-
-                // Ordenação
-                const visibleCards = cards.filter(card => card.style.display !== 'none');
-                visibleCards.sort((a, b) => {
-                    let cmp = 0;
-                    if (sortValue === 'name-asc' || sortValue === 'name-desc') {
-                        const nameA = a.querySelector('.file-title')?.textContent.trim().toLowerCase() || '';
-                        const nameB = b.querySelector('.file-title')?.textContent.trim().toLowerCase() || '';
-                        cmp = nameA.localeCompare(nameB);
-                        if (sortValue === 'name-desc') cmp = -cmp;
-                    } else if (sortValue === 'downloads-desc' || sortValue === 'downloads-asc') {
-                        const dlA = parseInt(a.querySelector('.file-info-row span:first-child')?.textContent.replace(/\D/g, '') || '0');
-                        const dlB = parseInt(b.querySelector('.file-info-row span:first-child')?.textContent.replace(/\D/g, '') || '0');
-                        cmp = dlB - dlA;
-                        if (sortValue === 'downloads-asc') cmp = -cmp;
-                    } else if (sortValue === 'size-desc' || sortValue === 'size-asc') {
-                        const sizeA = parseSize(a.querySelector('.file-info-row span:last-child')?.textContent.trim() || '');
-                        const sizeB = parseSize(b.querySelector('.file-info-row span:last-child')?.textContent.trim() || '');
-                        cmp = sizeB - sizeA;
-                        if (sortValue === 'size-asc') cmp = -cmp;
-                    }
-                    return cmp;
-                });
-
-                visibleCards.forEach(card => grid.appendChild(card));
-
-                setupPagination();
-
-                const emptyMessage = document.getElementById('search-empty-message');
-                if (emptyMessage) emptyMessage.style.display = hasVisible ? 'none' : 'block';
-            }
-
-            function parseSize(sizeStr) {
-                const matches = sizeStr.match(/([\d.]+)\s*(bytes|KB|MB|GB)/i);
-                if (!matches) return 0;
-                const value = parseFloat(matches[1]);
-                const unit = matches[2].toLowerCase();
-                switch (unit) {
-                    case 'gb': return value * 1073741824;
-                    case 'mb': return value * 1048576;
-                    case 'kb': return value * 1024;
-                    case 'bytes': return value;
-                    default: return 0;
-                }
-            }
-
-            function clearSearch() {
-                const input = document.getElementById('search-input');
-                input.value = '';
-                input.focus();
-                applyFilters();
-            }
-
-            function setupPagination() {
-                const grid = document.querySelector('.downloads-grid');
-                const pagination = document.querySelector('.pagination-global');
-                if (!pagination) return;
-
-                const cards = Array.from(grid.querySelectorAll('.simpledown-card'));
-                const visibleCards = cards.filter(c => c.style.display !== 'none');
-                const totalItems = visibleCards.length;
-
-                if (totalItems <= ITEMS_PER_PAGE || totalItems === 0) {
-                    pagination.style.display = 'none';
-                    return;
-                }
-
-                const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
-                let currentPage = 1;
-
-                function showPage(page) {
-                    let index = 0;
-                    cards.forEach(card => {
-                        if (card.style.display !== 'none') {
-                            const show = index >= (page - 1) * ITEMS_PER_PAGE && index < page * ITEMS_PER_PAGE;
-                            card.style.display = show ? 'block' : 'none';
-                            if (show) index++;
-                        }
-                    });
-
-                    pagination.querySelector('.pagination-info').textContent = '{L_SIMPLEDOWN_PAGINATION_INFO}'.replace('{CURRENT}', page).replace('{TOTAL}', totalPages);
-
-                    let buttonsHTML = '';
-                    if (page > 1) buttonsHTML += `<button onclick="changePage(${page-1})">&laquo; {L_PREVIOUS}</button>`;
-
-                    for (let i = 1; i <= totalPages; i++) {
-                        if (i === page || i <= 3 || i > totalPages - 3 || Math.abs(i - page) <= 2) {
-                            buttonsHTML += `<button class="${i === page ? 'active' : ''}" onclick="changePage(${i})">${i}</button>`;
-                        } else if (!buttonsHTML.match(/\.+$/)) {
-                            buttonsHTML += `<span>...</span>`;
-                        }
-                    }
-
-                    if (page < totalPages) buttonsHTML += `<button onclick="changePage(${page+1})">{L_NEXT} &raquo;</button>`;
-
-                    pagination.querySelector('.pagination-buttons').innerHTML = buttonsHTML;
-                }
-
-                window.changePage = function(page) {
-                    currentPage = page;
-                    showPage(page);
-                };
-
-                pagination.style.display = 'flex';
-                showPage(1);
-            }
-
-            document.getElementById('search-input').addEventListener('input', applyFilters);
-
-            function loadSavedSort() {
-                const cookies = document.cookie.split(';');
-                let savedSort = '';
-                cookies.forEach(cookie => {
-                    const [name, value] = cookie.trim().split('=');
-                    if (name === 'simpledown_sort') savedSort = value;
-                });
-                if (savedSort) {
-                    document.getElementById('sort-filter').value = savedSort;
-                }
-            }
-
-            window.addEventListener('load', () => {
-                loadSavedSort();
-                applyFilters();
-            });
-        </script>
-
         <!-- Grade de arquivos -->
         <div class="downloads-grid">
             <!-- BEGIN categories -->
@@ -208,7 +62,6 @@
                         <span class="file-category-label">
                             <strong>{L_SIMPLEDOWN_CATEGORY}:</strong> {categories.NAME}
                         </span>
-                        <!-- DESCRIÇÃO CURTA -->
                         <p class="file-description">{categories.files.DESC_SHORT}</p>
                         <div class="file-info-row">
                             <span><i class="icon fa-download fa-fw"></i> {categories.files.DOWNLOADS}</span>
@@ -225,25 +78,27 @@
                             <!-- IF categories.files.VERSION -->
                             <span class="version-badge">v{categories.files.VERSION}</span>
                             <!-- ENDIF -->
+                            <!-- IF categories.files.IS_PRIVATE -->
+                            <span class="private-badge" title="{L_SIMPLEDOWN_PRIVATE_FILE}">
+                                <i class="fas fa-lock"></i> {L_SIMPLEDOWN_PRIVATE_FILE}
+                            </span>
+                            <!-- ENDIF -->
                         </span>
                     </div>
                     <div class="card-footer">
                         <a href="{categories.files.U_DETAILS}" class="details-btn-small">
                             <i class="icon fa-info-circle fa-fw"></i> {L_SIMPLEDOWN_DETAILS_BUTTON}
                         </a>
-                        <a href="{categories.files.U_DOWNLOAD}" class="download-btn">
+                        <a href="{categories.files.U_DOWNLOAD}"
+                           class="download-btn"
+                           data-private="{categories.files.IS_PRIVATE}"
+                           onclick="checkPrivateDownload(event, this)">
                             <i class="icon fa-download fa-fw"></i> {L_DOWNLOAD_BUTTON}
                         </a>
                     </div>
                 </div>
                 <!-- END files -->
             <!-- END categories -->
-        </div>
-
-        <!-- Paginação global -->
-        <div class="category-pagination pagination-global">
-            <div class="pagination-info"></div>
-            <div class="pagination-buttons"></div>
         </div>
 
         <!-- Mensagem de busca vazia -->
@@ -263,37 +118,174 @@
         </div>
         <!-- ENDIF -->
 
-<div id="image-modal" class="image-modal">
-    <div class="modal-image-wrapper">
-        <span class="modal-close" onclick="closeImageModal()"><i class="fas fa-times"></i></span>
-        <img id="modal-image" class="modal-image-content" alt="{L_SIMPLEDOWN_IMAGE_PREVIEW_ALT}" />
+        <!-- MODAL PARA IMAGEM -->
+        <div id="image-modal" class="image-modal">
+            <div class="modal-image-wrapper">
+                <span class="modal-close" onclick="closeImageModal()"><i class="fas fa-times"></i></span>
+                <img id="modal-image" class="modal-image-content" alt="{L_SIMPLEDOWN_IMAGE_PREVIEW_ALT}" />
+            </div>
+        </div>
+
+        <!-- MODAL PARA ARQUIVO PRIVADO (CORRIGIDO PARA DARK MODE) -->
+        <div id="login-required-modal" class="image-modal" style="display: none;">
+            <div class="modal-image-wrapper private-modal-content">
+                <span class="modal-close" onclick="document.getElementById('login-required-modal').style.display='none'">
+                    <i class="fas fa-times"></i>
+                </span>
+                <i class="fas fa-lock fa-4x" style="color: #e74c3c; margin-bottom: 20px;"></i>
+                <h3>{L_SIMPLEDOWN_LOGIN_REQUIRED}</h3>
+                <p>{L_SIMPLEDOWN_PRIVATE_MODAL_TEXT}</p>
+                <div>
+                    <a href="{U_LOGIN}" class="download-btn">
+                        <i class="fas fa-sign-in-alt"></i> {L_SIMPLEDOWN_LOGIN_BUTTON}
+                    </a>
+                    <a href="{U_REGISTER}" class="details-btn-small">
+                        <i class="fas fa-user-plus"></i> {L_SIMPLEDOWN_REGISTER_BUTTON}
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
-        <script>
-            function openImageModal(element) {
-                const src = element.getAttribute('data-preview-url');
-                if (!src) return;
-                const modal = document.getElementById('image-modal');
-                const img = document.getElementById('modal-image');
-                img.src = src;
-                img.onload = () => modal.style.display = 'flex';
-                img.onerror = () => {
-                    console.error('Erro ao carregar imagem:', src);
-                    modal.style.display = 'none';
-                };
-            }
+<!-- SCRIPT PRINCIPAL -->
+<script>
+    const SIMPLE_DOWN_IS_LOGGED_IN = <!-- IF S_IS_LOGGED_IN -->true<!-- ELSE -->false<!-- ENDIF -->;
 
-            function closeImageModal() {
-                document.getElementById('image-modal').style.display = 'none';
-            }
+    function applyFilters() {
+        const categoryValue = document.getElementById('category-filter').value;
+        const sortValue = document.getElementById('sort-filter').value || 'downloads-desc';
+        const searchValue = document.getElementById('search-input').value.trim().toLowerCase();
 
-            window.addEventListener('click', function(event) {
-                const modal = document.getElementById('image-modal');
-                if (event.target === modal) closeImageModal();
-            });
-        </script>
-    </div>
-</div>
+        if (sortValue) {
+            document.cookie = "simpledown_sort=" + sortValue + "; path=/; max-age=" + (30*24*60*60);
+        }
+
+        const grid = document.querySelector('.downloads-grid');
+        const cards = Array.from(grid.querySelectorAll('.simpledown-card'));
+        let hasVisible = false;
+
+        cards.forEach(card => {
+            const catId = card.getAttribute('data-cat-id');
+            const title = card.querySelector('.file-title')?.textContent.toLowerCase() || '';
+            const desc = card.querySelector('.file-description')?.textContent.toLowerCase() || '';
+            const matchesCategory = categoryValue === 'all' || catId === categoryValue;
+            const matchesSearch = searchValue === '' || title.includes(searchValue) || desc.includes(searchValue);
+            const show = matchesCategory && matchesSearch;
+            card.style.display = show ? 'block' : 'none';
+            if (show) hasVisible = true;
+        });
+
+        const visibleCards = cards.filter(card => card.style.display !== 'none');
+        visibleCards.sort((a, b) => {
+            let cmp = 0;
+            if (sortValue === 'name-asc' || sortValue === 'name-desc') {
+                const nameA = a.querySelector('.file-title')?.textContent.trim().toLowerCase() || '';
+                const nameB = b.querySelector('.file-title')?.textContent.trim().toLowerCase() || '';
+                cmp = nameA.localeCompare(nameB);
+                if (sortValue === 'name-desc') cmp = -cmp;
+            } else if (sortValue.includes('downloads')) {
+                const dlA = parseInt(a.querySelector('.file-info-row span:first-child')?.textContent.replace(/\D/g, '') || '0');
+                const dlB = parseInt(b.querySelector('.file-info-row span:first-child')?.textContent.replace(/\D/g, '') || '0');
+                cmp = dlB - dlA;
+                if (sortValue === 'downloads-asc') cmp = -cmp;
+            } else if (sortValue.includes('size')) {
+                const sizeA = parseSize(a.querySelector('.file-info-row span:last-child')?.textContent.trim() || '');
+                const sizeB = parseSize(b.querySelector('.file-info-row span:last-child')?.textContent.trim() || '');
+                cmp = sizeB - sizeA;
+                if (sortValue === 'size-asc') cmp = -cmp;
+            }
+            return cmp;
+        });
+
+        visibleCards.forEach(card => grid.appendChild(card));
+
+        const emptyMessage = document.getElementById('search-empty-message');
+        if (emptyMessage) emptyMessage.style.display = hasVisible ? 'none' : 'block';
+    }
+
+    function parseSize(sizeStr) {
+        const matches = sizeStr.match(/([\d.]+)\s*(bytes|KB|MB|GB)/i);
+        if (!matches) return 0;
+        const value = parseFloat(matches[1]);
+        const unit = matches[2].toLowerCase();
+        switch (unit) {
+            case 'gb': return value * 1073741824;
+            case 'mb': return value * 1048576;
+            case 'kb': return value * 1024;
+            case 'bytes': return value;
+            default: return 0;
+        }
+    }
+
+    function checkPrivateDownload(event, element) {
+        const isPrivate = element.getAttribute('data-private') === '1';
+        if (isPrivate && !SIMPLE_DOWN_IS_LOGGED_IN) {
+            event.preventDefault();
+            document.getElementById('login-required-modal').style.display = 'flex';
+        }
+    }
+
+    function openImageModal(element) {
+        const src = element.getAttribute('data-preview-url');
+        if (!src) return;
+        const modal = document.getElementById('image-modal');
+        const img = document.getElementById('modal-image');
+        img.src = src;
+        modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeImageModal() {
+        document.getElementById('image-modal').style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
+
+    function loadSavedSort() {
+        const cookies = document.cookie.split(';');
+        for (let cookie of cookies) {
+            const [name, value] = cookie.trim().split('=');
+            if (name === 'simpledown_sort') {
+                document.getElementById('sort-filter').value = value;
+                break;
+            }
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const searchInput = document.getElementById('search-input');
+        const clearBtn = document.getElementById('search-clear-btn');
+        const searchOuter = document.querySelector('.search-box-outer');
+
+        const updateClearButton = () => {
+            const hasValue = searchInput.value.trim().length > 0;
+            clearBtn.style.display = hasValue ? 'flex' : 'none';
+            searchOuter.classList.toggle('has-value', hasValue);
+        };
+
+        searchInput.addEventListener('input', () => {
+            applyFilters();
+            updateClearButton();
+        });
+
+        clearBtn.addEventListener('click', () => {
+            searchInput.value = '';
+            searchInput.focus();
+            updateClearButton();
+            applyFilters();
+        });
+
+        window.addEventListener('click', (event) => {
+            const imageModal = document.getElementById('image-modal');
+            const loginModal = document.getElementById('login-required-modal');
+            if (event.target === imageModal) closeImageModal();
+            if (event.target === loginModal) loginModal.style.display = 'none';
+        });
+
+        loadSavedSort();
+        updateClearButton();
+        applyFilters();
+    });
+</script>
 
 <!-- INCLUDE overall_footer.html -->

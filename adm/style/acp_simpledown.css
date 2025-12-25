@@ -28,7 +28,7 @@
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
 }
 
-/* Fieldsets */
+/* Fieldsets e Legendas */
 #acp_simpledown fieldset {
     background: var(--light-bg);
     border: 1px solid var(--border);
@@ -37,8 +37,6 @@
     margin-bottom: 20px;
     box-shadow: var(--shadow);
 }
-
-/* Legendas */
 #acp_simpledown legend {
     font-size: 1.3em;
     font-weight: 700;
@@ -49,21 +47,20 @@
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 }
 
-/* Labels e descrições - AJUSTADO PARA ESPAÇO MÍNIMO */
+/* Labels e descrições */
 #acp_simpledown dl dt label {
     font-weight: 600;
     color: var(--text);
-    margin-bottom: 2px;           /* espaço mínimo entre label e explicação */
+    margin-bottom: 2px;
     display: block;
 }
-
 #acp_simpledown dl dt span {
     font-size: 0.85em;
     color: var(--text-light);
     font-style: italic;
     display: block;
-    margin-top: -8px;                /* sem espaço extra acima */
-    line-height: 1.3;             /* leitura confortável, mas colado */
+    margin-top: -8px;
+    line-height: 1.3;
 }
 
 /* Inputs comuns */
@@ -159,7 +156,7 @@
     box-shadow: 0 8px 18px rgba(52, 152, 219, 0.4);
 }
 
-/* Botão padrão (cinza) */
+/* Botão padrão (cinza) e Excluir (vermelho) */
 #acp_simpledown .button2,
 #acp_simpledown a.button2 {
     padding: 10px 24px;
@@ -177,13 +174,10 @@
 #acp_simpledown .button2:hover {
     background: #7f8c8d;
 }
-
-/* Botão Excluir (vermelho) */
 #acp_simpledown .button2[value="Excluir"],
 #acp_simpledown a.button2[href*="delete"],
 #acp_simpledown .button2.danger {
     background: var(--danger);
-    color: white;
 }
 #acp_simpledown .button2[value="Excluir"]:hover,
 #acp_simpledown a.button2[href*="delete"]:hover,
@@ -254,7 +248,7 @@
     background: #f0f7ff;
 }
 
-/* Ícones por extensão */
+/* Ícones por extensão na tabela */
 #acp_simpledown .table1 i.fa-file-pdf { color: #e74c3c; }
 #acp_simpledown .table1 i.fa-file-image { color: #3498db; }
 #acp_simpledown .table1 i.fa-file-word { color: #2980b9; }
@@ -288,13 +282,13 @@
 #acp_simpledown .warning-box { border-color: #f44336; background: #ffebee; }
 #acp_simpledown .allowed-box { border-color: #4caf50; background: #e8f5e9; }
 
-/* Controles superiores */
+/* Controles superiores - TOTAL À DIREITA */
 .acp-controls-top {
     display: flex;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: space-between;
     gap: 24px;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
     margin-bottom: 20px;
     padding: 12px 16px;
     background: var(--light-bg);
@@ -322,9 +316,7 @@
     font-size: 0.95em;
     transition: all 0.3s ease;
 }
-.control-item select {
-    min-width: 90px;
-}
+.control-item select { min-width: 90px; }
 .control-item input[type="text"] {
     flex: 1;
     min-width: 220px;
@@ -334,23 +326,160 @@
     font-weight: 600;
     color: var(--text);
     white-space: nowrap;
+    margin-left: auto; /* garante à direita */
 }
 .total-item strong {
     color: var(--primary);
     font-size: 1.1em;
 }
 
-/* Modal */
-#desc-modal {
+/* === BARRA DE BUSCA NO ACP - VISUAL PERFEITO === */
+.acp-controls-top .search-box-outer {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    max-width: 450px;
+    height: 44px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+    background: var(--bg);
+}
+
+.acp-controls-top .simpledown-search-input {
+    flex: 1;
+    padding: 10px 40px 10px 14px;
+    font-size: 0.95em;
+    border: none;
+    background: transparent;
+    outline: none;
+    height: 100%;
+    box-sizing: border-box;
+}
+.acp-controls-top .simpledown-search-input::placeholder {
+    color: #aaaaaa;
+    font-style: italic;
+}
+
+/* Remove o "X" nativo */
+.acp-controls-top .simpledown-search-input::-webkit-search-cancel-button,
+.acp-controls-top .simpledown-search-input::-ms-clear,
+.acp-controls-top .simpledown-search-input::-webkit-search-decoration {
+    display: none;
+}
+
+/* Botão X flutuante */
+.acp-controls-top .external-clear-btn {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: none;
+    width: 32px;
+    height: 32px;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    border-radius: 50%;
+    color: #cccccc;
+    font-size: 1.2em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+.acp-controls-top .external-clear-btn:hover {
+    background: rgba(231, 76, 60, 0.1);
+    color: #e74c3c;
+}
+.acp-controls-top .search-box-outer.has-value .external-clear-btn {
+    display: flex;
+}
+
+/* Miniaturas no ACP */
+#thumb-preview {
+    margin-top: 15px;
+    padding: 12px;
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    text-align: center;
+}
+#thumb-preview img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* Ícone de preview da descrição */
+.view-full-desc {
+    color: var(--primary);
+    cursor: pointer;
+    font-size: 1.3em;
+    opacity: 0.8;
+    transition: opacity 0.3s ease, color 0.3s ease;
+}
+.view-full-desc:hover,
+.view-full-desc:focus {
+    opacity: 1;
+    color: var(--primary-dark);
+}
+
+/* Modal genérico */
+.modal {
     display: none;
     position: fixed;
-    inset: 0;
-    z-index: 10000;
-    background: rgba(0,0,0,0.6);
+    z-index: 10001;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.65);
     justify-content: center;
     align-items: center;
-    transition: opacity 0.3s ease;
 }
+.modal-content {
+    background: var(--bg);
+    margin: auto;
+    padding: 30px 40px;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+    width: 90%;
+    max-width: 500px;
+    text-align: center;
+    position: relative;
+    border: 1px solid var(--border);
+}
+.close-modal {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 36px;
+    font-weight: bold;
+    cursor: pointer;
+    color: var(--text-light);
+    transition: color 0.3s;
+}
+.close-modal:hover,
+.close-modal:focus {
+    color: var(--danger);
+}
+.modal h3 {
+    margin: 0 0 20px;
+    color: var(--danger);
+    font-size: 1.4em;
+}
+.modal p {
+    margin: 0;
+    font-size: 1.1em;
+    line-height: 1.5;
+    color: var(--text);
+}
+
+/* Modal de descrição completa */
 #desc-modal > div {
     background: var(--bg);
     margin: 5% auto;
@@ -362,18 +491,6 @@
     overflow-y: auto;
     position: relative;
     box-shadow: var(--shadow);
-}
-.close-modal {
-    position: absolute;
-    top: 15px;
-    right: 20px;
-    font-size: 36px;
-    cursor: pointer;
-    color: var(--text-light);
-    transition: color 0.3s;
-}
-.close-modal:hover {
-    color: var(--danger);
 }
 #full-desc-content {
     max-height: 600px;
@@ -388,27 +505,23 @@
     overflow-wrap: break-word;
 }
 
-/* Ícone de preview no ACP (descrição completa ou imagem) */
-.view-full-desc {
-    color: var(--primary);
-    cursor: pointer;
-    font-size: 1.3em;
-    opacity: 0.8;
-    transition: opacity 0.3s ease, color 0.3s ease;
-}
-.view-full-desc:hover,
-.view-full-desc:focus {
-    opacity: 1;
-    color: var(--primary-dark);
-}
-
 /* Responsivo */
 @media (max-width: 768px) {
     #acp_simpledown { padding: 12px; }
-    #acp_simpledown .table1 th, #acp_simpledown .table1 td { padding: 10px 12px; font-size: 0.85em; }
+    #acp_simpledown .table1 th,
+    #acp_simpledown .table1 td { padding: 10px 12px; font-size: 0.85em; }
     #acp_simpledown fieldset { padding: 15px; margin-bottom: 18px; }
     #acp_simpledown .security-notices { flex-direction: column; gap: 12px; }
     .custom-file-upload { flex-direction: column; gap: 10px; align-items: flex-start; }
-    .acp-controls-top { flex-wrap: wrap; gap: 16px; }
-    .search-item { flex: 1 1 100%; min-width: 100%; }
+    .acp-controls-top { 
+        flex-wrap: wrap; 
+        gap: 16px; 
+        justify-content: flex-start;
+    }
+    .control-item.total-item {
+        margin-left: 0;
+        margin-top: 8px;
+        text-align: right;
+        width: 100%;
+    }
 }

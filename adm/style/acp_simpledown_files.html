@@ -1,9 +1,7 @@
 <!-- INCLUDE overall_header.html -->
 <h1>{L_ACP_SIMPLEDOWN_TITLE} - {L_ACP_SIMPLEDOWN_EXISTING_FILES}</h1>
-
 <form id="acp_simpledown" method="post" action="{U_ACTION}" enctype="multipart/form-data">
     {S_FORM_TOKEN}
-
     <!-- MODO EDIÇÃO DE ARQUIVO -->
     <!-- IF S_EDIT_MODE -->
     <fieldset>
@@ -41,31 +39,81 @@
                 </select>
             </dd>
         </dl>
+        <!-- Campo de Visibilidade -->
         <dl>
-            <dt><label>{L_ACP_SIMPLEDOWN_REPLACE_FILE}:</label><br />
-                <span>{L_ACP_SIMPLEDOWN_REPLACE_FILE_EXPLAIN}</span>
+            <dt><label>{L_ACP_SIMPLEDOWN_VISIBILITY}:</label><br />
+                <span>{L_ACP_SIMPLEDOWN_VISIBILITY_EXPLAIN}</span>
             </dt>
             <dd>
-                <div class="custom-file-upload">
-                    <input type="file" id="replace_upload" name="replace_upload" />
-                    <label for="replace_upload" class="custom-file-label">
-                        <span>{L_ACP_SIMPLEDOWN_CHOOSE_FILE}</span>
-                    </label>
-                    <span class="file-name-display" id="replace-file-name-display">{L_ACP_SIMPLEDOWN_NO_FILE_SELECTED}</span>
-                </div>
+                <label><input type="radio" name="is_private" value="0" <!-- IF not EDIT_FILE_IS_PRIVATE -->checked="checked"<!-- ENDIF --> /> {L_ACP_SIMPLEDOWN_PUBLIC}</label>&nbsp;&nbsp;
+                <label><input type="radio" name="is_private" value="1" <!-- IF EDIT_FILE_IS_PRIVATE -->checked="checked"<!-- ENDIF --> /> {L_ACP_SIMPLEDOWN_PRIVATE}</label>
             </dd>
         </dl>
+        <!-- Substituir arquivo -->
+        <fieldset>
+            <legend>{L_ACP_SIMPLEDOWN_REPLACE_FILE}</legend>
+            <dl>
+                <dt><label>{L_ACP_SIMPLEDOWN_REPLACE_FILE}:</label><br />
+                    <span>{L_ACP_SIMPLEDOWN_REPLACE_FILE_EXPLAIN}</span>
+                </dt>
+                <dd>
+                    <div class="custom-file-upload">
+                        <input type="file" id="replace_upload" name="replace_upload" />
+                        <label for="replace_upload" class="custom-file-label">
+                            <span>{L_ACP_SIMPLEDOWN_CHOOSE_FILE}</span>
+                        </label>
+                        <span class="file-name-display" id="replace-file-name-display">{L_ACP_SIMPLEDOWN_NO_FILE_SELECTED}</span>
+                    </div>
+                </dd>
+            </dl>
+        </fieldset>
+        <!-- Selecionar miniatura existente -->
+        <dl>
+            <dt><label for="existing_thumb">{L_ACP_SIMPLEDOWN_SELECT_THUMB}:</label></dt>
+            <dd>
+                <!-- IF S_THUMBS_EXIST -->
+                <select id="existing_thumb" name="existing_thumb">
+                    <option value="">{L_ACP_SIMPLEDOWN_NO_THUMB}</option>
+                    <!-- BEGIN thumbs -->
+                    <option value="{thumbs.FILENAME}" <!-- IF thumbs.FILENAME == EDIT_FILE_THUMBNAIL -->selected<!-- ENDIF -->>{thumbs.FILENAME}</option>
+                    <!-- END thumbs -->
+                </select>
+                <div id="thumb-preview" style="margin-top: 15px; text-align: center; display: none;">
+                    <p><strong>{L_ACP_SIMPLEDOWN_THUMB_PREVIEW}</strong></p>
+                    <img id="thumb-preview-img" src="" alt="Pré-visualização" style="max-width: 100px; max-height: 100px; border: 1px solid #ccc; border-radius: 8px;">
+                </div>
+                <!-- ELSE -->
+                <p>{L_ACP_SIMPLEDOWN_NO_THUMBS}</p>
+                <!-- ENDIF -->
+            </dd>
+        </dl>
+        <!-- Enviar nova miniatura -->
+        <fieldset>
+            <legend>{L_ACP_SIMPLEDOWN_UPLOAD_THUMB}</legend>
+            <dl>
+                <dt><label for="thumb_upload">{L_ACP_SIMPLEDOWN_UPLOAD_THUMB}:</label><br />
+                    <span>{L_ACP_SIMPLEDOWN_UPLOAD_THUMB_EXPLAIN}</span>
+                </dt>
+                <dd>
+                    <div class="custom-file-upload">
+                        <input type="file" id="thumb_upload" name="thumb_upload" accept="image/*" />
+                        <label for="thumb_upload" class="custom-file-label">
+                            <span>{L_ACP_SIMPLEDOWN_CHOOSE_FILE}</span>
+                        </label>
+                        <span class="file-name-display" id="thumb-name-display">{L_ACP_SIMPLEDOWN_NO_FILE_SELECTED}</span>
+                    </div>
+                </dd>
+            </dl>
+        </fieldset>
         <p class="submit-buttons">
             <input class="button1" type="submit" name="submit_edit" value="{L_ACP_SIMPLEDOWN_SAVE_CHANGES}" />
             <input class="button2" type="button" onclick="window.location.href='{U_ACTION}';" value="{L_ACP_SIMPLEDOWN_CANCEL}" />
         </p>
     </fieldset>
     <!-- ENDIF -->
-
     <!-- LISTAGEM DE ARQUIVOS -->
     <fieldset>
         <legend>{L_ACP_SIMPLEDOWN_EXISTING_FILES}</legend>
-
         <!-- Controles superiores -->
         <div class="acp-controls-top">
             <div class="control-item">
@@ -77,34 +125,23 @@
                         <option value="20" <!-- IF PERPAGE == 20 -->selected<!-- ENDIF -->>20</option>
                         <option value="50" <!-- IF PERPAGE == 50 -->selected<!-- ENDIF -->>50</option>
                         <option value="100" <!-- IF PERPAGE == 100 -->selected<!-- ENDIF -->>100</option>
-                        <option value="0" <!-- IF PERPAGE == 0 -->selected<!-- ENDIF -->>{L_ALL}</option>
+                        <option value="0" <!-- IF PERPAGE == 0 or not PERPAGE -->selected<!-- ENDIF -->>{L_ACP_SIMPLEDOWN_ALL_ITEMS}</option>
                     </select>
                 </form>
             </div>
             <div class="control-item search-item">
                 <label for="search_input">{L_ACP_SIMPLEDOWN_SEARCH_FILES}:</label>
-                <input type="text" id="search_input" placeholder="{L_ACP_SIMPLEDOWN_SEARCH_PLACEHOLDER}" />
+                <div class="search-box-outer">
+                    <input type="text" id="search_input" class="simpledown-search-input" placeholder="{L_ACP_SIMPLEDOWN_SEARCH_PLACEHOLDER}" autocomplete="off" />
+                    <button type="button" class="search-clear-btn external-clear-btn" id="search-clear-btn" title="{L_ACP_SIMPLEDOWN_CLEAR_SEARCH}">
+                        <i class="icon fa-times fa-fw"></i>
+                    </button>
+                </div>
             </div>
             <div class="control-item total-item">
                 {L_ACP_SIMPLEDOWN_TOTAL_FILES}: <strong>{TOTAL_FILES}</strong>
             </div>
         </div>
-
-        <!-- Paginação no topo -->
-        <!-- IF ACP_TOTAL_PAGES > 1 -->
-        <div class="acp-pagination">
-            <span>{L_ACP_SIMPLEDOWN_PAGINATION_INFO}: {ACP_CURRENT_PAGE} / {ACP_TOTAL_PAGES}</span>
-            <div class="acp-pagination-buttons">
-                <!-- IF ACP_PREV_PAGE -->
-                <a href="{ACP_PREV_PAGE}" class="button2">&laquo; {L_PREVIOUS}</a>
-                <!-- ENDIF -->
-                <!-- IF ACP_NEXT_PAGE -->
-                <a href="{ACP_NEXT_PAGE}" class="button2">{L_NEXT} &raquo;</a>
-                <!-- ENDIF -->
-            </div>
-        </div>
-        <!-- ENDIF -->
-
         <!-- Tabela de arquivos -->
         <!-- IF .files -->
         <table class="table1 compact-table">
@@ -112,7 +149,8 @@
                 <tr>
                     <th>{L_ACP_SIMPLEDOWN_FILE_NAME}</th>
                     <th>{L_ACP_SIMPLEDOWN_VERSION}</th>
-                    <th>{L_ACP_SIMPLEDOWN_CATEGORY_NAME}</th>
+                    <th>{L_ACP_SIMPLEDOWN_VISIBILITY}</th>
+                    <th>{L_ACP_SIMPLEDOWN_CATEGORY}</th>
                     <th>{L_ACP_SIMPLEDOWN_DOWNLOADS} / {L_ACP_SIMPLEDOWN_SIZE}</th>
                     <th>{L_ACP_SIMPLEDOWN_ACTIONS}</th>
                 </tr>
@@ -133,6 +171,13 @@
                         <small><i class="icon fa-fw {files.FILE_ICON}"></i> {files.REAL_NAME}</small>
                     </td>
                     <td>{files.VERSION}</td>
+                    <td style="text-align: center;">
+                        <!-- IF files.IS_PRIVATE -->
+                        <i class="fas fa-lock" style="color: #e74c3c;" title="{L_ACP_SIMPLEDOWN_PRIVATE}"></i>
+                        <!-- ELSE -->
+                        <i class="fas fa-globe" style="color: #27ae60;" title="{L_ACP_SIMPLEDOWN_PUBLIC}"></i>
+                        <!-- ENDIF -->
+                    </td>
                     <td>{files.CAT}</td>
                     <td>{files.DOWNLOADS} / {files.SIZE}</td>
                     <td>
@@ -146,60 +191,101 @@
         <!-- ELSE -->
         <p>{L_ACP_SIMPLEDOWN_NO_FILES_YET}</p>
         <!-- ENDIF -->
-
-        <!-- Paginação no rodapé -->
-        <!-- IF ACP_TOTAL_PAGES > 1 -->
-        <div class="acp-pagination">
-            <span>{L_ACP_SIMPLEDOWN_PAGINATION_INFO}: {ACP_CURRENT_PAGE} / {ACP_TOTAL_PAGES}</span>
-            <div class="acp-pagination-buttons">
-                <!-- IF ACP_PREV_PAGE -->
-                <a href="{ACP_PREV_PAGE}" class="button2">&laquo; {L_PREVIOUS}</a>
-                <!-- ENDIF -->
-                <!-- IF ACP_NEXT_PAGE -->
-                <a href="{ACP_NEXT_PAGE}" class="button2">{L_NEXT} &raquo;</a>
-                <!-- ENDIF -->
-            </div>
-        </div>
-        <!-- ENDIF -->
     </fieldset>
-
-    {S_FORM_TOKEN}
 </form>
-
-<!-- Modal para visualizar descrição completa -->
+<!-- Modal para mensagens -->
+<div id="message-modal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal" title="{L_ACP_SIMPLEDOWN_CLOSE}">&times;</span>
+        <!-- IF ERROR_MESSAGE -->
+        <h3 style="color: #e74c3c;">{L_ACP_SIMPLEDOWN_ERROR}</h3>
+        <p id="error-message">{ERROR_MESSAGE}</p>
+        <!-- ENDIF -->
+        <!-- IF SUCCESS_MESSAGE -->
+        <h3 style="color: #27ae60;">{L_ACP_SIMPLEDOWN_SUCCESS}</h3>
+        <p id="success-message">{SUCCESS_MESSAGE}</p>
+        <!-- ENDIF -->
+    </div>
+</div>
+<!-- Modal para descrição completa (pré-visualização) -->
 <div id="desc-modal" class="modal">
-    <div>
-        <span class="close-modal" title="{L_CLOSE}">&times;</span>
+    <div class="modal-content">
+        <span class="close-modal" title="{L_ACP_SIMPLEDOWN_CLOSE}">&times;</span>
         <h3>{L_ACP_SIMPLEDOWN_DESCRIPTION}</h3>
         <div id="full-desc-content"></div>
     </div>
 </div>
-
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-    // Busca dinâmica
+    // Elementos da busca
     const searchInput = document.getElementById('search_input');
+    const clearBtn = document.getElementById('search-clear-btn');
+    const searchOuter = searchInput.closest('.search-box-outer');
     const rows = document.querySelectorAll('.compact-table tbody tr');
-    if (searchInput && rows.length) {
-        searchInput.addEventListener('input', () => {
-            const filter = searchInput.value.toLowerCase().trim();
-            rows.forEach(row => {
-                const name = row.querySelector('td:first-child strong')?.textContent.toLowerCase() || '';
-                row.style.display = name.includes(filter) ? '' : 'none';
-            });
+
+    const performSearch = () => {
+        const filter = searchInput.value.toLowerCase().trim();
+        rows.forEach(row => {
+            const name = row.querySelector('td:first-child strong')?.textContent.toLowerCase() || '';
+            const desc = row.querySelector('.desc-short')?.textContent.toLowerCase() || '';
+            const realname = row.querySelector('small')?.textContent.toLowerCase() || '';
+            const show = name.includes(filter) || desc.includes(filter) || realname.includes(filter);
+            row.style.display = show ? '' : 'none';
+        });
+
+        const hasValue = filter.length > 0;
+        clearBtn.style.display = hasValue ? 'flex' : 'none';
+        searchOuter.classList.toggle('has-value', hasValue);
+    };
+
+    if (searchInput) searchInput.addEventListener('input', performSearch);
+    if (clearBtn) {
+        clearBtn.addEventListener('click', () => {
+            searchInput.value = '';
+            searchInput.focus();
+            performSearch();
         });
     }
 
-    // Nome do arquivo selecionado (edição)
-    const replaceInput = document.getElementById('replace_upload');
-    const replaceDisplay = document.getElementById('replace-file-name-display');
-    if (replaceInput && replaceDisplay) {
-        replaceInput.addEventListener('change', e => {
-            replaceDisplay.textContent = e.target.files.length ? e.target.files[0].name : '{L_ACP_SIMPLEDOWN_NO_FILE_SELECTED}';
-        });
+    // Preview de thumbnail
+    const select = document.getElementById('existing_thumb');
+    const previewDiv = document.getElementById('thumb-preview');
+    const previewImg = document.getElementById('thumb-preview-img');
+    if (select && previewDiv && previewImg) {
+        const thumbsDir = '{THUMBS_DIR|escape("js")}';
+        const updatePreview = () => {
+            const val = select.value.trim();
+            if (val) {
+                previewImg.src = thumbsDir + encodeURIComponent(val) + '?t=' + new Date().getTime();
+                previewDiv.style.display = 'block';
+            } else {
+                previewDiv.style.display = 'none';
+                previewImg.src = '';
+            }
+        };
+        select.addEventListener('change', updatePreview);
+        if (select.value) updatePreview();
     }
 
-    // Modal de descrição completa
+    // Modal de mensagens
+    const messageModal = document.getElementById('message-modal');
+    if (messageModal && ('{ERROR_MESSAGE}' || '{SUCCESS_MESSAGE}')) {
+        messageModal.style.display = 'flex';
+    }
+
+    // Fechar modais
+    document.querySelectorAll('.close-modal').forEach(btn => {
+        btn.addEventListener('click', () => {
+            btn.closest('.modal').style.display = 'none';
+        });
+    });
+    window.addEventListener('click', e => {
+        if (e.target.classList.contains('modal')) {
+            e.target.style.display = 'none';
+        }
+    });
+
+    // Visualização da descrição completa
     document.querySelector('.compact-table')?.addEventListener('click', e => {
         const trigger = e.target.closest('.view-full-desc');
         if (trigger) {
@@ -208,22 +294,27 @@ document.addEventListener('DOMContentLoaded', () => {
             const modal = document.getElementById('desc-modal');
             if (content && modal && desc) {
                 content.innerHTML = desc;
-                modal.style.display = 'block';
+                modal.style.display = 'flex';
             }
         }
     });
 
-    // Fechar modal
-    document.querySelector('.close-modal')?.addEventListener('click', () => {
-        document.getElementById('desc-modal').style.display = 'none';
-    });
-
-    // Fechar com ESC
-    document.addEventListener('keydown', e => {
-        if (e.key === 'Escape') document.getElementById('desc-modal').style.display = 'none';
-    });
+    // Nome do arquivo selecionado (replace e thumb)
+    const replaceInput = document.getElementById('replace_upload');
+    const replaceDisplay = document.getElementById('replace-file-name-display');
+    if (replaceInput && replaceDisplay) {
+        replaceInput.addEventListener('change', e => {
+            replaceDisplay.textContent = e.target.files.length ? e.target.files[0].name : '{L_ACP_SIMPLEDOWN_NO_FILE_SELECTED}';
+        });
+    }
+    const thumbInput = document.getElementById('thumb_upload');
+    const thumbDisplay = document.getElementById('thumb-name-display');
+    if (thumbInput && thumbDisplay) {
+        thumbInput.addEventListener('change', e => {
+            thumbDisplay.textContent = e.target.files.length ? e.target.files[0].name : '{L_ACP_SIMPLEDOWN_NO_FILE_SELECTED}';
+        });
+    }
 });
 </script>
-
 <!-- INCLUDECSS @mundophpbb_simpledown/acp_simpledown.css -->
 <!-- INCLUDE overall_footer.html -->

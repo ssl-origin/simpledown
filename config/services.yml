@@ -8,6 +8,7 @@ services:
         tags:
             - { name: event.listener }
 
+    # Controller do frontend (página /downloads, download, preview, details)
     mundophpbb.simpledown.controller:
         class: mundophpbb\simpledown\controller\main_controller
         arguments:
@@ -26,8 +27,9 @@ services:
         tags:
             - { name: controller.service_arguments }
 
-    mundophpbb.simpledown.admin_controller:
-        class: mundophpbb\simpledown\controller\admin_controller
+    # ACP: Controller para Configurações + Upload + Categorias
+    mundophpbb.simpledown.acp_settings_controller:
+        class: mundophpbb\simpledown\controller\acp_settings_controller
         arguments:
             - '@config'
             - '@dbal.conn'
@@ -40,7 +42,29 @@ services:
             - '%core.root_path%'
             - '%core.php_ext%'
             - '%core.table_prefix%'
-        tags:
-            - { name: controller.service_arguments }
-            
-        
+
+    # ACP: Controller para Listagem e Gerenciamento de Arquivos
+    mundophpbb.simpledown.acp_files_controller:
+        class: mundophpbb\simpledown\controller\acp_files_controller
+        arguments:
+            - '@config'
+            - '@dbal.conn'
+            - '@language'
+            - '@log'
+            - '@request'
+            - '@template'
+            - '@user'
+            - '@path_helper'
+            - '%core.root_path%'
+            - '%core.php_ext%'
+            - '%core.table_prefix%'
+
+    # ACP: Controller para a página Ferramentas (Tools)
+    mundophpbb.simpledown.acp_tools_controller:
+        class: mundophpbb\simpledown\controller\acp_tools_controller
+        arguments:
+            - '@config'      # ← Primeiro argumento: config (necessário para salvar o texto)
+            - '@language'
+            - '@request'
+            - '@template'
+            - '@user'

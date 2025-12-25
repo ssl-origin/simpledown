@@ -16,35 +16,47 @@ class main_module
     {
         global $phpbb_container, $user;
 
-        // Carrega idioma comum (frontend)
         $user->add_lang_ext('mundophpbb/simpledown', 'common');
-
-        // Carrega idioma ACP em inglês como fallback
         $user->add_lang_ext('mundophpbb/simpledown', 'acp/info_acp_simpledown', 'en');
-
-        // Carrega idioma do usuário se diferente do inglês
         if ($user->lang['CODE'] !== 'en') {
             $user->add_lang_ext('mundophpbb/simpledown', 'acp/info_acp_simpledown');
         }
-
-        /** @var \mundophpbb\simpledown\controller\admin_controller $admin_controller */
-        $admin_controller = $phpbb_container->get('mundophpbb.simpledown.admin_controller');
-        $admin_controller->set_u_action($this->u_action);
 
         add_form_key('mundophpbb_simpledown');
 
         switch ($mode) {
             case 'settings':
                 $this->tpl_name = 'acp_simpledown_settings';
-                $this->page_title = $user->lang('ACP_SIMPLEDOWN_TITLE');
-                $admin_controller->display_settings();
+                $this->page_title = $user->lang('ACP_SIMPLEDOWN_SETTINGS');
+
+                /** @var \mundophpbb\simpledown\controller\acp_settings_controller $controller */
+                $controller = $phpbb_container->get('mundophpbb.simpledown.acp_settings_controller');
+                $controller->set_u_action($this->u_action);
+                $controller->handle();
                 break;
 
             case 'files':
-            default:
                 $this->tpl_name = 'acp_simpledown_files';
-                $this->page_title = $user->lang('ACP_SIMPLEDOWN_TITLE');
-                $admin_controller->display_files();
+                $this->page_title = $user->lang('ACP_SIMPLEDOWN_FILES');
+
+                /** @var \mundophpbb\simpledown\controller\acp_files_controller $controller */
+                $controller = $phpbb_container->get('mundophpbb.simpledown.acp_files_controller');
+                $controller->set_u_action($this->u_action);
+                $controller->handle();
+                break;
+
+            case 'tools':
+                $this->tpl_name = 'acp_simpledown_tools';
+                $this->page_title = $user->lang('ACP_SIMPLEDOWN_TOOLS');
+
+                /** @var \mundophpbb\simpledown\controller\acp_tools_controller $controller */
+                $controller = $phpbb_container->get('mundophpbb.simpledown.acp_tools_controller');
+                $controller->set_u_action($this->u_action);
+                $controller->handle();
+                break;
+
+            default:
+                redirect(append_sid("{$phpbb_admin_path}index.$php_ext", "i=simpledown&mode=settings"));
                 break;
         }
     }

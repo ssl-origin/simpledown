@@ -4,9 +4,19 @@
  * @copyright (c) 2025 Mundo phpBB
  * @license http://opensource.org/licenses/gpl-license.php GNU General Public License, version 2.
  */
+
 namespace mundophpbb\simpledown\controller;
 
+use phpbb\config\config;
+use phpbb\controller\helper;
+use phpbb\db\driver\driver_interface;
 use phpbb\exception\http_exception;
+use phpbb\language\language;
+use phpbb\log\log;
+use phpbb\request\request;
+use phpbb\template\template;
+use phpbb\user;
+use phpbb\path_helper;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
@@ -24,19 +34,19 @@ class main_controller
     protected $path_helper;
     protected $root_path;
     protected $php_ext;
-    protected $files_table;
     protected $categories_table;
+    protected $files_table;
 
     public function __construct(
-        \phpbb\config\config $config,
-        \phpbb\controller\helper $helper,
-        \phpbb\db\driver\driver_interface $db,
-        \phpbb\language\language $language,
-        \phpbb\log\log $log,
-        \phpbb\request\request $request,
-        \phpbb\template\template $template,
-        \phpbb\user $user,
-        \phpbb\path_helper $path_helper,
+        config $config,
+        helper $helper,
+        driver_interface $db,
+        language $language,
+        log $log,
+        request $request,
+        template $template,
+        user $user,
+        path_helper $path_helper,
         $root_path,
         $php_ext,
         $table_prefix
@@ -86,54 +96,62 @@ class main_controller
     {
         $this->language->add_lang('common', 'mundophpbb/simpledown');
 
-        $items_per_page = (int)($this->config['simpledown_items_per_page'] ?? 12);
+        $private_categories = unserialize($this->config['simpledown_private_categories'] ?? serialize([]));
 
         $sql = 'SELECT f.*, c.name AS cat_name, f.category_id AS cat_id
                 FROM ' . $this->files_table . ' f
                 LEFT JOIN ' . $this->categories_table . ' c ON f.category_id = c.id
                 ORDER BY COALESCE(c.name, ""), f.file_name';
-
         $result = $this->db->sql_query($sql);
 
         $cat_files = [];
         while ($row = $this->db->sql_fetchrow($result)) {
             $cat_id = $row['cat_id'];
             $cat_name = $row['cat_name'] ?: $this->language->lang('SIMPLEDOWN_NO_CATEGORY');
-
             if (!isset($cat_files[$cat_id])) {
                 $cat_files[$cat_id] = [
                     'name' => $cat_name,
                     'files' => [],
                 ];
             }
-
             $cat_files[$cat_id]['files'][] = $row;
         }
         $this->db->sql_freeresult($result);
 
+        $is_logged_in = $this->user->data['is_registered'];
+
         foreach ($cat_files as $cat_id => $cat_data) {
-            $file_count = count($cat_data['files']);
             $this->template->assign_block_vars('categories', [
-                'NAME' => $cat_data['name'],
-                'ID' => $cat_id,
-                'FILE_COUNT' => $file_count,
+                'NAME'       => $cat_data['name'],
+                'ID'         => $cat_id,
+                'FILE_COUNT' => count($cat_data['files']),
             ]);
 
             foreach ($cat_data['files'] as $file) {
                 $short_desc = $file['file_desc_short'] ?: $file['file_desc'] ?: $this->language->lang('SIMPLEDOWN_NO_DESCRIPTION');
+                $has_thumbnail = !empty($file['thumbnail']);
+                $thumb_url = $has_thumbnail
+                    ? $this->path_helper->get_web_root_path() . 'ext/mundophpbb/simpledown/files/thumbs/' . $file['thumbnail']
+                    : '';
+                $is_private = in_array($file['category_id'], $private_categories) || (!empty($file['is_private']) && $file['is_private'] == 1);
 
                 $this->template->assign_block_vars('categories.files', [
-                    'NAME' => $file['file_name'],
-                    'DESC_SHORT' => $short_desc,
-                    'DESC' => $file['file_desc'], // Para busca completa
-                    'DOWNLOADS' => $file['downloads'],
-                    'SIZE' => $this->get_formatted_filesize($file['file_size']),
-                    'REAL_NAME' => $file['file_realname'],
-                    'U_DOWNLOAD' => $this->helper->route('mundophpbb_simpledown_download', ['id' => $file['id']]),
-                    'U_PREVIEW' => $this->helper->route('mundophpbb_simpledown_preview', ['id' => $file['id']]),
-                    'U_DETAILS' => $this->helper->route('mundophpbb_simpledown_details', ['id' => $file['id']]),
-                    'FILE_ICON' => $this->get_file_icon_class($file['file_realname']),
-                    'VERSION' => $file['version'] ?? '',
+                    'NAME'           => $file['file_name'],
+                    'DESC_SHORT'     => $short_desc,
+                    'DESC'           => $file['file_desc'],
+                    'DOWNLOADS'      => $file['downloads'],
+                    'SIZE'           => $this->get_formatted_filesize($file['file_size']),
+                    'REAL_NAME'      => $file['file_realname'],
+                    'U_DOWNLOAD'     => $this->helper->route('mundophpbb_simpledown_download', ['id' => $file['id']]),
+                    'U_PREVIEW'      => $this->helper->route('mundophpbb_simpledown_preview', ['id' => $file['id']]),
+                    'U_DETAILS'      => $this->helper->route('mundophpbb_simpledown_details', ['id' => $file['id']]),
+                    'FILE_ICON'      => $this->get_file_icon_class($file['file_realname']),
+                    'VERSION'        => $file['version'] ?? '',
+                    'HAS_THUMBNAIL'  => $has_thumbnail,
+                    'U_THUMBNAIL'    => $thumb_url,
+                    'IS_PRIVATE'     => $is_private,
+                    'PRIVATE_LABEL'  => $is_private ? $this->language->lang('SIMPLEDOWN_PRIVATE_FILE') : $this->language->lang('SIMPLEDOWN_PUBLIC_FILE'),
+                    'SHOW_LOGIN_MODAL' => $is_private && !$is_logged_in,
                 ]);
             }
         }
@@ -141,7 +159,7 @@ class main_controller
         // Dropdown de categorias
         if (isset($cat_files[0])) {
             $this->template->assign_block_vars('dropdown_categories', [
-                'ID' => 0,
+                'ID'   => 0,
                 'NAME' => $this->language->lang('SIMPLEDOWN_NO_CATEGORY'),
             ]);
         }
@@ -151,15 +169,21 @@ class main_controller
         while ($row_dropdown = $this->db->sql_fetchrow($result_dropdown)) {
             if (isset($cat_files[$row_dropdown['id']])) {
                 $this->template->assign_block_vars('dropdown_categories', [
-                    'ID' => $row_dropdown['id'],
+                    'ID'   => $row_dropdown['id'],
                     'NAME' => $row_dropdown['name'],
                 ]);
             }
         }
         $this->db->sql_freeresult($result_dropdown);
 
+        // Tema claro/escuro para o frontend
+        $site_theme = $this->config['simpledown_theme'] ?? 'light';
+
         $this->template->assign_vars([
-            'ITEMS_PER_PAGE' => $items_per_page,
+            'S_IS_LOGGED_IN'     => $is_logged_in,
+            'U_LOGIN'            => append_sid("{$this->root_path}ucp.{$this->php_ext}", 'mode=login'),
+            'U_REGISTER'         => append_sid("{$this->root_path}ucp.{$this->php_ext}", 'mode=register'),
+            'S_SIMPLEDOWN_THEME' => $site_theme, // ← Nova variável para o template
         ]);
 
         return $this->helper->render('downloads_body.html', $this->language->lang('SIMPLEDOWN_TITLE'));
@@ -169,11 +193,12 @@ class main_controller
     {
         $this->language->add_lang('common', 'mundophpbb/simpledown');
 
+        $private_categories = unserialize($this->config['simpledown_private_categories'] ?? serialize([]));
+
         $sql = 'SELECT f.*, c.name AS cat_name
                 FROM ' . $this->files_table . ' f
                 LEFT JOIN ' . $this->categories_table . ' c ON f.category_id = c.id
                 WHERE f.id = ' . (int)$id;
-
         $result = $this->db->sql_query($sql);
         $file = $this->db->sql_fetchrow($result);
         $this->db->sql_freeresult($result);
@@ -182,26 +207,43 @@ class main_controller
             throw new http_exception(404, $this->language->lang('SIMPLEDOWN_FILE_NOT_FOUND'));
         }
 
-        $is_image = in_array(strtolower(pathinfo($file['file_realname'], PATHINFO_EXTENSION)),
-            ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg']);
+        $is_private = in_array($file['category_id'], $private_categories) || (!empty($file['is_private']) && $file['is_private'] == 1);
+        $is_logged_in = $this->user->data['is_registered'];
+        $show_login_modal = $is_private && !$is_logged_in;
 
-        $full_desc = $file['file_desc'] ?: $this->language->lang('SIMPLEDOWN_NO_DESCRIPTION');
+        $is_image = in_array(strtolower(pathinfo($file['file_realname'], PATHINFO_EXTENSION)), ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg']);
 
-        $version_display = !empty($file['version']) ? $file['version'] : $this->language->lang('SIMPLEDOWN_NO_VERSION');
+        $has_thumbnail = !empty($file['thumbnail']);
+        $thumb_url = $has_thumbnail
+            ? $this->path_helper->get_web_root_path() . 'ext/mundophpbb/simpledown/files/thumbs/' . $file['thumbnail'] . '?v=' . time()
+            : '';
+        $preview_url = $has_thumbnail ? $thumb_url : ($is_image ? $this->helper->route('mundophpbb_simpledown_preview', ['id' => $file['id']]) : '');
+
+        // Tema claro/escuro para a página de detalhes
+        $site_theme = $this->config['simpledown_theme'] ?? 'light';
 
         $this->template->assign_vars([
-            'FILE_NAME' => $file['file_name'],
-            'FILE_DESC' => $full_desc,
-            'FILE_REALNAME' => $file['file_realname'],
-            'FILE_SIZE' => $this->get_formatted_filesize($file['file_size']),
-            'FILE_DOWNLOADS' => $file['downloads'],
-            'FILE_ICON' => $this->get_file_icon_class($file['file_realname']),
-            'U_DOWNLOAD' => $this->helper->route('mundophpbb_simpledown_download', ['id' => $file['id']]),
-            'U_PREVIEW' => $is_image ? $this->helper->route('mundophpbb_simpledown_preview', ['id' => $file['id']]) : '',
-            'HAS_THUMBNAIL' => $is_image,
-            'CAT_NAME' => $file['cat_name'] ?: $this->language->lang('SIMPLEDOWN_NO_CATEGORY'),
-            'U_SIMPLEDOWN' => $this->helper->route('mundophpbb_simpledown_index'),
-            'VERSION_DISPLAY' => $version_display,
+            'FILE_NAME'          => $file['file_name'],
+            'FILE_DESC'          => $file['file_desc'] ?: $this->language->lang('SIMPLEDOWN_NO_DESCRIPTION'),
+            'FILE_REALNAME'      => $file['file_realname'],
+            'FILE_SIZE'          => $this->get_formatted_filesize($file['file_size']),
+            'FILE_DOWNLOADS'     => $file['downloads'],
+            'FILE_ICON'          => $this->get_file_icon_class($file['file_realname']),
+            'U_DOWNLOAD'         => $this->helper->route('mundophpbb_simpledown_download', ['id' => $file['id']]),
+            'U_PREVIEW'          => $preview_url,
+            'HAS_THUMBNAIL'      => $has_thumbnail,
+            'U_THUMBNAIL'        => $thumb_url,
+            'CAT_NAME'           => $file['cat_name'] ?: $this->language->lang('SIMPLEDOWN_NO_CATEGORY'),
+            'U_SIMPLEDOWN'       => $this->helper->route('mundophpbb_simpledown_index'),
+            'VERSION_DISPLAY'    => $file['version'] ?? $this->language->lang('SIMPLEDOWN_NO_VERSION'),
+            'IS_IMAGE'           => $is_image,
+            'IS_PRIVATE'         => $is_private,
+            'PRIVATE_LABEL'      => $is_private ? $this->language->lang('SIMPLEDOWN_PRIVATE_FILE') : $this->language->lang('SIMPLEDOWN_PUBLIC_FILE'),
+            'SHOW_LOGIN_MODAL'   => $show_login_modal,
+            'S_IS_LOGGED_IN'     => $is_logged_in,
+            'U_LOGIN'            => append_sid("{$this->root_path}ucp.{$this->php_ext}", 'mode=login'),
+            'U_REGISTER'         => append_sid("{$this->root_path}ucp.{$this->php_ext}", 'mode=register'),
+            'S_SIMPLEDOWN_THEME' => $site_theme, // ← Nova variável para o template de detalhes
         ]);
 
         return $this->helper->render('download_details.html', $file['file_name'] . ' - ' . $this->language->lang('SIMPLEDOWN_TITLE'));
@@ -209,16 +251,25 @@ class main_controller
 
     public function preview($id)
     {
-        $sql = 'SELECT * FROM ' . $this->files_table . ' WHERE id = ' . (int)$id;
+        $private_categories = unserialize($this->config['simpledown_private_categories'] ?? serialize([]));
+
+        $sql = 'SELECT is_private, file_realname, category_id FROM ' . $this->files_table . ' WHERE id = ' . (int)$id;
         $result = $this->db->sql_query($sql);
         $row = $this->db->sql_fetchrow($result);
         $this->db->sql_freeresult($result);
 
-        if (!$row || in_array(strtolower(pathinfo($row['file_realname'], PATHINFO_EXTENSION)), ['exe'])) {
+        if (!$row) {
             throw new http_exception(404, 'Arquivo não encontrado');
         }
 
+        $is_private = in_array($row['category_id'], $private_categories) || (!empty($row['is_private']) && $row['is_private'] == 1);
+
+        if ($is_private && !$this->user->data['is_registered']) {
+            throw new http_exception(403, $this->language->lang('SIMPLEDOWN_LOGIN_REQUIRED'));
+        }
+
         $file_path = $this->root_path . 'ext/mundophpbb/simpledown/files/' . $row['file_realname'];
+
         if (!file_exists($file_path)) {
             throw new http_exception(404, 'Arquivo não encontrado');
         }
@@ -232,6 +283,8 @@ class main_controller
 
     public function download($id)
     {
+        $private_categories = unserialize($this->config['simpledown_private_categories'] ?? serialize([]));
+
         $sql = 'SELECT * FROM ' . $this->files_table . ' WHERE id = ' . (int)$id;
         $result = $this->db->sql_query($sql);
         $row = $this->db->sql_fetchrow($result);
@@ -241,11 +294,19 @@ class main_controller
             throw new http_exception(404, $this->language->lang('SIMPLEDOWN_FILE_NOT_FOUND'));
         }
 
+        $is_private = in_array($row['category_id'], $private_categories) || (!empty($row['is_private']) && $row['is_private'] == 1);
+
+        if ($is_private && !$this->user->data['is_registered']) {
+            throw new http_exception(403, $this->language->lang('SIMPLEDOWN_LOGIN_REQUIRED'));
+        }
+
         $file_path = $this->root_path . 'ext/mundophpbb/simpledown/files/' . $row['file_realname'];
+
         if (!file_exists($file_path)) {
             throw new http_exception(404, $this->language->lang('SIMPLEDOWN_FILE_NOT_FOUND'));
         }
 
+        // Incrementa contador
         $sql = 'UPDATE ' . $this->files_table . ' SET downloads = downloads + 1 WHERE id = ' . (int)$id;
         $this->db->sql_query($sql);
 

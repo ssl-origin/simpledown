@@ -13,18 +13,23 @@ class main_info
         return [
             'filename' => '\mundophpbb\simpledown\acp\main_module',
             'title'    => 'ACP_SIMPLEDOWN_TITLE',
-            'modes'    => [
-                'settings' => [
-                    'title' => 'ACP_SIMPLEDOWN_SETTINGS',
-                    'auth'  => 'ext_mundophpbb/simpledown && acl_a_board',
-                    'cat'   => ['ACP_SIMPLEDOWN_TITLE'],
-                ],
-                'files' => [
-                    'title' => 'ACP_SIMPLEDOWN_FILES',
-                    'auth'  => 'ext_mundophpbb/simpledown && acl_a_board',
-                    'cat'   => ['ACP_SIMPLEDOWN_TITLE'],
-                ],
-            ],
+            'modes' => [
+    'settings' => [
+        'title' => 'ACP_SIMPLEDOWN_SETTINGS',
+        'auth'  => 'ext_mundophpbb/simpledown && acl_a_board',
+        'cat'   => ['ACP_SIMPLEDOWN_TITLE'],
+    ],
+    'files' => [
+        'title' => 'ACP_SIMPLEDOWN_FILES',
+        'auth'  => 'ext_mundophpbb/simpledown && acl_a_board',
+        'cat'   => ['ACP_SIMPLEDOWN_TITLE'],
+    ],
+    'tools' => [
+        'title' => 'ACP_SIMPLEDOWN_TOOLS',
+        'auth'  => 'ext_mundophpbb/simpledown && acl_a_board',
+        'cat'   => ['ACP_SIMPLEDOWN_TITLE'],
+    ],
+],
         ];
     }
 }
