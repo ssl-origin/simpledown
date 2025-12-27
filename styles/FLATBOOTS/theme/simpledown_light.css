@@ -2,6 +2,7 @@
    SimpleDown Frontend - Clean & Minimalista 2025
    ======================================== */
 @import url('https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@400;500;600;700&display=swap');
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
 /* ======================================== */
 /* CONTAINER PRINCIPAL E ESTRUTURA GERAL */
@@ -394,7 +395,7 @@
 .details-btn-small,
 .download-btn {
     flex: 1;
-    max-width: 180px;
+    max-width: 170px;
     display: inline-flex;
     align-items: center;
     justify-content: center;

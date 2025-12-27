@@ -19,7 +19,3 @@ mundophpbb_simpledown_details:
     defaults: { _controller: mundophpbb.simpledown.controller:details }
     requirements:
         id: \d+
-
-mundophpbb_simpledown_tools:
-    path: /tools
-    defaults: { _controller: mundophpbb.simpledown.controller:tools }

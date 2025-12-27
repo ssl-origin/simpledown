@@ -59,12 +59,15 @@ services:
             - '%core.php_ext%'
             - '%core.table_prefix%'
 
-    # ACP: Controller para a página Ferramentas (Tools)
+    # ACP: Controller para a página Ferramentas (Tools) - Gerenciamento de thumbnails
     mundophpbb.simpledown.acp_tools_controller:
         class: mundophpbb\simpledown\controller\acp_tools_controller
         arguments:
-            - '@config'      # ← Primeiro argumento: config (necessário para salvar o texto)
+            - '@config'
             - '@language'
             - '@request'
             - '@template'
             - '@user'
+            - '%core.root_path%'
+        tags:
+            - { name: controller.service_arguments }

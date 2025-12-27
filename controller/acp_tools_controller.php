@@ -2,9 +2,8 @@
 /**
  * @package mundophpbb/simpledown
  * @copyright (c) 2025 Mundo phpBB
- * @license http://opensource.org/licenses/gpl-license.php GNU General Public License, version 2.
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License, version 2
  */
-
 namespace mundophpbb\simpledown\controller;
 
 use phpbb\config\config;
@@ -35,9 +34,7 @@ class acp_tools_controller
         $this->request  = $request;
         $this->template = $template;
         $this->user     = $user;
-
         global $phpbb_root_path;
-        // Simplificado: remove qualquer barra duplicada e garante a estrutura correta
         $this->root_path = $phpbb_root_path;
     }
 
@@ -48,86 +45,155 @@ class acp_tools_controller
 
     public function handle()
     {
-        $action = $this->request->variable('action', '');
-
-        if ($action === 'delete_thumb') {
+        // ==================================================
+        // Exclusão de Miniatura
+        // ==================================================
+        if ($this->request->variable('delete_thumb', 0))
+        {
             $filename = $this->request->variable('filename', '', true);
-            if ($filename) {
-                $filename = basename($filename);
+            if (!empty($filename))
+            {
+                $filename  = basename($filename);
+                $file_path = $this->root_path . 'ext/mundophpbb/simpledown/files/thumbs/' . $filename;
 
-                if (confirm_box(true)) {
-                    $this->delete_single_thumbnail($filename);
-                } else {
-                    $s_hidden_fields = build_hidden_fields([
-                        'action'   => 'delete_thumb',
-                        'filename' => $filename,
-                    ]);
-                    confirm_box(false, $this->language->lang('ACP_SIMPLEDOWN_CONFIRM_DELETE_THUMB', $filename), $s_hidden_fields);
-                }
-            }
-        }
-
-        $this->list_thumbnails();
-
-        return $this->template->set_filenames([
-            'body' => 'acp_simpledown_tools.html',
-        ]);
-    }
-
-    protected function list_thumbnails()
-    {
-        // Caminho relativo da extensão
-        $relative_path = 'ext/mundophpbb/simpledown/files/thumbs/';
-        $thumbs_dir = $this->root_path . $relative_path;
-        $has_thumbs = false;
-
-        // Limpa o cache do sistema de arquivos para garantir que ele veja novos arquivos
-        clearstatcache();
-
-        if (is_dir($thumbs_dir)) {
-            // GLOB_BRACE busca as extensões. 
-            // IMPORTANTE: No Windows/XAMPP, o caminho usa \ mas o glob aceita /
-            $files = glob($thumbs_dir . "*.{jpg,jpeg,png,gif,webp}", GLOB_BRACE);
-            
-            if ($files !== false && !empty($files)) {
-                $has_thumbs = true;
-                foreach ($files as $file) {
-                    if (is_file($file)) {
-                        $filename = basename($file);
-                        
-                        // Tamanho formatado
-                        $size_bytes = filesize($file);
-                        $formatted_size = ($size_bytes > 1024) ? round($size_bytes / 1024, 2) . ' KB' : $size_bytes . ' B';
-
-                        // URL para o Navegador (Substitui barras invertidas do Windows por barras normais para a URL)
-                        $board_url = rtrim(generate_board_url(), '/');
-                        $preview_url = $board_url . '/' . $relative_path . $filename;
-
-                        $this->template->assign_block_vars('thumbs', [
-                            'FILENAME'    => $filename,
-                            'SIZE'        => $formatted_size,
-                            'PREVIEW_URL' => $preview_url,
-                        ]);
+                if (file_exists($file_path) && is_file($file_path))
+                {
+                    if (@unlink($file_path))
+                    {
+                        trigger_error($this->language->lang('ACP_SIMPLEDOWN_THUMB_DELETED') . adm_back_link($this->u_action));
+                    }
+                    else
+                    {
+                        trigger_error($this->language->lang('ACP_SIMPLEDOWN_THUMB_DELETE_FAILED', $filename) . adm_back_link($this->u_action), E_USER_WARNING);
                     }
                 }
             }
         }
 
-        $this->template->assign_vars([
-            'U_ACTION'     => $this->u_action,
-            'S_HAS_THUMBS' => $has_thumbs,
+        // ==================================================
+        // Exclusão de Arquivo Órfão (/files/)
+        // ==================================================
+        if ($this->request->variable('delete_file', 0))
+        {
+            $filename = $this->request->variable('filename', '', true);
+            if (!empty($filename))
+            {
+                $filename  = basename($filename);
+                $file_path = $this->root_path . 'ext/mundophpbb/simpledown/files/' . $filename;
+
+                if (file_exists($file_path) && is_file($file_path))
+                {
+                    if (@unlink($file_path))
+                    {
+                        trigger_error($this->language->lang('ACP_SIMPLEDOWN_FILE_DELETED') . adm_back_link($this->u_action));
+                    }
+                    else
+                    {
+                        trigger_error($this->language->lang('ACP_SIMPLEDOWN_FILE_DELETE_FAILED', $filename) . adm_back_link($this->u_action), E_USER_WARNING);
+                    }
+                }
+            }
+        }
+
+        // Lista miniaturas e arquivos órfãos
+        $this->list_thumbnails();
+        $this->list_orphan_files();
+
+        $this->template->set_filenames([
+            'body' => '@mundophpbb_simpledown/acp_simpledown_tools.html',
         ]);
     }
 
-    protected function delete_single_thumbnail($filename)
+    /**
+     * Lista todas as miniaturas na pasta /thumbs/
+     */
+    protected function list_thumbnails()
     {
-        $file_path = $this->root_path . 'ext/mundophpbb/simpledown/files/thumbs/' . basename($filename);
+        $thumbs_dir = $this->root_path . 'ext/mundophpbb/simpledown/files/thumbs/';
+        $thumbs_url = generate_board_url() . '/ext/mundophpbb/simpledown/files/thumbs/';
 
-        if (file_exists($file_path) && is_file($file_path)) {
-            @unlink($file_path);
-            trigger_error($this->language->lang('ACP_SIMPLEDOWN_THUMB_DELETED') . adm_back_link($this->u_action));
-        } else {
-            trigger_error($this->language->lang('ACP_SIMPLEDOWN_THUMB_NOT_FOUND') . adm_back_link($this->u_action), E_USER_WARNING);
+        $thumbnails = [];
+        clearstatcache();
+
+        if (is_dir($thumbs_dir))
+        {
+            $files = glob($thumbs_dir . '*.{jpg,jpeg,png,gif,webp}', GLOB_BRACE);
+            if ($files !== false)
+            {
+                foreach ($files as $file)
+                {
+                    if (is_file($file))
+                    {
+                        $filename = basename($file);
+                        $size     = filesize($file);
+                        $formatted_size = $size >= 1024 ? round($size / 1024, 2) . ' KB' : $size . ' B';
+
+                        $thumbnails[] = [
+                            'FILENAME'    => $filename,
+                            'SIZE'        => $formatted_size,
+                            'PREVIEW_URL' => $thumbs_url . $filename,
+                            'U_DELETE'    => $this->u_action . '&delete_thumb=1&filename=' . rawurlencode($filename),
+                        ];
+                    }
+                }
+            }
         }
+
+        foreach ($thumbnails as $thumb)
+        {
+            $this->template->assign_block_vars('thumbs', $thumb);
+        }
+
+        $this->template->assign_vars([
+            'S_HAS_THUMBS' => !empty($thumbnails),
+            'TOTAL_THUMBS' => count($thumbnails),
+        ]);
+    }
+
+    /**
+     * Lista arquivos órfãos na pasta principal /files/ (excluindo a subpasta thumbs)
+     */
+    protected function list_orphan_files()
+    {
+        $files_dir = $this->root_path . 'ext/mundophpbb/simpledown/files/';
+
+        $orphan_files = [];
+        clearstatcache();
+
+        if (is_dir($files_dir))
+        {
+            $entries = scandir($files_dir);
+            if ($entries !== false)
+            {
+                foreach ($entries as $entry)
+                {
+                    // Ignora ., .., pasta thumbs e arquivos ocultos que começam com .
+                    if ($entry === '.' || $entry === '..' || $entry === 'thumbs' || $entry[0] === '.' || !is_file($files_dir . $entry))
+                    {
+                        continue;
+                    }
+
+                    $file_path = $files_dir . $entry;
+                    $size      = filesize($file_path);
+                    $formatted_size = $size >= 1024 ? round($size / 1024, 2) . ' KB' : $size . ' B';
+
+                    $orphan_files[] = [
+                        'FILENAME' => $entry,
+                        'SIZE'     => $formatted_size,
+                        'U_DELETE' => $this->u_action . '&delete_file=1&filename=' . rawurlencode($entry),
+                    ];
+                }
+            }
+        }
+
+        foreach ($orphan_files as $file)
+        {
+            $this->template->assign_block_vars('orphan_files', $file);
+        }
+
+        $this->template->assign_vars([
+            'S_HAS_ORPHAN_FILES' => !empty($orphan_files),
+            'TOTAL_ORPHAN_FILES' => count($orphan_files),
+        ]);
     }
 }

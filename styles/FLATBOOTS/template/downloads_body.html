@@ -7,6 +7,11 @@
 <!-- ELSE -->
     <!-- INCLUDECSS @mundophpbb_simpledown/simpledown_light.css -->
 <!-- ENDIF -->
+
+<!-- Carregamento do Font Awesome 4.7.0 -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<!-- Google Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -34,7 +39,7 @@
                            placeholder="{L_SIMPLEDOWN_SEARCH_PLACEHOLDER}" autocomplete="off" />
                     <button type="button" class="search-clear-btn external-clear-btn" id="search-clear-btn"
                             title="{L_SIMPLEDOWN_CLEAR_SEARCH}">
-                        <i class="icon fas fa-times fa-fw"></i>
+                        <i class="fa fa-times fa-fw"></i>
                     </button>
                 </div>
             </div>
@@ -72,10 +77,10 @@
         <!-- IF ALLOW_USER_LAYOUT_CHOICE -->
         <div class="view-mode-toggle">
             <button id="view-grid" class="view-btn active" title="{L_ACP_SIMPLEDOWN_VIEW_GRID|default('Visualização em grade')}">
-                <i class="icon fas fa-th-large fa-fw"></i>
+                <i class="fa fa-th-large fa-fw"></i>
             </button>
             <button id="view-list" class="view-btn" title="{L_ACP_SIMPLEDOWN_VIEW_LIST|default('Visualização em lista')}">
-                <i class="icon fas fa-list fa-fw"></i>
+                <i class="fa fa-list fa-fw"></i>
             </button>
         </div>
         <!-- ENDIF -->
@@ -96,18 +101,18 @@
                             </span>
                             <p class="file-description">{categories.files.DESC_SHORT}</p>
                             <div class="file-info-row">
-                                <span><i class="icon fa-download fa-fw"></i> {categories.files.DOWNLOADS}</span>
+                                <span><i class="fa fa-download fa-fw"></i> {categories.files.DOWNLOADS}</span>
                                 <!-- Preview de imagem -->
-                                <!-- IF categories.files.FILE_ICON == 'fa-file-image' -->
+                                <!-- IF categories.files.FILE_ICON == 'fa-file-image-o' or categories.files.FILE_ICON == 'fa-file-image' -->
                                 <span class="preview-btn" data-preview-url="{categories.files.U_PREVIEW}"
                                       onclick="openImageModal(this)" title="{L_SIMPLEDOWN_PREVIEW_IMAGE}">
-                                    <i class="icon fa-eye fa-fw"></i>
+                                    <i class="fa fa-eye fa-fw"></i>
                                 </span>
                                 <!-- ENDIF -->
-                                <span><i class="icon fa-hdd-o fa-fw"></i> {categories.files.SIZE}</span>
+                                <span><i class="fa fa-hdd-o fa-fw"></i> {categories.files.SIZE}</span>
                             </div>
                             <span class="file-name-below">
-                                <i class="icon fa-fw {categories.files.FILE_ICON}" aria-hidden="true"></i>
+                                <i class="fa fa-fw {categories.files.FILE_ICON}" aria-hidden="true"></i>
                                 <span class="file-realname-truncate">{categories.files.REAL_NAME}</span>
                                 <!-- Versão -->
                                 <!-- IF categories.files.VERSION -->
@@ -116,20 +121,20 @@
                                 <!-- Arquivo privado -->
                                 <!-- IF categories.files.IS_PRIVATE -->
                                 <span class="private-badge" title="{L_SIMPLEDOWN_PRIVATE_FILE}">
-                                    <i class="icon fas fa-lock fa-fw"></i> {L_SIMPLEDOWN_PRIVATE_FILE}
+                                    <i class="fa fa-lock fa-fw"></i> {L_SIMPLEDOWN_PRIVATE_FILE}
                                 </span>
                                 <!-- ENDIF -->
                             </span>
                         </div>
                         <div class="card-footer">
                             <a href="{categories.files.U_DETAILS}" class="details-btn-small">
-                                <i class="icon fa-info-circle fa-fw"></i> {L_SIMPLEDOWN_DETAILS_BUTTON}
+                                <i class="fa fa-info-circle fa-fw"></i> {L_SIMPLEDOWN_DETAILS_BUTTON}
                             </a>
                             <a href="{categories.files.U_DOWNLOAD}"
                                class="download-btn"
                                data-private="{categories.files.IS_PRIVATE}"
                                onclick="checkPrivateDownload(event, this)">
-                                <i class="icon fa-download fa-fw"></i> {L_DOWNLOAD_BUTTON}
+                                <i class="fa fa-download fa-fw"></i> {L_DOWNLOAD_BUTTON}
                             </a>
                         </div>
                     </div>
@@ -137,62 +142,59 @@
                 <!-- END categories -->
             </div>
 
-<!-- Modo LISTA -->
-<div class="downloads-list" id="view-list-container" style="display: none;">
-    <!-- BEGIN categories -->
-        <!-- BEGIN files -->
-        <div class="list-item" data-cat-id="{categories.ID}">
-            <!-- Ícone do tipo de arquivo -->
-            <i class="icon fa-fw {categories.files.FILE_ICON} list-icon"></i>
+            <!-- Modo LISTA -->
+            <div class="downloads-list" id="view-list-container" style="display: none;">
+                <!-- BEGIN categories -->
+                    <!-- BEGIN files -->
+                    <div class="list-item" data-cat-id="{categories.ID}">
+                        <!-- Ícone do tipo de arquivo -->
+                        <i class="fa fa-fw {categories.files.FILE_ICON} list-icon"></i>
+                        <!-- Conteúdo principal -->
+                        <div class="list-main">
+                            <h3 class="list-title">{categories.files.NAME}</h3>
+                            <p class="list-description">{categories.files.DESC_SHORT}</p>
+                            <!-- Linha inferior: infos à esquerda + botões à direita -->
+                            <div class="list-bottom-row">
+                                <div class="list-info-row">
+                                    <span class="info-downloads"><i class="fa fa-download fa-fw"></i> {categories.files.DOWNLOADS}</span>
+                                    <span class="info-size"><i class="fa fa-hdd-o fa-fw"></i> {categories.files.SIZE}</span>
 
-            <!-- Conteúdo principal -->
-            <div class="list-main">
-                <h3 class="list-title">{categories.files.NAME}</h3>
-                <p class="list-description">{categories.files.DESC_SHORT}</p>
+                                    <!-- Versão -->
+                                    <!-- IF categories.files.VERSION -->
+                                    <span class="info-version"><i class="fa fa-tag fa-fw"></i> v{categories.files.VERSION}</span>
+                                    <!-- ENDIF -->
 
-                <!-- Linha inferior: infos à esquerda + botões à direita -->
-                <div class="list-bottom-row">
-                    <div class="list-info-row">
-                        <span class="info-downloads"><i class="icon fa-download fa-fw"></i> {categories.files.DOWNLOADS}</span>
-                        <span class="info-size"><i class="icon fa-hdd-o fa-fw"></i> {categories.files.SIZE}</span>
-                        
-                        <!-- Versão -->
-                        <!-- IF categories.files.VERSION -->
-                        <span class="info-version"><i class="icon fa-tag fa-fw"></i> v{categories.files.VERSION}</span>
-                        <!-- ENDIF -->
+                                    <!-- Preview -->
+                                    <!-- IF categories.files.FILE_ICON == 'fa-file-image-o' or categories.files.FILE_ICON == 'fa-file-image' -->
+                                    <span class="preview-btn" data-preview-url="{categories.files.U_PREVIEW}" onclick="openImageModal(this)" title="{L_SIMPLEDOWN_PREVIEW_IMAGE}">
+                                        <i class="fa fa-eye fa-fw"></i>
+                                    </span>
+                                    <!-- ENDIF -->
 
-                        <!-- Preview -->
-                        <!-- IF categories.files.FILE_ICON == 'fa-file-image' -->
-                        <span class="preview-btn" data-preview-url="{categories.files.U_PREVIEW}" onclick="openImageModal(this)" title="{L_SIMPLEDOWN_PREVIEW_IMAGE}">
-                            <i class="icon fa-eye fa-fw"></i>
-                        </span>
-                        <!-- ENDIF -->
-
-                        <!-- Cadeado privado -->
-                        <!-- IF categories.files.IS_PRIVATE -->
-                        <span class="private-badge" title="{L_SIMPLEDOWN_PRIVATE_FILE}">
-                            <i class="icon fas fa-lock fa-fw"></i>
-                        </span>
-                        <!-- ENDIF -->
+                                    <!-- Cadeado privado -->
+                                    <!-- IF categories.files.IS_PRIVATE -->
+                                    <span class="private-badge" title="{L_SIMPLEDOWN_PRIVATE_FILE}">
+                                        <i class="fa fa-lock fa-fw"></i>
+                                    </span>
+                                    <!-- ENDIF -->
+                                </div>
+                                <div class="list-actions">
+                                    <a href="{categories.files.U_DETAILS}" class="details-btn-small">
+                                        <i class="fa fa-info-circle fa-fw"></i> {L_SIMPLEDOWN_DETAILS_BUTTON}
+                                    </a>
+                                    <a href="{categories.files.U_DOWNLOAD}"
+                                       class="download-btn"
+                                       data-private="{categories.files.IS_PRIVATE}"
+                                       onclick="checkPrivateDownload(event, this)">
+                                        <i class="fa fa-download fa-fw"></i> {L_DOWNLOAD_BUTTON}
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-
-                    <div class="list-actions">
-    <a href="{categories.files.U_DETAILS}" class="details-btn-small">
-        <i class="icon fa-info-circle fa-fw"></i> {L_SIMPLEDOWN_DETAILS_BUTTON}
-    </a>
-    <a href="{categories.files.U_DOWNLOAD}"
-       class="download-btn"
-       data-private="{categories.files.IS_PRIVATE}"
-       onclick="checkPrivateDownload(event, this)">
-        <i class="icon fa-download fa-fw"></i> {L_DOWNLOAD_BUTTON}
-    </a>
-</div>
-                </div>
+                    <!-- END files -->
+                <!-- END categories -->
             </div>
-        </div>
-        <!-- END files -->
-    <!-- END categories -->
-</div>
         </div>
 
         <!-- ======================================== -->
@@ -206,6 +208,7 @@
                 </p>
             </div>
         </div>
+
         <!-- Nenhum arquivo disponível -->
         <!-- IF not .categories -->
         <div class="simpledown-empty-state">
@@ -218,7 +221,7 @@
         <!-- ======================================== -->
         <div id="image-modal" class="image-modal">
             <div class="modal-image-wrapper">
-                <span class="modal-close" onclick="closeImageModal()"><i class="icon fas fa-times fa-fw"></i></span>
+                <span class="modal-close" onclick="closeImageModal()"><i class="fa fa-times fa-fw"></i></span>
                 <img id="modal-image" class="modal-image-content" alt="{L_SIMPLEDOWN_IMAGE_PREVIEW_ALT}" />
             </div>
         </div>
@@ -226,17 +229,17 @@
         <div id="login-required-modal" class="image-modal" style="display: none;">
             <div class="modal-image-wrapper private-modal-content">
                 <span class="modal-close" onclick="document.getElementById('login-required-modal').style.display='none'">
-                    <i class="icon fas fa-times fa-fw"></i>
+                    <i class="fa fa-times fa-fw"></i>
                 </span>
-                <i class="icon fas fa-lock fa-4x" style="color: #e74c3c; margin-bottom: 20px;"></i>
+                <i class="fa fa-lock fa-4x" style="color: #e74c3c; margin-bottom: 20px;"></i>
                 <h3>{L_SIMPLEDOWN_LOGIN_REQUIRED}</h3>
                 <p>{L_SIMPLEDOWN_PRIVATE_MODAL_TEXT}</p>
-                <div>
+                <div class="private-modal-buttons">
                     <a href="{U_LOGIN}" class="download-btn">
-                        <i class="icon fas fa-sign-in-alt fa-fw"></i> {L_SIMPLEDOWN_LOGIN_BUTTON}
+                        <i class="fa fa-sign-in fa-fw"></i> {L_SIMPLEDOWN_LOGIN_BUTTON}
                     </a>
                     <a href="{U_REGISTER}" class="details-btn-small">
-                        <i class="icon fas fa-user-plus fa-fw"></i> {L_SIMPLEDOWN_REGISTER_BUTTON}
+                        <i class="fa fa-user-plus fa-fw"></i> {L_SIMPLEDOWN_REGISTER_BUTTON}
                     </a>
                 </div>
             </div>
