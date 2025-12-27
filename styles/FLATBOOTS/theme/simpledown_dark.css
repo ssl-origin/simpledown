@@ -128,7 +128,8 @@
     cursor: pointer;
     font-size: 1.2em;
 }
-.view-btn:hover, .view-btn.active {
+.view-btn:hover,
+.view-btn.active {
     background: #ffa800;
     color: #222;
 }
@@ -178,7 +179,6 @@
     font-size: 3.2em;
     margin-right: 24px;
     flex-shrink: 0;
-    color: #aaa;
 }
 .list-main {
     flex: 1;
@@ -195,6 +195,34 @@
     color: #bbb;
     margin: 0 0 20px 0;
 }
+
+/* Nome real + ícone + versão na lista */
+.list-file-name {
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: 6px;
+    margin: 12px 0 16px 0;
+    font-size: 0.95em;
+    color: #aaa;
+    overflow: hidden;
+}
+.list-file-name i {
+    flex-shrink: 0;
+    font-size: 1.1em;
+}
+.list-file-name .file-realname-truncate {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+}
+.list-file-name .version-badge {
+    flex-shrink: 0;
+    margin-left: 8px;
+}
+
 .list-bottom-row {
     display: flex;
     align-items: center;
@@ -231,20 +259,10 @@
     flex-shrink: 0;
 }
 @media (max-width: 992px) {
-    .list-bottom-row {
-        flex-direction: column;
-        align-items: stretch;
-    }
-    .list-info-row {
-        margin-bottom: 12px;
-    }
-    .list-actions {
-        width: 100%;
-    }
-    .list-actions a {
-        flex: 1;
-        text-align: center;
-    }
+    .list-bottom-row { flex-direction: column; align-items: stretch; }
+    .list-info-row { margin-bottom: 12px; }
+    .list-actions { width: 100%; }
+    .list-actions a { flex: 1; text-align: center; }
 }
 
 /* ======================================== */
@@ -261,9 +279,7 @@
     height: 100%;
     transition: transform 0.3s ease;
 }
-.simpledown-card:hover {
-    transform: translateY(-5px);
-}
+.simpledown-card:hover { transform: translateY(-5px); }
 .card-content {
     padding: 20px;
     flex-grow: 1;
@@ -305,15 +321,30 @@
 .file-info-row .preview-btn i.fa-eye { color: #3498db; }
 .file-info-row .preview-btn:hover i { color: #5ab4f0; }
 
+/* Nome do arquivo + ícone + versão no grid */
 .file-name-below {
     display: flex;
     align-items: center;
+    flex-wrap: nowrap;
     gap: 6px;
     margin-top: 8px;
     font-size: 0.95em;
     color: #aaa;
+    overflow: hidden;
+}
+.file-name-below i {
+    flex-shrink: 0;
+    font-size: 1.1em;
+}
+.file-realname-truncate {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
 }
 .version-badge {
+    flex-shrink: 0;
     background: #ffa800;
     color: #222;
     font-weight: 600;
@@ -440,6 +471,53 @@
 }
 
 /* ======================================== */
+/* CORES DOS ÍCONES DE ARQUIVO */
+/* ======================================== */
+.file-name-below i.fa-file-pdf,
+.list-file-name i.fa-file-pdf,
+.details-single-info-row i.fa-file-pdf,
+.list-icon.fa-file-pdf { color: #e74c3c; }
+
+.file-name-below i.fa-file-image,
+.list-file-name i.fa-file-image,
+.details-single-info-row i.fa-file-image,
+.list-icon.fa-file-image { color: #3498db; }
+
+.file-name-below i.fa-file-archive,
+.list-file-name i.fa-file-archive,
+.details-single-info-row i.fa-file-archive,
+.list-icon.fa-file-archive { color: #9b59b6; }
+
+.file-name-below i.fa-file-word,
+.list-file-name i.fa-file-word,
+.details-single-info-row i.fa-file-word { color: #2980b9; }
+
+.file-name-below i.fa-file-excel,
+.list-file-name i.fa-file-excel,
+.details-single-info-row i.fa-file-excel { color: #27ae60; }
+
+.file-name-below i.fa-file-powerpoint,
+.list-file-name i.fa-file-powerpoint,
+.details-single-info-row i.fa-file-powerpoint { color: #e67e22; }
+
+.file-name-below i.fa-file-audio,
+.list-file-name i.fa-file-audio,
+.details-single-info-row i.fa-file-audio { color: #f1c40f; }
+
+.file-name-below i.fa-file-video,
+.list-file-name i.fa-file-video,
+.details-single-info-row i.fa-file-video { color: #c0392b; }
+
+.file-name-below i.fa-file-text,
+.list-file-name i.fa-file-text,
+.details-single-info-row i.fa-file-text { color: #7f8c8d; }
+
+.file-name-below i.fa-file,
+.list-file-name i.fa-file,
+.details-single-info-row i.fa-file,
+.list-icon.fa-file { color: #95a5a6; }
+
+/* ======================================== */
 /* PÁGINA DE DETALHES */
 /* ======================================== */
 .file-name-uppercase {
@@ -460,6 +538,38 @@
     overflow: hidden;
 }
 .details-card-content { padding: 40px; }
+
+.details-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px;
+    align-items: flex-start;
+    margin-bottom: 40px;
+}
+.details-thumbnail {
+    flex: 0 0 260px;
+    width: 260px;
+    height: 260px;
+    overflow: hidden;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+    background: #2a2a2a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #444;
+}
+.thumbnail-fixed {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+.details-description {
+    flex: 1;
+    min-width: 300px;
+}
+.details-description.full-width { flex: 1 1 100%; }
+
 .file-description-full {
     font-size: 1.3em;
     line-height: 1.8;
@@ -483,15 +593,13 @@
     font-size: 1.3em;
     color: #ccc;
 }
-.details-single-info-row i {
-    margin-right: 8px;
-}
+.details-single-info-row i { margin-right: 8px; }
 .details-single-info-row i.fa-download { color: #5cb85c; }
 .details-single-info-row i.fa-hdd-o { color: #9b59b6; }
 .details-single-info-row i.fa-eye { color: #3498db; }
 .details-single-info-row i.fa-lock { color: #e74c3c; }
 
-/* Botão Voltar - CENTRALIZADO */
+/* Botão Voltar */
 .back-link {
     text-align: center;
     margin: 50px 0 80px 0;
@@ -512,13 +620,41 @@
     color: #222;
 }
 
-/* Responsivo geral */
+/* ======================================== */
+/* REMAPEAMENTO DE ÍCONES FA4.7 */
+/* ======================================== */
+.fa-file-archive::before { content: "\f1c6"; }
+.fa-file-image::before { content: "\f1c5"; }
+.fa-file-pdf::before { content: "\f1c1"; }
+.fa-file-word::before { content: "\f1c2"; }
+.fa-file-excel::before { content: "\f1c3"; }
+.fa-file-powerpoint::before { content: "\f1c4"; }
+.fa-file-audio::before { content: "\f1c7"; }
+.fa-file-video::before { content: "\f1c8"; }
+.fa-file-code::before { content: "\f1c9"; }
+.fa-file-text::before { content: "\f0f6"; }
+.fa-file::before { content: "\f016"; }
+.fa-hdd-o::before { content: "\f0a0"; }
+
+/* ======================================== */
+/* RESPONSIVO GERAL */
+/* ======================================== */
 @media (max-width: 992px) {
     .simpledown-top-controls { flex-direction: column; align-items: stretch; }
+    .details-wrapper { flex-direction: column; align-items: center; }
+    .details-thumbnail { margin-bottom: 30px; }
     .details-single-info-row { flex-direction: column; align-items: flex-start; gap: 15px; }
 }
 @media (max-width: 768px) {
     .simpledown-header-panel h2, .file-name-uppercase { font-size: 2.2em; }
     .list-item { flex-direction: column; align-items: flex-start; }
     .list-icon { margin-bottom: 16px; }
+    .details-thumbnail { width: 300px; height: 300px; }
+}
+@media (max-width: 480px) {
+    .details-thumbnail {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 1 / 1;
+    }
 }

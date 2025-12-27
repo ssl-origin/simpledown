@@ -1,11 +1,13 @@
 /* ========================================
-   SimpleDown Frontend - Clean & Minimalista 2025
+   SimpleDown Frontend - Clean & Minimalista 2025 - LIGHT THEME
    ======================================== */
 @import url('https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@400;500;600;700&display=swap');
+
+/* Font Awesome 4.7.0 */
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
 /* ======================================== */
-/* CONTAINER PRINCIPAL E ESTRUTURA GERAL */
+/* CONTAINER PRINCIPAL */
 /* ======================================== */
 .simpledown-container {
     max-width: 1200px;
@@ -33,7 +35,7 @@
     margin: 0;
 }
 
-/* Controles superiores: busca + filtros */
+/* Controles superiores */
 .simpledown-top-controls {
     display: flex;
     align-items: center;
@@ -75,16 +77,12 @@
     color: #aaaaaa;
     font-style: italic;
 }
-
-/* Remove o "X" nativo do navegador */
 .simpledown-search-input::-webkit-search-cancel-button,
 .simpledown-search-input::-ms-clear,
 .simpledown-search-input::-webkit-search-decoration {
     -webkit-appearance: none;
     display: none;
 }
-
-/* Botão X personalizado */
 .external-clear-btn {
     display: none;
     align-items: center;
@@ -105,7 +103,7 @@
     display: flex;
 }
 
-/* Filtros (categoria e ordenação) */
+/* Filtros */
 .category-filter-select {
     width: 100%;
     padding: 12px 18px;
@@ -123,9 +121,7 @@
     box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.08);
 }
 
-/* ======================================== */
-/* TOGGLE DE VISUALIZAÇÃO (GRID / LISTA) */
-/* ======================================== */
+/* Toggle visualização */
 .view-mode-toggle {
     text-align: right;
     margin: 10px 0 20px 0;
@@ -149,9 +145,8 @@
 }
 
 /* ======================================== */
-/* GRADE DE CARDS - SUPORTE A 2 OU 3 COLUNAS */
+/* GRADE DE CARDS */
 /* ======================================== */
-/* Padrão: 3 colunas (ou mais em telas muito largas) */
 .downloads-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -159,31 +154,20 @@
     padding: 0 20px;
     grid-auto-rows: 1fr;
 }
-
-/* Quando o administrador escolher 2 cards por linha */
 .downloads-grid.grid-2-cols {
     grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
 }
-
-/* Forçar 3 colunas (opcional) */
-.downloads-grid.grid-3-cols {
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-}
-
-/* Responsivo: máximo 2 colunas em tablets */
 @media (max-width: 992px) {
     .downloads-grid,
-    .downloads-grid.grid-3-cols,
-    .downloads-grid.grid-2-cols {
+    .downloads-grid.grid-2-cols,
+    .downloads-grid.grid-3-cols {
         grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     }
 }
-
-/* Responsivo: 1 coluna em celulares */
 @media (max-width: 768px) {
     .downloads-grid,
-    .downloads-grid.grid-3-cols,
-    .downloads-grid.grid-2-cols {
+    .downloads-grid.grid-2-cols,
+    .downloads-grid.grid-3-cols {
         grid-template-columns: 1fr;
         padding: 15px;
     }
@@ -194,77 +178,141 @@
 /* ======================================== */
 .downloads-list {
     display: grid;
-    gap: 12px;
+    gap: 16px;
+    padding: 0 20px;
 }
 .list-item {
     display: flex;
-    align-items: center;
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(0,0,0,0.1);
+    align-items: flex-start;
+    background: #ffffff;
+    border: 1px solid #e0e0e0;
     border-radius: 12px;
-    padding: 16px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    transition: all 0.3s ease;
+}
+.list-item:hover {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
 }
 .list-icon {
-    font-size: 1.8em;
-    margin-right: 16px;
+    font-size: 3.2em;
+    margin-right: 24px;
     flex-shrink: 0;
-    color: #666;
 }
-.list-content {
+.list-main {
     flex: 1;
     min-width: 0;
 }
 .list-title {
-    font-size: 1.3em;
-    font-weight: 600;
-    margin: 0 0 6px 0;
+    font-size: 1.5em;
+    font-weight: 700;
+    margin: 0 0 8px 0;
     color: #000;
 }
 .list-description {
-    font-size: 1em;
-    color: #666;
-    margin: 0 0 8px 0;
+    font-size: 1.05em;
+    color: #555;
+    margin: 0 0 20px 0;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
-.list-info {
-    font-size: 0.9em;
-    color: #888;
-}
-.list-info span {
-    margin-right: 16px;
-}
-.list-actions {
+
+/* Nome real + ícone + versão na lista (na mesma linha das infos) */
+.list-file-name {
     display: flex;
-    /* flex-direction: column; */
-    gap: 8px;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.95em;
+    color: #555555;
+    overflow: hidden;
+    white-space: nowrap;
 }
-.list-actions a {
-    font-size: 0.9em;
-    padding: 8px 16px;
-    text-align: center;
+.list-file-name i {
+    font-size: 1.1em;
+    flex-shrink: 0;
+}
+.list-file-name .file-realname-truncate {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+}
+.list-file-name .version-badge {
+    margin-left: 8px;
+    flex-shrink: 0;
 }
 
-/* Responsivo para modo lista */
-@media (max-width: 768px) {
-    .list-item {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-    .list-actions {
-        flex-direction: row;
-        width: 100%;
-        margin-top: 12px;
-    }
-    .list-actions a {
-        flex: 1;
-    }
+.list-bottom-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 12px;
+    width: 100%;
+}
+.list-info-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: center;
+    color: #666666;
+    flex: 1;
+    min-width: 300px;
+}
+.list-info-row span {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+}
+.list-info-row i.fa-download { color: #2ecc71; }
+.list-info-row i.fa-hdd-o { color: #9b59b6; }
+.list-info-row i.fa-eye { color: #3498db; }
+.list-info-row i.fa-lock { color: #e74c3c; }
+.preview-btn:hover i { color: #2980b9; }
+.private-badge { color: #e74c3c; font-weight: 600; }
+
+.list-actions {
+    display: flex;
+    gap: 12px;
+    flex-shrink: 0;
+}
+.list-actions a {
+    padding: 10px 20px;
+    font-size: 1em;
+    font-weight: 600;
+    border-radius: 10px;
+    min-width: 120px;
+    text-align: center;
+}
+.list-actions .details-btn-small {
+    background: #2980b9;
+    color: white;
+    border: 1px solid #1f6f9b;
+}
+.list-actions .download-btn {
+    background: linear-gradient(to bottom, #5cb85c, #449d44);
+    color: white;
+    border: 1px solid #398439;
+}
+
+/* Responsivo lista */
+@media (max-width: 992px) {
+    .list-item { flex-direction: column; align-items: flex-start; }
+    .list-icon { margin-bottom: 16px; }
+    .list-bottom-row { flex-direction: column; align-items: stretch; }
+    .list-info-row { margin-bottom: 12px; }
+    .list-actions { width: 100%; }
+    .list-actions a { flex: 1; }
 }
 
 /* ======================================== */
-/* CARD PRINCIPAL E CONTEÚDO (MODO GRID) */
+/* CARD GRID */
 /* ======================================== */
 .simpledown-card {
     background: #ffffff;
@@ -297,8 +345,7 @@
     font-size: 1.2em;
     color: #555555;
     line-height: 1.5;
-    margin-top: 6px;
-    margin-bottom: 16px;
+    margin: 6px 0 16px;
     display: -webkit-box;
     -webkit-line-clamp: 4;
     -webkit-box-orient: vertical;
@@ -323,8 +370,6 @@
 .file-info-row i { margin-right: 8px; }
 .file-info-row span:first-child i.fa-download { color: #2ecc71; }
 .file-info-row span:last-child i.fa-hdd-o { color: #9b59b6; }
-
-/* Preview no card */
 .preview-btn {
     cursor: pointer;
     color: #3498db;
@@ -347,6 +392,7 @@
 }
 .file-name-below i {
     margin-right: 3px !important;
+    font-size: 1.1em;
 }
 .file-realname-truncate {
     flex: 1;
@@ -365,17 +411,50 @@
     border-radius: 10px;
 }
 
-/* Ícones por tipo de arquivo */
-.file-name-below i.fa-file-pdf { color: #e74c3c; }
-.file-name-below i.fa-file-image { color: #3498db; }
-.file-name-below i.fa-file-word { color: #2980b9; }
-.file-name-below i.fa-file-excel { color: #27ae60; }
-.file-name-below i.fa-file-powerpoint { color: #e67e22; }
-.file-name-below i.fa-file-archive { color: #9b59b6; }
-.file-name-below i.fa-file-audio { color: #f1c40f; }
-.file-name-below i.fa-file-video { color: #c0392b; }
-.file-name-below i.fa-file-text { color: #7f8c8d; }
-.file-name-below i.fa-file { color: #95a5a6; }
+/* Cores dos ícones de arquivo */
+.file-name-below i.fa-file-pdf,
+.list-file-name i.fa-file-pdf,
+.details-single-info-row i.fa-file-pdf,
+.list-icon.fa-file-pdf { color: #e74c3c; }
+
+.file-name-below i.fa-file-image,
+.list-file-name i.fa-file-image,
+.details-single-info-row i.fa-file-image,
+.list-icon.fa-file-image { color: #3498db; }
+
+.file-name-below i.fa-file-archive,
+.list-file-name i.fa-file-archive,
+.details-single-info-row i.fa-file-archive,
+.list-icon.fa-file-archive { color: #9b59b6; }
+
+.file-name-below i.fa-file-word,
+.list-file-name i.fa-file-word,
+.details-single-info-row i.fa-file-word { color: #2980b9; }
+
+.file-name-below i.fa-file-excel,
+.list-file-name i.fa-file-excel,
+.details-single-info-row i.fa-file-excel { color: #27ae60; }
+
+.file-name-below i.fa-file-powerpoint,
+.list-file-name i.fa-file-powerpoint,
+.details-single-info-row i.fa-file-powerpoint { color: #e67e22; }
+
+.file-name-below i.fa-file-audio,
+.list-file-name i.fa-file-audio,
+.details-single-info-row i.fa-file-audio { color: #f1c40f; }
+
+.file-name-below i.fa-file-video,
+.list-file-name i.fa-file-video,
+.details-single-info-row i.fa-file-video { color: #c0392b; }
+
+.file-name-below i.fa-file-text,
+.list-file-name i.fa-file-text,
+.details-single-info-row i.fa-file-text { color: #7f8c8d; }
+
+.file-name-below i.fa-file,
+.list-file-name i.fa-file,
+.details-single-info-row i.fa-file,
+.list-icon.fa-file { color: #95a5a6; }
 
 /* Rodapé do card */
 .card-footer {
@@ -390,7 +469,7 @@
 }
 
 /* ======================================== */
-/* BOTÕES DO CARD */
+/* BOTÕES */
 /* ======================================== */
 .details-btn-small,
 .download-btn {
@@ -406,7 +485,6 @@
     text-transform: uppercase;
     letter-spacing: 0.8px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.12);
-    transition: none !important;
     white-space: nowrap;
     text-decoration: none !important;
 }
@@ -426,16 +504,8 @@
     font-size: 1.2em;
     color: #ffffff !important;
 }
-.details-btn-small:hover,
-.download-btn:hover,
-.details-btn-small:focus,
-.download-btn:focus,
-.details-btn-small:active,
-.download-btn:active {
-    text-decoration: none !important;
-}
 
-/* Responsivo - botões */
+/* Responsivo botões */
 @media (max-width: 768px) {
     .card-footer { padding: 16px 25px 20px; gap: 20px; }
     .details-btn-small, .download-btn { padding: 11px 18px; font-size: 1em; max-width: 160px; }
@@ -450,7 +520,7 @@
 }
 
 /* ======================================== */
-/* MENSAGEM SEM ARQUIVOS */
+/* ESTADO VAZIO */
 /* ======================================== */
 .simpledown-empty-state {
     background: #ecf0f1;
@@ -590,9 +660,7 @@
     border: 1px solid #eee;
     margin-top: 20px;
 }
-.details-single-info-row .preview-btn {
-    margin-left: auto;
-}
+.details-single-info-row .preview-btn { margin-left: auto; }
 .details-single-info-row i {
     margin-right: -3px;
     font-size: 1.3em;
@@ -600,19 +668,6 @@
 .details-single-info-row .info-downloads i.fa-download { color: #2ecc71; }
 .details-single-info-row .info-size i.fa-hdd-o { color: #9b59b6; }
 .details-single-info-row .details-file-name i { font-size: 1.4em; }
-
-/* Cores por tipo de arquivo na página de detalhes */
-.details-single-info-row i.fa-file-pdf { color: #e74c3c; }
-.details-single-info-row i.fa-file-image { color: #3498db; }
-.details-single-info-row i.fa-file-word { color: #2980b9; }
-.details-single-info-row i.fa-file-excel { color: #27ae60; }
-.details-single-info-row i.fa-file-powerpoint { color: #e67e22; }
-.details-single-info-row i.fa-file-archive { color: #9b59b6; }
-.details-single-info-row i.fa-file-audio { color: #f1c40f; }
-.details-single-info-row i.fa-file-video { color: #c0392b; }
-.details-single-info-row i.fa-file-text { color: #7f8c8d; }
-.details-single-info-row i.fa-file { color: #95a5a6; }
-
 .info-version {
     font-size: 0.95em;
     color: #555;
@@ -623,9 +678,7 @@
     font-size: 1.2em;
     margin-right: -5px;
 }
-.info-version:hover .version-icon {
-    color: #d35400 !important;
-}
+.info-version:hover .version-icon { color: #d35400 !important; }
 .details-file-name {
     display: flex;
     align-items: center;
@@ -648,7 +701,7 @@
     white-space: nowrap;
 }
 
-/* Link "Voltar para Downloads" */
+/* Botão Voltar */
 .back-link {
     text-align: center;
     margin: 20px 0 60px;
@@ -666,10 +719,9 @@
 .back-link a:hover {
     background: #3498db;
     color: white;
-    text-decoration: none;
 }
 
-/* Layout da página de detalhes com thumbnail */
+/* Thumbnail + descrição */
 .details-wrapper {
     display: flex;
     flex-wrap: wrap;
@@ -723,27 +775,78 @@
 }
 
 /* ======================================== */
+/* MODAL PRIVADO */
+/* ======================================== */
+.private-modal-content {
+    max-width: 420px;
+    width: 90%;
+    background: #1e1e1e;
+    border-radius: 16px;
+    padding: 30px;
+    text-align: center;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.7);
+    border: 1px solid #444444;
+    color: #e0e0e0;
+}
+.private-modal-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.private-modal-buttons a {
+    padding: 12px 28px;
+}
+.private-modal-buttons .download-btn {
+    background: linear-gradient(to bottom, #5cb85c, #449d44) !important;
+    border: 1px solid #398439 !important;
+    color: #ffffff !important;
+}
+.private-modal-buttons .details-btn-small {
+    background: #2980b9 !important;
+    border: 1px solid #1f6f9b !important;
+    color: #ffffff !important;
+}
+#login-required-modal h3 {
+    font-family: 'Bai Jamjuree', 'Roboto', Arial, Helvetica, sans-serif !important;
+    font-weight: 700 !important;
+    text-transform: none !important;
+    border-bottom: none !important;
+    margin: 0 0 15px 0 !important;
+    padding-bottom: 0 !important;
+    font-size: 1.6em !important;
+}
+
+/* ======================================== */
+/* REMAPEAMENTO DE ÍCONES FA4.7 */
+/* ======================================== */
+.fa-file-archive::before { content: "\f1c6"; }
+.fa-file-image::before { content: "\f1c5"; }
+.fa-file-pdf::before { content: "\f1c1"; }
+.fa-file-word::before { content: "\f1c2"; }
+.fa-file-excel::before { content: "\f1c3"; }
+.fa-file-powerpoint::before { content: "\f1c4"; }
+.fa-file-audio::before { content: "\f1c7"; }
+.fa-file-video::before { content: "\f1c8"; }
+.fa-file-code::before { content: "\f1c9"; }
+.fa-file-text::before { content: "\f0f6"; }
+.fa-file::before { content: "\f016"; }
+.fa-hdd-o::before { content: "\f0a0"; }
+
+/* ======================================== */
 /* RESPONSIVO GERAL */
 /* ======================================== */
 @media (max-width: 992px) {
     .simpledown-top-controls { flex-direction: column; align-items: stretch; }
     .filter-select-wrapper { margin-top: 15px; }
     .details-card-expanded { width: 98%; }
-    .details-wrapper {
-        flex-direction: column;
-        align-items: center;
-    }
-    .details-thumbnail {
-        flex: 0 0 auto;
-        width: 280px;
-        height: 280px;
-    }
+    .details-wrapper { flex-direction: column; align-items: center; }
+    .details-thumbnail { width: 280px; height: 280px; margin-bottom: 30px; }
     .details-description.full-width { width: 100%; }
+    .details-single-info-row { flex-direction: column; align-items: flex-start; gap: 15px; }
 }
 @media (max-width: 768px) {
     .simpledown-header-panel { padding: 20px; }
-    .simpledown-header-panel h2 { font-size: 2.2em; }
-    .file-name-uppercase { font-size: 2.2em; }
+    .simpledown-header-panel h2, .file-name-uppercase { font-size: 2.2em; }
     .category-breadcrumb { font-size: 1.2em; }
     .file-description-full { font-size: 1.4em; }
 }
@@ -755,245 +858,5 @@
         height: auto;
         aspect-ratio: 1 / 1;
     }
-    .thumbnail-fixed {
-        object-fit: contain;
-    }
-}
-
-/* ======================================== */
-/* MODAL DE ARQUIVO PRIVADO - LIGHT */
-/* ======================================== */
-.private-modal-content {
-    max-width: 420px;
-    width: 90%;
-    background: #1e1e1e;
-    border-radius: 16px;
-    padding: 30px;
-    text-align: center;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.7);
-    border: 1px solid #444444;
-    position: relative;
-    color: #e0e0e0;
-}
-.private-modal-icon {
-    color: #e74c3c;
-    margin-bottom: 20px;
-}
-.private-modal-title {
-    margin: 0 0 15px 0;
-    font-size: 1.6em;
-    color: #ffffff;
-}
-.private-modal-text {
-    color: #bbbbbb;
-    line-height: 1.6;
-    margin-bottom: 30px;
-    font-size: 1.05em;
-}
-.private-modal-buttons {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-.private-modal-buttons a {
-    padding: 12px 28px;
-    margin: 0;
-}
-
-/* Garante que os botões mantenham suas cores originais (verde e azul) */
-.private-modal-buttons .download-btn {
-    background: linear-gradient(to bottom, #5cb85c, #449d44) !important;
-    border: 1px solid #398439 !important;
-    color: #ffffff !important;
-}
-.private-modal-buttons .details-btn-small {
-    background: #2980b9 !important;
-    border: 1px solid #1f6f9b !important;
-    color: #ffffff !important;
-}
-
-/* Sobrescreve o h3 do prosilver apenas dentro do modal privado */
-#login-required-modal h3 {
-    font-family: 'Bai Jamjuree', 'Roboto', Arial, Helvetica, sans-serif !important;
-    font-weight: 700 !important;
-    text-transform: none !important;
-    border-bottom: none !important;
-    margin: 0 0 15px 0 !important;
-    padding-bottom: 0 !important;
-    font-size: 1.6em !important;
-    margin-top: 0 !important;
-}
-
-/* ======================================== */
-/* REMAPEAMENTO DE ÍCONES PARA COMPATIBILIDADE COM FA4.7 */
-/* ======================================== */
-/* Remapeia classes do FA5+ para códigos Unicode do FA4.7 no tema light */
-.fa-file-archive::before { content: "\f1c6"; } /* fa-file-archive-o */
-.fa-file-image::before { content: "\f1c5"; } /* fa-file-image-o */
-.fa-file-pdf::before { content: "\f1c1"; } /* fa-file-pdf-o */
-.fa-file-word::before { content: "\f1c2"; } /* fa-file-word-o */
-.fa-file-excel::before { content: "\f1c3"; } /* fa-file-excel-o */
-.fa-file-powerpoint::before { content: "\f1c4"; } /* fa-file-powerpoint-o */
-.fa-file-audio::before { content: "\f1c7"; } /* fa-file-audio-o */
-.fa-file-video::before { content: "\f1c8"; } /* fa-file-video-o */
-.fa-file-code::before { content: "\f1c9"; } /* fa-file-code-o */
-.fa-file-text::before { content: "\f0f6"; } /* fa-file-text-o */
-.fa-file::before { content: "\f016"; } /* fa-file-o */
-.fa-hdd-o::before { content: "\f0a0"; } /* Mantém compatível */
-
-/* ======================================== */
-/* MODO LISTA - LAYOUT FINAL (infos esquerda + botões direita) */
-/* ======================================== */
-.downloads-list {
-    display: grid;
-    gap: 16px;
-    padding: 0 20px;
-}
-
-.list-item {
-    display: flex;
-    align-items: flex-start;
-    background: #ffffff;
-    border: 1px solid #e0e0e0;
-    border-radius: 12px;
-    padding: 20px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
-    transition: all 0.3s ease;
-}
-
-.list-item:hover {
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-    transform: translateY(-2px);
-}
-
-/* Ícone do tipo de arquivo */
-.list-icon {
-    font-size: 3.2em;
-    margin-right: 24px;
-    flex-shrink: 0;
-    color: #666;
-}
-
-/* Cores vibrantes para ícones de tipo de arquivo */
-.list-icon.fa-file-pdf { color: #e74c3c; }
-.list-icon.fa-file-image { color: #3498db; }
-.list-icon.fa-file-archive { color: #9b59b6; }
-.list-icon.fa-file-word { color: #2980b9; }
-.list-icon.fa-file-excel { color: #27ae60; }
-.list-icon.fa-file-powerpoint { color: #e67e22; }
-.list-icon.fa-file-audio { color: #f1c40f; }
-.list-icon.fa-file-video { color: #c0392b; }
-.list-icon.fa-file { color: #95a5a6; }
-
-/* Conteúdo principal */
-.list-main {
-    flex: 1;
-    min-width: 0;
-}
-.list-title {
-    font-size: 1.5em;
-    font-weight: 700;
-    margin: 0 0 8px 0;
-    color: #000;
-}
-.list-description {
-    font-size: 1.05em;
-    color: #555;
-    margin: 0 0 20px 0; /* espaçamento razoável abaixo da descrição */
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
-
-/* Linha inferior */
-.list-bottom-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap; /* permite quebra natural */
-    gap: 16px;
-    margin-top: 12px;
-}
-
-/* Infos alinhadas à esquerda */
-.list-bottom-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap; /* permite quebra natural */
-    gap: 16px;
-    margin-top: 12px;
-}
-
-.list-info-row span {
-    /*display: flex; */
-    align-items: center;
-    gap: 6px;
-    white-space: nowrap;
-}
-
-.list-info-row i.fa-download { color: #2ecc71; }
-.list-info-row i.fa-hdd-o { color: #9b59b6; }
-.list-info-row i.fa-tag { color: #e67e22; }
-.list-info-row i.fa-eye { color: #3498db; cursor: pointer; }
-.list-info-row i.fa-lock { color: #e74c3c; }
-
-.preview-btn:hover i {
-    color: #2980b9;
-}
-
-.private-badge {
-    color: #e74c3c;
-    font-weight: 600;
-}
-
-/* Botões alinhados à direita */
-.list-actions {
-    display: flex;
-    gap: 12px;
-    flex-shrink: 0;
-}
-.list-actions a {
-    padding: 10px 20px;
-    font-size: 1em;
-    font-weight: 600;
-    border-radius: 10px;
-    min-width: 120px;
-    text-align: center;
-}
-.list-actions .details-btn-small {
-    background: #2980b9;
-    color: white;
-    border: 1px solid #1f6f9b;
-}
-.list-actions .download-btn {
-    background: linear-gradient(to bottom, #5cb85c, #449d44);
-    color: white;
-    border: 1px solid #398439;
-}
-
-/* Responsivo */
-@media (max-width: 992px) {
-    .list-item {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-    .list-icon {
-        margin-bottom: 16px;
-    }
-    .list-bottom-row {
-        flex-direction: column;
-        align-items: stretch;
-    }
-    .list-info-row {
-        margin-bottom: 12px;
-        justify-content: flex-start;
-    }
-    .list-actions {
-        width: 100%;
-    }
-    .list-actions a {
-        flex: 1;
-    }
+    .thumbnail-fixed { object-fit: contain; }
 }
