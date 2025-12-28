@@ -449,7 +449,7 @@
     box-shadow: 0 10px 40px rgba(0,0,0,0.4);
     width: 90%;
     max-width: 500px;
-    text-align: center;
+    /*text-align: center;*/
     position: relative;
     border: 1px solid var(--border);
 }

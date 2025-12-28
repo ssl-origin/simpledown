@@ -27,7 +27,7 @@ services:
         tags:
             - { name: controller.service_arguments }
 
-    # ACP: Controller para Configurações + Upload + Categorias
+    # ACP: Controller para Configurações
     mundophpbb.simpledown.acp_settings_controller:
         class: mundophpbb\simpledown\controller\acp_settings_controller
         arguments:
@@ -59,7 +59,7 @@ services:
             - '%core.php_ext%'
             - '%core.table_prefix%'
 
-    # ACP: Controller para a página Ferramentas (Tools) - Gerenciamento de thumbnails
+    # ACP: Controller para a página Ferramentas (Tools)
     mundophpbb.simpledown.acp_tools_controller:
         class: mundophpbb\simpledown\controller\acp_tools_controller
         arguments:
@@ -69,5 +69,17 @@ services:
             - '@template'
             - '@user'
             - '%core.root_path%'
-        tags:
-            - { name: controller.service_arguments }
+
+    # ACP: Controller para a página de Logs
+    mundophpbb.simpledown.acp_logs_controller:
+        class: mundophpbb\simpledown\controller\acp_logs_controller
+        arguments:
+            - '@config'
+            - '@dbal.conn'
+            - '@language'
+            - '@log'
+            - '@request'
+            - '@template'
+            - '@user'
+            - '%core.table_prefix%'
+            - '@pagination'   # ← ADICIONADO: necessário para generate_template_pagination()

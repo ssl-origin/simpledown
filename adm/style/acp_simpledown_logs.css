@@ -1,0 +1,260 @@
+/* ========================================
+   SimpleDown ACP - Logs Design 2025 (Versão Compacta)
+   ======================================== */
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css');
+
+/* Variáveis */
+:root {
+    --primary: #3498db;
+    --primary-dark: #2980b9;
+    --danger: #e74c3c;
+    --danger-dark: #c0392b;
+    --success: #27ae60;
+    --warning: #f1c40f;
+    --bg: #ffffff;
+    --light-bg: #f9fbfc;
+    --border: #e1e8ed;
+    --text: #2c3e50;
+    --text-light: #7f8c8d;
+    --shadow: 0 3px 8px rgba(0,0,0,0.05);
+    --radius: 10px;
+}
+
+/* Container Principal - mais compacto */
+#acp_simpledown {
+    font-family: 'Bai Jamjuree', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    margin: 0 auto;
+    padding: 15px;
+    background: var(--bg);
+    border-radius: var(--radius);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.07);
+}
+
+/* --- Estatísticas (Stats Box) --- */
+.stats-box {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 14px;
+    margin: 16px 0;
+}
+.stat-item {
+    background: var(--light-bg);
+    padding: 14px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    text-align: center;
+    box-shadow: var(--shadow);
+    transition: transform 0.3s ease;
+}
+.stat-item:hover { transform: translateY(-2px); }
+.stat-item strong {
+    font-size: 1.6em;
+    color: var(--primary);
+    margin-bottom: 4px;
+}
+.stat-item span {
+    color: var(--text-light);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.75em;
+    letter-spacing: 0.4px;
+}
+
+/* --- Fieldset de Filtros --- */
+#acp_simpledown fieldset {
+    background: var(--light-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow);
+}
+#acp_simpledown legend {
+    font-size: 1.2em;
+    font-weight: 700;
+    color: var(--text);
+    padding: 0 12px;
+    background: var(--bg);
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+/* --- Controles e Filtros --- */
+.acp-controls-top {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+.control-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: flex-end;
+}
+.control-item {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    flex: 1;
+    min-width: 160px;
+}
+.control-item label {
+    font-weight: 600;
+    color: var(--text);
+    font-size: 0.88em;
+}
+
+/* Inputs e Selects */
+#acp_simpledown input[type="text"],
+#acp_simpledown input[type="date"],
+#acp_simpledown select {
+    padding: 9px 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg);
+    font-size: 0.95em;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04) inset;
+}
+#acp_simpledown input:focus,
+#acp_simpledown select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.18);
+    outline: none;
+}
+
+/* --- Botões (mais compactos) --- */
+#acp_simpledown .button1,
+#acp_simpledown input[type="submit"].button1 {
+    padding: 10px 24px;
+    background: linear-gradient(to bottom, var(--primary), var(--primary-dark));
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-size: 0.85em;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    box-shadow: 0 4px 10px rgba(52, 152, 219, 0.25);
+    cursor: pointer;
+    transition: all 0.3s;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+}
+#acp_simpledown .button1:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 14px rgba(52, 152, 219, 0.35);
+}
+
+#acp_simpledown .button2,
+#acp_simpledown a.button2 {
+    padding: 8px 20px;
+    background: #95a5a6;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85em;
+    letter-spacing: 0.4px;
+    cursor: pointer;
+    transition: background 0.3s;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+}
+#acp_simpledown .button2:hover { background: #7f8c8d; }
+#acp_simpledown .button2.danger,
+#acp_simpledown .button2[value="Excluir"],
+#acp_simpledown a.button2[href*="delete"] {
+    background: var(--danger);
+}
+#acp_simpledown .button2.danger:hover,
+#acp_simpledown .button2[value="Excluir"]:hover,
+#acp_simpledown a.button2[href*="delete"]:hover {
+    background: var(--danger-dark);
+}
+
+/* --- Tabela de Logs (mais compacta) --- */
+.table-responsive {
+    overflow-x: auto;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    margin-top: 12px;
+}
+.table1 {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--bg);
+}
+.table1 th {
+    background: linear-gradient(to bottom, var(--primary), var(--primary-dark));
+    color: white;
+    padding: 11px 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 0.85em;
+    border-right: 1px solid rgba(255, 255, 255, 0.3);
+    text-align: left;
+}
+.table1 th:last-child { border-right: none; }
+.table1 td {
+    padding: 10px 14px;
+    background: var(--bg);
+    border-bottom: 1px solid #ecf0f1;
+    border-right: 1px solid var(--border);
+    font-size: 0.92em;
+    color: var(--text);
+}
+.table1 td:last-child { border-right: none; }
+.table1 tr:hover td { background: #f0f7ff; }
+
+/* Badges de Status */
+.download-action, .preview-action, .denied-action {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.8em;
+    font-weight: 700;
+    color: #fff;
+}
+.download-action { background: var(--success); }
+.preview-action { background: var(--primary); }
+.denied-action { background: var(--danger); }
+
+/* --- Avisos e Erros --- */
+.errorbox {
+    background: #fff5f5;
+    border: 1px solid #feb2b2;
+    color: #c53030;
+    padding: 12px 15px;
+    border-radius: 8px;
+    margin-bottom: 18px;
+    border-left: 4px solid var(--danger);
+}
+.errorbox h3 {
+    margin: 0 0 6px;
+    color: #9b2c2c;
+    font-size: 1.05em;
+}
+
+/* --- Responsividade --- */
+@media (max-width: 900px) {
+    .control-group { flex-direction: column; align-items: stretch; }
+    .control-item { min-width: unset; }
+    .table1 th, .table1 td { padding: 8px 10px; font-size: 0.88em; }
+    .table1 th:nth-child(6), .table1 td:nth-child(6),
+    .table1 th:nth-child(7), .table1 td:nth-child(7) { display: none; }
+}
+
+@media (max-width: 768px) {
+    #acp_simpledown { padding: 12px; }
+    #acp_simpledown fieldset { padding: 14px; }
+    .stats-box { gap: 12px; }
+    .stat-item { padding: 12px; }
+}

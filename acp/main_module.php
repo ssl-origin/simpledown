@@ -4,6 +4,7 @@
  * @copyright (c) 2025 Mundo phpBB
  * @license http://opensource.org/licenses/gpl-license.php GNU General Public License, version 2.
  */
+
 namespace mundophpbb\simpledown\acp;
 
 class main_module
@@ -16,32 +17,30 @@ class main_module
     {
         global $phpbb_container, $user;
 
+        // Carrega idiomas da extensão
         $user->add_lang_ext('mundophpbb/simpledown', 'common');
-        $user->add_lang_ext('mundophpbb/simpledown', 'acp/info_acp_simpledown', 'en');
-        if ($user->lang['CODE'] !== 'en') {
-            $user->add_lang_ext('mundophpbb/simpledown', 'acp/info_acp_simpledown');
-        }
+        $user->add_lang_ext('mundophpbb/simpledown', 'acp/info_acp_simpledown');
 
+        // Proteção CSRF global para o módulo ACP
         add_form_key('mundophpbb_simpledown');
 
-        switch ($mode) {
+        switch ($mode)
+        {
             case 'settings':
-                $this->tpl_name = 'acp_simpledown_settings';
+                $this->tpl_name   = 'acp_simpledown_settings';
                 $this->page_title = $user->lang('ACP_SIMPLEDOWN_SETTINGS');
 
-                /** @var \mundophpbb\simpledown\controller\acp_settings_controller $controller */
                 $controller = $phpbb_container->get('mundophpbb.simpledown.acp_settings_controller');
-                $controller->set_u_action($this->u_action);
+                $controller->set_page_url($this->u_action);
                 $controller->handle();
                 break;
 
             case 'files':
-                $this->tpl_name = 'acp_simpledown_files';
+                $this->tpl_name   = 'acp_simpledown_files';
                 $this->page_title = $user->lang('ACP_SIMPLEDOWN_FILES');
 
-                /** @var \mundophpbb\simpledown\controller\acp_files_controller $controller */
                 $controller = $phpbb_container->get('mundophpbb.simpledown.acp_files_controller');
-                $controller->set_u_action($this->u_action);
+                $controller->set_page_url($this->u_action);
                 $controller->handle();
                 break;
 
@@ -49,10 +48,22 @@ class main_module
                 $this->tpl_name   = 'acp_simpledown_tools';
                 $this->page_title = $user->lang('ACP_SIMPLEDOWN_TOOLS');
 
-                /** @var \mundophpbb\simpledown\controller\acp_tools_controller $controller */
                 $controller = $phpbb_container->get('mundophpbb.simpledown.acp_tools_controller');
-                $controller->set_u_action($this->u_action);
+                $controller->set_page_url($this->u_action);
                 $controller->handle();
+                break;
+
+            case 'logs':
+                $this->tpl_name   = 'acp_simpledown_logs';
+                $this->page_title = $user->lang('ACP_SIMPLEDOWN_LOGS');
+
+                $controller = $phpbb_container->get('mundophpbb.simpledown.acp_logs_controller');
+                $controller->set_page_url($this->u_action);
+                $controller->handle();
+                break;
+
+            default:
+                trigger_error('NO_MODE', E_USER_ERROR);
                 break;
         }
     }

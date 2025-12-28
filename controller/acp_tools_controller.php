@@ -38,10 +38,13 @@ class acp_tools_controller
         $this->root_path = $phpbb_root_path;
     }
 
-    public function set_u_action($u_action)
-    {
-        $this->u_action = $u_action;
-    }
+    /**
+ * Define a URL da página atual (usada para redirecionamentos e links)
+ */
+public function set_page_url($u_action)
+{
+    $this->u_action = $u_action;
+}
 
     public function handle()
     {

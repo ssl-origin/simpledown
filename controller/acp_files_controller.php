@@ -58,10 +58,13 @@ class acp_files_controller
         $this->files_table       = $table_prefix . 'simpledown_files';
     }
 
-    public function set_u_action($u_action)
-    {
-        $this->u_action = $u_action;
-    }
+    /**
+ * Define a URL da página atual (usada para redirecionamentos e links)
+ */
+public function set_page_url($u_action)
+{
+    $this->u_action = $u_action;
+}
 
     public function handle()
     {

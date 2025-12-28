@@ -6,24 +6,71 @@
  * @copyright (c) 2025 Mundo phpBB
  * @license http://opensource.org/licenses/gpl-license.php GNU General Public License, version 2.
  */
+
 if (!defined('IN_PHPBB'))
 {
     exit;
 }
+
 if (empty($lang) || !is_array($lang))
 {
     $lang = [];
 }
+
 $lang = array_merge($lang, [
     // ===================================================================
     // Títulos e Navegação Geral
     // ===================================================================
-    'ACP_SIMPLEDOWN_TITLE' => 'Simple Downloads',
-    'ACP_SIMPLEDOWN_SETTINGS' => 'Configurações',
-    'ACP_SIMPLEDOWN_FILES' => 'Arquivos',
-    'ACP_SIMPLEDOWN_TOOLS' => 'Ferramentas',
-    'ACP_SIMPLEDOWN_ADD_FILE' => 'Adicionar Arquivo',
+    'ACP_SIMPLEDOWN_TITLE'          => 'Simple Downloads',
+    'ACP_SIMPLEDOWN_SETTINGS'       => 'Configurações',
+    'ACP_SIMPLEDOWN_FILES'          => 'Arquivos',
+    'ACP_SIMPLEDOWN_TOOLS'          => 'Ferramentas',
+    'ACP_SIMPLEDOWN_LOGS'           => 'Logs de Download',        // ← ADICIONADO
+    'ACP_SIMPLEDOWN_ADD_FILE'       => 'Adicionar Arquivo',
     'ACP_SIMPLEDOWN_EXISTING_FILES' => 'Arquivos Existentes',
+
+    // ===================================================================
+    // Aba Logs de Download
+    // ===================================================================
+    'ACP_SIMPLEDOWN_LOGS_EXPLAIN'               => 'Registro detalhado de todas as ações relacionadas aos downloads (visualizações, tentativas bloqueadas e downloads efetivos).',
+    'ACP_SIMPLEDOWN_TOTAL_LOGS'                 => 'Total de registros',
+    'ACP_SIMPLEDOWN_FILTER_BY_USERNAME'         => 'Filtrar por usuário',
+    'ACP_SIMPLEDOWN_FILTER_BY_ACTION'           => 'Filtrar por ação',
+    'ACP_SIMPLEDOWN_FILTER_BY_DATE'             => 'Filtrar por data',
+    'ACP_SIMPLEDOWN_FROM'                       => 'De',
+    'ACP_SIMPLEDOWN_TO'                         => 'Até',
+    'ACP_SIMPLEDOWN_CLEAR_FILTERS'              => 'Limpar filtros',
+    'ACP_SIMPLEDOWN_LOG_TIME'                   => 'Data/Hora',
+    'ACP_SIMPLEDOWN_LOG_USERNAME'               => 'Usuário',
+    'ACP_SIMPLEDOWN_LOG_IP'                     => 'Endereço IP',
+    'ACP_SIMPLEDOWN_LOG_ACTION'                 => 'Ação',
+    'ACP_SIMPLEDOWN_LOG_FILE'                   => 'Arquivo',
+    'ACP_SIMPLEDOWN_LOG_USER_AGENT'             => 'Navegador/Dispositivo',
+    'ACP_SIMPLEDOWN_LOG_ACTION_DOWNLOAD'        => 'Download',
+    'ACP_SIMPLEDOWN_LOG_ACTION_PREVIEW'         => 'Visualização',
+    'ACP_SIMPLEDOWN_LOG_ACTION_DENIED'          => 'Acesso negado',
+    'ACP_SIMPLEDOWN_UNKNOWN_FILE'               => 'Arquivo desconhecido',
+    'ACP_SIMPLEDOWN_NONE'                       => 'Nenhum',
+
+    // Ações em massa
+    'ACP_SIMPLEDOWN_DELETE_SELECTED'            => 'Excluir selecionados',
+    'ACP_SIMPLEDOWN_CLEAR_OLD_LOGS'             => 'Limpar logs antigos (mais de 6 meses)',
+    'ACP_SIMPLEDOWN_CLEAR_ALL_LOGS'             => 'Limpar todos os logs',
+
+    // Confirmações
+    'CONFIRM_DELETE_SELECTED_LOGS'              => 'Tem certeza que deseja excluir os logs selecionados?',
+    'CONFIRM_CLEAR_OLD_LOGS'                    => 'Tem certeza que deseja excluir todos os logs com mais de 6 meses?',
+    'CONFIRM_CLEAR_ALL_LOGS'                    => 'Tem certeza que deseja excluir TODOS os logs? Esta ação é irreversível!',
+
+    // Mensagens de sucesso
+    'LOGS_DELETED_SUCCESS'                      => '%d logs excluídos com sucesso.',
+    'LOGS_CLEARED_OLD_SUCCESS'                  => 'Logs antigos foram excluídos com sucesso.',
+    'LOGS_CLEARED_ALL_SUCCESS'                  => 'Todos os logs foram excluídos com sucesso.',
+
+    // Estatísticas
+    'ACP_SIMPLEDOWN_STATS_TOTAL_DOWNLOADS'      => 'Total de downloads registrados',
+    'ACP_SIMPLEDOWN_STATS_TOP_FILE'             => 'Arquivo mais baixado',
+
     // ===================================================================
     // Configurações Gerais
     // ===================================================================
@@ -31,14 +78,17 @@ $lang = array_merge($lang, [
     'ACP_SIMPLEDOWN_MAX_UPLOAD_SIZE_EXPLAIN' => 'Limite em MB para arquivos enviados (padrão: 100 MB).',
     'ACP_SIMPLEDOWN_SHORT_DESC_LIMIT' => 'Limite de caracteres da descrição curta',
     'ACP_SIMPLEDOWN_SHORT_DESC_LIMIT_EXPLAIN' => 'Máximo de caracteres para a descrição curta exibida nos cards (padrão: 150).',
+
     // Controle de privacidade por categorias
     'ACP_SIMPLEDOWN_PRIVATE_CATEGORIES' => 'Categorias privadas',
     'ACP_SIMPLEDOWN_PRIVATE_CATEGORIES_EXPLAIN' => 'Selecione as categorias cujos arquivos exigirão login para download. Deixe vazio para que nenhum arquivo seja privado por categoria (o controle individual continua funcionando).',
     'ACP_SIMPLEDOWN_PRIVATE_CATEGORIES_HOLD_CTRL'=> 'Segure Ctrl (ou Cmd no Mac) para selecionar múltiplas categorias.',
+
     // Visibilidade padrão para novos arquivos
     'ACP_SIMPLEDOWN_DEFAULT_VISIBILITY' => 'Visibilidade padrão para novos arquivos',
     'ACP_SIMPLEDOWN_DEFAULT_VISIBILITY_EXPLAIN' => 'Esta opção define o valor pré-selecionado (público ou privado) ao adicionar um novo arquivo.<br /><strong style="color: #c62828;">A configuração individual de cada arquivo sempre tem prioridade máxima:</strong> se você marcar um arquivo específico como Público, ele será acessível a todos (mesmo que o padrão seja Privado), e vice-versa.',
     'ACP_SIMPLEDOWN_SAVE_CONFIG' => 'Salvar Configurações',
+
     // ===================================================================
     // Layout da página pública
     // ===================================================================
@@ -46,7 +96,6 @@ $lang = array_merge($lang, [
     'ACP_SIMPLEDOWN_CARDS_PER_ROW_EXPLAIN' => 'Define quantos cards de download são exibidos lado a lado na página principal de downloads.<br />• <strong>3 cards</strong>: layout padrão (recomendado para desktops).<br />• <strong>2 cards</strong>: layout mais amplo e confortável em telas médias.',
     'ACP_SIMPLEDOWN_CARDS' => 'cards por linha',
 
-    // NOVA: Permitir escolha do usuário entre grid e lista
     'ACP_SIMPLEDOWN_ALLOW_USER_LAYOUT_CHOICE' => 'Permitir que usuários escolham o layout',
     'ACP_SIMPLEDOWN_ALLOW_USER_LAYOUT_CHOICE_EXPLAIN' => 'Quando ativado, os visitantes poderão alternar entre visualização em grade (cards) e lista na página pública de downloads. A escolha é salva em cookie.',
     'ACP_SIMPLEDOWN_VIEW_GRID' => 'Visualização em grade',
@@ -66,6 +115,7 @@ $lang = array_merge($lang, [
     'ACP_SIMPLEDOWN_CATEGORY_NOT_FOUND' => 'Categoria não encontrada.',
     'ACP_SIMPLEDOWN_CATEGORY_DUPLICATE' => 'Esta categoria já existe.',
     'ACP_SIMPLEDOWN_SELECT_CATEGORY_REQUIRED' => 'Selecione uma categoria',
+
     // ===================================================================
     // Gerenciamento de Arquivos
     // ===================================================================
@@ -90,6 +140,7 @@ $lang = array_merge($lang, [
     'ACP_SIMPLEDOWN_REPLACE_FILE_HELP' => 'O arquivo antigo será excluído permanentemente. O novo será salvo com nome sanitizado (pode ser renomeado automaticamente se houver conflito).',
     'ACP_SIMPLEDOWN_CURRENT_FILE' => 'Arquivo atual',
     'ACP_SIMPLEDOWN_CURRENT_SERVER_FILE' => 'Nome atual no servidor',
+
     // ===================================================================
     // Visibilidade Pública/Privada (individual)
     // ===================================================================
@@ -97,17 +148,19 @@ $lang = array_merge($lang, [
     'ACP_SIMPLEDOWN_VISIBILITY_EXPLAIN' => 'Defina se o arquivo é público (qualquer visitante) ou privado (apenas usuários logados podem baixar).',
     'ACP_SIMPLEDOWN_PUBLIC' => 'Público',
     'ACP_SIMPLEDOWN_PRIVATE' => 'Privado',
+
     // ===================================================================
     // Miniaturas (thumbs)
     // ===================================================================
     'ACP_SIMPLEDOWN_UPLOAD_THUMB' => 'Enviar Miniatura',
     'ACP_SIMPLEDOWN_UPLOAD_THUMB_EXPLAIN' => 'Envie uma imagem para ser usada como miniatura na página de detalhes. Recomendado: 300x300px ou maior.',
-    'ACP_SIMPLEDOWN_THUMB_ALREADY_EXISTS_WARNING'=> 'Atenção: Já existia uma miniatura com este nome e ela foi sobrescrita.',
+    'ACP_SIMPLEDOWN_THUMB_ALREADY_EXISTS_WARNING' => 'Atenção: Já existia uma miniatura com este nome e ela foi sobrescrita.',
     'ACP_SIMPLEDOWN_THUMB_UPLOAD_SUCCESS' => 'Miniatura enviada com sucesso!',
     'ACP_SIMPLEDOWN_SELECT_THUMB' => 'Selecionar miniatura existente',
     'ACP_SIMPLEDOWN_NO_THUMB' => 'Sem thumbnail',
     'ACP_SIMPLEDOWN_NO_THUMBS' => 'Nenhuma miniatura encontrada na pasta thumbs.',
     'ACP_SIMPLEDOWN_THUMB_PREVIEW' => 'Pré-visualização da miniatura',
+
     // ===================================================================
     // Tabela e Controles
     // ===================================================================
@@ -120,6 +173,7 @@ $lang = array_merge($lang, [
     'ACP_SIMPLEDOWN_TOTAL_FILES' => 'Total de arquivos',
     'ACP_SIMPLEDOWN_ITEMS_PER_PAGE' => 'Itens por página',
     'ACP_SIMPLEDOWN_ALL_ITEMS' => 'Todos',
+
     // ===================================================================
     // Avisos e Segurança
     // ===================================================================
@@ -129,6 +183,7 @@ $lang = array_merge($lang, [
     'ACP_SIMPLEDOWN_ALLOWED_FILES_TITLE' => 'Arquivos Permitidos',
     'ACP_SIMPLEDOWN_ALLOWED_FILES_TEXT_1' => 'Formatos permitidos:',
     'ACP_SIMPLEDOWN_ALLOWED_FILES_TEXT_2' => 'PDF, ZIP, RAR, 7Z, DOC/DOCX, XLS/XLSX, PPT/PPTX, imagens, TXT, MP3/WAV/OGG, MP4/AVI/MKV/MOV.',
+
     // ===================================================================
     // Mensagens de Sucesso
     // ===================================================================
@@ -141,6 +196,7 @@ $lang = array_merge($lang, [
     'ACP_SIMPLEDOWN_THUMB_UPLOAD_SUCCESS' => 'Miniatura enviada com sucesso!',
     'ACP_SIMPLEDOWN_ORPHANS_DELETED' => '%d miniaturas órfãs foram excluídas.',
     'ACP_SIMPLEDOWN_THUMB_DELETED' => 'Miniatura excluída com sucesso.',
+
     // ===================================================================
     // Erros e Validações
     // ===================================================================
@@ -157,6 +213,7 @@ $lang = array_merge($lang, [
     'ACP_SIMPLEDOWN_FILE_NOT_FOUND' => 'Arquivo não encontrado.',
     'ACP_SIMPLEDOWN_FILE_NAME_REQUIRED' => 'O nome do arquivo é obrigatório.',
     'ACP_SIMPLEDOWN_THUMB_NOT_FOUND' => 'Miniatura não encontrada.',
+
     // ===================================================================
     // Chaves para upload personalizado e busca
     // ===================================================================
@@ -164,8 +221,8 @@ $lang = array_merge($lang, [
     'ACP_SIMPLEDOWN_NO_FILE_SELECTED' => 'Nenhum arquivo selecionado',
     'ACP_SIMPLEDOWN_SEARCH_FILES' => 'Buscar arquivos',
     'ACP_SIMPLEDOWN_SEARCH_PLACEHOLDER' => 'Digite o nome do arquivo...',
-    // Tooltip do ícone de preview
     'ACP_SIMPLEDOWN_VIEW_FULL_DESC' => 'Ver descrição completa',
+
     // ===================================================================
     // Modal e mensagens gerais
     // ===================================================================
@@ -175,6 +232,7 @@ $lang = array_merge($lang, [
     'ACP_SIMPLEDOWN_WARNING' => 'Atenção',
     'ACP_SIMPLEDOWN_CONFIRM_DELETE' => 'Tem certeza que deseja excluir este arquivo? Esta ação não pode ser desfeita.',
     'CHARACTERS' => 'caracteres',
+
     // ===================================================================
     // Aba Ferramentas
     // ===================================================================
@@ -182,6 +240,7 @@ $lang = array_merge($lang, [
     'ACP_SIMPLEDOWN_TOOLS_LABEL' => 'Texto/HTML personalizado:',
     'ACP_SIMPLEDOWN_TOOLS_EXPLAIN' => 'Escreva aqui qualquer conteúdo que deseja exibir na aba Ferramentas.<br />Suporta HTML básico (links, imagens, listas, negrito, etc.).',
     'ACP_SIMPLEDOWN_SAVE_TOOLS_CONTENT' => 'Salvar conteúdo',
+
     // Gerenciamento de Miniaturas
     'ACP_SIMPLEDOWN_THUMBNAILS_MANAGEMENT' => 'Gerenciamento de Miniaturas',
     'ACP_SIMPLEDOWN_THUMBNAILS_EXPLAIN_SIMPLE' => 'Selecione uma miniatura abaixo para visualizar os detalhes e a opção de exclusão.',
@@ -196,6 +255,7 @@ $lang = array_merge($lang, [
     'ACP_SIMPLEDOWN_TOTAL_THUMBS' => 'Total de miniaturas',
     'ACP_SIMPLEDOWN_ORPHAN_THUMBS' => 'Miniaturas órfãs',
     'ACP_SIMPLEDOWN_CLEAN_ORPHAN_THUMBS' => 'Excluir todas as miniaturas órfãs',
+
     // ===================================================================
     // Gerenciamento de Arquivos Órfãos (pasta /files/)
     // ===================================================================
@@ -209,6 +269,7 @@ $lang = array_merge($lang, [
     'ACP_SIMPLEDOWN_FILE_DELETE_FAILED' => 'Falha ao excluir o arquivo órfão.',
     'ACP_SIMPLEDOWN_TOTAL_ORPHAN_FILES' => 'Total de arquivos órfãos encontrados',
     'ACP_SIMPLEDOWN_ORPHAN_DELETE_WARNING' => 'Você está prestes a excluir permanentemente o arquivo selecionado do servidor.',
+
     // ===================================================================
     // Tema do site público
     // ===================================================================
