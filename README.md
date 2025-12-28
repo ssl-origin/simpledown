@@ -5,7 +5,7 @@
 
 O **SimpleDown** é uma extensão para phpBB 3.3 que oferece um sistema simplificado e eficiente para distribuição de arquivos. Com foco em usabilidade e segurança, ele permite gerenciar downloads diretamente pelo Painel de Administração (ACP).
 
-## ? Funcionalidades
+##  Funcionalidades
 
 - **Gerenciamento Completo no ACP:** Envie arquivos (ZIP, PDF, Imagens, etc.) e gerencie-os facilmente.
 - **Categorias Personalizadas:** Organize seus downloads por categorias.
@@ -16,12 +16,12 @@ O **SimpleDown** é uma extensão para phpBB 3.3 que oferece um sistema simplifica
 - **Miniaturas:** Suporte para pré-visualização de arquivos com miniaturas personalizáveis.
 - **Ordenação Flexível:** Filtre por nome, tamanho ou número de downloads.
 
-## ?? Requisitos
+##  Requisitos
 
 - **phpBB:** 3.3.0 ou superior.
 - **PHP:** 7.1 ou superior.
 
-## ?? Instalação
+##  Instalação
 
 1. Baixe a versão mais recente do repositório.
 2. No seu servidor, navegue até a pasta `ext/` da instalação do seu fórum.
@@ -30,7 +30,7 @@ O **SimpleDown** é uma extensão para phpBB 3.3 que oferece um sistema simplifica
 5. Vá ao **Painel de Controle da Administração (ACP)** > **Personalizar** > **Gerenciar Extensões**.
 6. Localize **Simple Download** na lista e clique em **Habilitar**.
 
-## ??? Extensões de Arquivos Suportadas
+##  Extensões de Arquivos Suportadas
 
 O SimpleDown suporta uma vasta gama de formatos, incluindo:
 - **Documentos:** PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX, TXT.
@@ -38,14 +38,14 @@ O SimpleDown suporta uma vasta gama de formatos, incluindo:
 - **Imagens:** JPG, PNG, GIF, WEBP, SVG.
 - **Mídia:** MP3, WAV, OGG, MP4, AVI, MKV, MOV.
 
-## ?? Traduções
+##  Traduções
 
 Atualmente disponível em:
-- ???? Português Brasileiro (pt-br)
-- ???? Inglês (en)
-- ???? Francês (fr)
+-  Português Brasileiro (pt-br)
+-  Inglês (en)
+-  Francês (fr)
 
-## ?? Licença
+##  Licença
 
 GPLv2 - [GNU General Public License v2](http://opensource.org/licenses/gpl-license.php)
 
