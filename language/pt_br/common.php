@@ -96,7 +96,7 @@ $lang = array_merge($lang, [
     'ACP_SIMPLEDOWN_FILE_EDITED'        => 'Arquivo editado com sucesso.',
     'ACP_SIMPLEDOWN_FILE_DELETED'       => 'Arquivo deletado com sucesso.',
         // Modal de login para arquivos privados
-    'SIMPLEDOWN_PRIVATE_MODAL_TEXT'      => 'Este arquivo é exclusivo para membros cadastrados.<br>Faça login ou registre-se para baixar.',
+    'SIMPLEDOWN_PRIVATE_MODAL_TEXT'      => 'Este arquivo é exclusivo para membros cadastrados. Faça login ou registre-se para baixar.',
     'SIMPLEDOWN_LOGIN_BUTTON'            => 'Fazer Login',
     'SIMPLEDOWN_REGISTER_BUTTON'         => 'Criar Conta',
         // Frontend - Detalhes e lista

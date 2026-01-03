@@ -1,31 +1,38 @@
 /* ========================================
-   SimpleDown ACP - Design Moderno & Compacto 2025
+   SimpleDown ACP - Design Flat & Minimalista 2026
    ======================================== */
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css');
 
-/* Variáveis */
+/* Variáveis - Paleta clean e moderna */
 :root {
     --primary: #3498db;
-    --primary-dark: #2980b9;
+    --primary-hover: #2980b9;
     --danger: #e74c3c;
-    --danger-dark: #c0392b;
+    --danger-hover: #c0392b;
+    --success: #27ae60;
+    --success-hover: #1e8449;
     --bg: #ffffff;
-    --light-bg: #f9fbfc;
-    --border: #e1e8ed;
-    --text: #2c3e50;
-    --text-light: #7f8c8d;
-    --shadow: 0 3px 10px rgba(0,0,0,0.04);
-    --radius: 12px;
+    --light-bg: #f8fafc;
+    --border: #dfe4ea;
+    --text: #2d3748;
+    --text-light: #718096;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+    --shadow: 0 4px 12px rgba(0,0,0,0.06);
+    --radius-sm: 6px;
+    --radius: 10px;
+    --transition: all 0.2s ease;
 }
 
-/* Container Principal */
+/* Container Principal - com Bai Jamjuree aplicada (sem import externo) */
 #acp_simpledown {
-    font-family: 'Bai Jamjuree', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    margin: 0 auto;
-    padding: 15px;
+    font-family: 'Bai Jamjuree', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+    font-weight: 500;
+    max-width: none;
+    margin: 20px auto;
+    padding: 20px;
     background: var(--bg);
     border-radius: var(--radius);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    box-shadow: var(--shadow);
 }
 
 /* Fieldsets e Legendas */
@@ -33,37 +40,34 @@
     background: var(--light-bg);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    padding: 18px;
-    margin-bottom: 20px;
-    box-shadow: var(--shadow);
-}
-#acp_simpledown legend {
-    font-size: 1.3em;
-    font-weight: 700;
-    color: var(--text);
-    padding: 0 16px;
-    background: var(--bg);
-    border-radius: 8px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    padding: 20px;
+    margin-bottom: 30px;
 }
 
-/* Labels e descrições */
+#acp_simpledown legend {
+    font-size: 1.25em;
+    font-weight: 600;
+    color: var(--text);
+    padding: 0 12px;
+}
+
+/* Labels e Explicações */
 #acp_simpledown dl dt label {
     font-weight: 600;
     color: var(--text);
-    margin-bottom: 2px;
+    margin-bottom: 4px;
     display: block;
-}
-#acp_simpledown dl dt span {
-    font-size: 0.85em;
-    color: var(--text-light);
-    font-style: italic;
-    display: block;
-    margin-top: -8px;
-    line-height: 1.3;
 }
 
-/* Inputs comuns */
+#acp_simpledown dl dt span {
+    font-size: 0.9em;
+    color: var(--text-light);
+    line-height: 1.4;
+    display: block;
+    margin-top: 4px;
+}
+
+/* Inputs, Textarea e Select */
 #acp_simpledown input[type="text"],
 #acp_simpledown textarea,
 #acp_simpledown select {
@@ -71,457 +75,385 @@
     max-width: 600px;
     padding: 10px 14px;
     border: 1px solid var(--border);
-    border-radius: 8px;
+    border-radius: var(--radius-sm);
     background: var(--bg);
     font-size: 1em;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05) inset;
+    transition: var(--transition);
 }
+
 #acp_simpledown input[type="text"]:focus,
 #acp_simpledown textarea:focus,
 #acp_simpledown select:focus {
     border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.15);
     outline: none;
 }
 
-/* Custom file upload */
+/* Dropdowns (Select) */
+#acp_simpledown select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23718096' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 36px;
+}
+
+/* Custom File Upload - Flat */
 .custom-file-upload {
     position: relative;
-    width: 100%;
-    max-width: 600px;
-    border: 2px dashed var(--border);
-    border-radius: 10px;
-    padding: 14px;
-    background: #ecf0f1;
     display: flex;
     align-items: center;
-    gap: 15px;
-    transition: background 0.3s, border-color 0.3s;
+    gap: 12px;
+    padding: 12px;
+    border: 2px dashed var(--border);
+    border-radius: var(--radius);
+    background: var(--light-bg);
+    transition: var(--transition);
+    max-width: 600px;
 }
+
 .custom-file-upload:hover {
-    background: #d6e4ff;
     border-color: var(--primary);
+    background: rgba(52, 152, 219, 0.05);
 }
+
 .custom-file-upload input[type="file"] {
     position: absolute;
     inset: 0;
     opacity: 0;
     cursor: pointer;
 }
+
 .custom-file-label {
+    padding: 8px 20px;
     background: var(--primary);
     color: white;
-    padding: 10px 20px;
-    border-radius: 6px;
-    cursor: pointer;
+    border-radius: var(--radius-sm);
     font-weight: 600;
-    transition: background 0.3s;
     white-space: nowrap;
+    transition: var(--transition);
 }
+
 .custom-file-label:hover {
-    background: var(--primary-dark);
+    background: var(--primary-hover);
 }
+
 .file-name-display {
     color: var(--text-light);
     font-style: italic;
     flex-grow: 1;
-    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
-/* Botões gerais */
-#acp_simpledown .submit-buttons {
-    text-align: center;
-    margin: 20px 0;
-}
+/* Botões - Flat & Minimalista */
 #acp_simpledown .button1,
-#acp_simpledown input[type="submit"].button1 {
-    padding: 12px 28px;
-    background: linear-gradient(to bottom, var(--primary), var(--primary-dark));
-    border: none;
-    border-radius: 10px;
-    color: white;
-    font-size: 0.9em;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    box-shadow: 0 5px 12px rgba(52, 152, 219, 0.3);
-    cursor: pointer;
-    transition: all 0.3s;
-}
-#acp_simpledown .button1:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 18px rgba(52, 152, 219, 0.4);
-}
-
-/* Botão padrão (cinza) e Excluir (vermelho) */
-#acp_simpledown .button2,
-#acp_simpledown a.button2 {
+#acp_simpledown input[type="submit"] {
     padding: 10px 24px;
-    background: #95a5a6;
+    background: var(--primary);
     border: none;
-    border-radius: 10px;
+    border-radius: var(--radius-sm);
     color: white;
     font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin: 0 6px;
     cursor: pointer;
-    transition: background 0.3s;
-}
-#acp_simpledown .button2:hover {
-    background: #7f8c8d;
-}
-#acp_simpledown .button2[value="Excluir"],
-#acp_simpledown a.button2[href*="delete"],
-#acp_simpledown .button2.danger {
-    background: var(--danger);
-}
-#acp_simpledown .button2[value="Excluir"]:hover,
-#acp_simpledown a.button2[href*="delete"]:hover,
-#acp_simpledown .button2.danger:hover {
-    background: var(--danger-dark);
+    transition: var(--transition);
 }
 
-/* Botões na tabela */
-#acp_simpledown .compact-table .button2 {
-    padding: 6px 14px;
-    font-size: 0.9em;
-    margin: 0 6px;
-    min-width: 80px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    background: #95a5a6;
-    color: white;
+#acp_simpledown .button1:hover {
+    background: var(--primary-hover);
+}
+
+#acp_simpledown .button2,
+#acp_simpledown a.button2 {
+    padding: 8px 18px;
+    background: #718096;
     border: none;
-    border-radius: 6px;
+    border-radius: var(--radius-sm);
+    color: white;
+    font-weight: 600;
     cursor: pointer;
-    transition: background 0.3s;
-}
-#acp_simpledown .compact-table .button2:hover {
-    background: #7f8c8d;
-}
-#acp_simpledown .compact-table .button2[value="Excluir"],
-#acp_simpledown .compact-table a.button2[href*="delete"],
-#acp_simpledown .compact-table .button2.danger {
-    background: var(--danger);
-}
-#acp_simpledown .compact-table .button2[value="Excluir"]:hover,
-#acp_simpledown .compact-table a.button2[href*="delete"]:hover,
-#acp_simpledown .compact-table .button2.danger:hover {
-    background: var(--danger-dark);
+    transition: var(--transition);
+    font-size: 0.9em;
 }
 
-/* Tabela */
+#acp_simpledown .button2:hover {
+    background: #4a5568;
+}
+
+/* Botão Danger (Excluir) */
+#acp_simpledown .button2.danger,
+#acp_simpledown .button2[value*="Excluir"],
+#acp_simpledown a.button2[href*="delete"] {
+    background: var(--danger);
+}
+
+#acp_simpledown .button2.danger:hover,
+#acp_simpledown .button2[value*="Excluir"]:hover,
+#acp_simpledown a.button2[href*="delete"]:hover {
+    background: var(--danger-hover);
+}
+
+/* Tabelas - Flat */
 #acp_simpledown .table1 {
     width: 100%;
-    border-collapse: separate;
-    border-spacing: 0;
+    border-collapse: collapse;
     border-radius: var(--radius);
     overflow: hidden;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    box-shadow: var(--shadow);
     margin-top: 15px;
 }
+
 #acp_simpledown .table1 th {
-    background: linear-gradient(to bottom, var(--primary), var(--primary-dark));
+    background: var(--primary);
     color: white;
-    padding: 14px 18px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.6px;
-    font-size: 0.9em;
-    border-right: 1px solid rgba(255, 255, 255, 0.3);
-}
-#acp_simpledown .table1 td {
-    padding: 14px 18px;
-    background: var(--bg);
-    border-bottom: 1px solid #ecf0f1;
-    border-right: 1px solid var(--border);
-}
-#acp_simpledown .table1 td:last-child,
-#acp_simpledown .table1 th:last-child {
-    border-right: none;
-}
-#acp_simpledown .table1 tr:hover td {
-    background: #f0f7ff;
-}
-
-/* Ícones por extensão na tabela */
-#acp_simpledown .table1 i.fa-file-pdf { color: #e74c3c; }
-#acp_simpledown .table1 i.fa-file-image { color: #3498db; }
-#acp_simpledown .table1 i.fa-file-word { color: #2980b9; }
-#acp_simpledown .table1 i.fa-file-excel { color: #27ae60; }
-#acp_simpledown .table1 i.fa-file-powerpoint { color: #e67e22; }
-#acp_simpledown .table1 i.fa-file-archive { color: #9b59b6; }
-#acp_simpledown .table1 i.fa-file-audio { color: #f1c40f; }
-#acp_simpledown .table1 i.fa-file-video { color: #c0392b; }
-#acp_simpledown .table1 i.fa-file-lines { color: #7f8c8d; }
-#acp_simpledown .table1 i.fa-file { color: #95a5a6; }
-
-/* Avisos de Segurança */
-#acp_simpledown .security-notices {
-    display: flex;
-    gap: 15px;
-    margin: 15px 0 25px;
-    align-items: stretch;
-}
-#acp_simpledown .warning-box,
-#acp_simpledown .allowed-box {
-    flex: 1;
     padding: 12px 16px;
-    border-radius: 8px;
-    border-left: 5px solid;
-    background: var(--bg);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    font-size: 0.92em;
-    line-height: 1.4;
-    min-height: 80px;
+    font-weight: 600;
+    text-align: left;
+    font-size: 0.9em;
 }
-#acp_simpledown .warning-box { border-color: #f44336; background: #ffebee; }
-#acp_simpledown .allowed-box { border-color: #4caf50; background: #e8f5e9; }
 
-/* Controles superiores - TOTAL À DIREITA */
+#acp_simpledown .table1 td {
+    padding: 12px 16px;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+}
+
+#acp_simpledown .table1 tr:hover td {
+    background: rgba(52, 152, 219, 0.05);
+}
+
+/* Ícones de arquivo */
+#acp_simpledown i.fa-file-pdf { color: var(--danger); }
+#acp_simpledown i.fa-file-image { color: var(--primary); }
+#acp_simpledown i.fa-file-archive { color: #9b59b6; }
+#acp_simpledown i.fa-file { color: var(--text-light); }
+
+/* Controles Top */
 .acp-controls-top {
     display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
     align-items: center;
     justify-content: space-between;
-    gap: 24px;
-    flex-wrap: wrap;
-    margin-bottom: 20px;
     padding: 12px 16px;
     background: var(--light-bg);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    box-shadow: var(--shadow);
-    overflow-x: auto;
+    margin-bottom: 20px;
 }
-.control-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    white-space: nowrap;
-}
-.control-item label {
-    font-weight: 600;
-    color: var(--text);
-}
-.control-item select,
-.control-item input[type="text"] {
-    padding: 8px 12px;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    background: var(--bg);
-    font-size: 0.95em;
-    transition: all 0.3s ease;
-}
-.control-item select { min-width: 90px; }
-.control-item input[type="text"] {
-    flex: 1;
-    min-width: 220px;
-    max-width: 450px;
-}
+
 .total-item {
     font-weight: 600;
     color: var(--text);
     white-space: nowrap;
-    margin-left: auto; /* garante à direita */
 }
+
 .total-item strong {
     color: var(--primary);
-    font-size: 1.1em;
 }
 
-/* === BARRA DE BUSCA NO ACP - VISUAL PERFEITO === */
-.acp-controls-top .search-box-outer {
-    position: relative;
+/* Toolbar BBCode - Minimalista (todos na mesma linha em desktop) */
+.bbcode-toolbar {
     display: flex;
-    align-items: center;
-    width: 100%;
-    max-width: 450px;
-    height: 44px;
+    flex-wrap: nowrap;              /* força mesma linha em desktop */
+    gap: 8px;
+    padding: 10px;
+    background: var(--light-bg);
     border: 1px solid var(--border);
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+    border-radius: var(--radius-sm);
+    margin-bottom: 10px;
+    overflow-x: auto;               /* scroll horizontal se não couber em mobile */
+}
+
+.bbcode-btn,
+.size-select {                      /* estilo unificado para botões e select de tamanho */
+    padding: 8px 12px;
     background: var(--bg);
-}
-
-.acp-controls-top .simpledown-search-input {
-    flex: 1;
-    padding: 10px 40px 10px 14px;
-    font-size: 0.95em;
-    border: none;
-    background: transparent;
-    outline: none;
-    height: 100%;
-    box-sizing: border-box;
-}
-.acp-controls-top .simpledown-search-input::placeholder {
-    color: #aaaaaa;
-    font-style: italic;
-}
-
-/* Remove o "X" nativo */
-.acp-controls-top .simpledown-search-input::-webkit-search-cancel-button,
-.acp-controls-top .simpledown-search-input::-ms-clear,
-.acp-controls-top .simpledown-search-input::-webkit-search-decoration {
-    display: none;
-}
-
-/* Botão X flutuante */
-.acp-controls-top .external-clear-btn {
-    position: absolute;
-    right: 8px;
-    top: 50%;
-    transform: translateY(-50%);
-    display: none;
-    width: 32px;
-    height: 32px;
-    align-items: center;
-    justify-content: center;
-    background: transparent;
-    border: none;
-    border-radius: 50%;
-    color: #cccccc;
-    font-size: 1.2em;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-size: 0.9em;
     cursor: pointer;
-    transition: all 0.3s ease;
-}
-.acp-controls-top .external-clear-btn:hover {
-    background: rgba(231, 76, 60, 0.1);
-    color: #e74c3c;
-}
-.acp-controls-top .search-box-outer.has-value .external-clear-btn {
-    display: flex;
+    transition: var(--transition);
+    min-width: auto;
+    white-space: nowrap;
 }
 
-/* Miniaturas no ACP */
-#thumb-preview {
-    margin-top: 15px;
-    padding: 12px;
-    background: #f8f9fa;
-    border: 1px solid #dee2e6;
-    border-radius: 8px;
-    text-align: center;
-}
-#thumb-preview img {
-    max-width: 100%;
-    height: auto;
-    border-radius: 6px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+.bbcode-btn:hover,
+.size-select:hover {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
 }
 
-/* Ícone de preview da descrição */
-.view-full-desc {
-    color: var(--primary);
-    cursor: pointer;
-    font-size: 1.3em;
-    opacity: 0.8;
-    transition: opacity 0.3s ease, color 0.3s ease;
-}
-.view-full-desc:hover,
-.view-full-desc:focus {
-    opacity: 1;
-    color: var(--primary-dark);
+/* Select de tamanho - seta customizada e alinhamento perfeito */
+.size-select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23718096' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    padding-right: 28px;
 }
 
-/* Modal genérico */
+/* Modais - Flat & Clean */
 .modal {
     display: none;
     position: fixed;
-    z-index: 10001;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0,0,0,0.65);
+    inset: 0;
+    background: rgba(0,0,0,0.5);
     justify-content: center;
     align-items: center;
-}
-.modal-content {
-    background: var(--bg);
-    margin: auto;
-    padding: 30px 40px;
-    border-radius: 12px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.4);
-    width: 90%;
-    max-width: 500px;
-    /*text-align: center;*/
-    position: relative;
-    border: 1px solid var(--border);
-}
-.close-modal {
-    position: absolute;
-    top: 15px;
-    right: 20px;
-    font-size: 36px;
-    font-weight: bold;
-    cursor: pointer;
-    color: var(--text-light);
-    transition: color 0.3s;
-}
-.close-modal:hover,
-.close-modal:focus {
-    color: var(--danger);
-}
-.modal h3 {
-    margin: 0 0 20px;
-    color: var(--danger);
-    font-size: 1.4em;
-}
-.modal p {
-    margin: 0;
-    font-size: 1.1em;
-    line-height: 1.5;
-    color: var(--text);
+    z-index: 10000;
 }
 
-/* Modal de descrição completa */
-#desc-modal > div {
+.modal-content {
     background: var(--bg);
-    margin: 5% auto;
-    padding: 25px;
+    padding: 30px;
     border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    max-width: 500px;
     width: 90%;
+    position: relative;
+}
+
+.close-modal {
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    font-size: 28px;
+    color: var(--text-light);
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.close-modal:hover {
+    color: var(--danger);
+}
+
+#desc-modal .modal-content {
     max-width: 900px;
     max-height: 90vh;
     overflow-y: auto;
-    position: relative;
-    box-shadow: var(--shadow);
 }
+
 #full-desc-content {
-    max-height: 600px;
-    overflow-y: auto;
     padding: 20px;
-    border: 1px solid var(--border);
-    border-radius: 6px;
     background: var(--light-bg);
+    border-radius: var(--radius-sm);
     line-height: 1.6;
-    white-space: pre-wrap;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
+}
+
+/* Alertas e Mensagens */
+.errorbox,
+.successbox {
+    padding: 16px;
+    border-radius: var(--radius);
+    margin: 20px 0;
+    border-left: 5px solid;
+}
+
+.errorbox {
+    background: #fff5f5;
+    border-color: var(--danger);
+    color: var(--danger);
+}
+
+.successbox {
+    background: #f0fff4;
+    border-color: var(--success);
+    color: var(--success);
 }
 
 /* Responsivo */
 @media (max-width: 768px) {
-    #acp_simpledown { padding: 12px; }
+    #acp_simpledown {
+        padding: 12px;
+        margin: 10px;
+    }
+    .acp-controls-top {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .custom-file-upload {
+        flex-direction: column;
+        align-items: stretch;
+    }
     #acp_simpledown .table1 th,
-    #acp_simpledown .table1 td { padding: 10px 12px; font-size: 0.85em; }
-    #acp_simpledown fieldset { padding: 15px; margin-bottom: 18px; }
-    #acp_simpledown .security-notices { flex-direction: column; gap: 12px; }
-    .custom-file-upload { flex-direction: column; gap: 10px; align-items: flex-start; }
-    .acp-controls-top { 
-        flex-wrap: wrap; 
-        gap: 16px; 
-        justify-content: flex-start;
+    #acp_simpledown .table1 td {
+        padding: 10px;
+        font-size: 0.9em;
     }
-    .control-item.total-item {
-        margin-left: 0;
-        margin-top: 8px;
-        text-align: right;
-        width: 100%;
+    .bbcode-toolbar {
+        flex-wrap: wrap;            /* permite quebra em mobile */
     }
+}
+
+/* ========================================
+   Avisos de Segurança - Mais compacto (distância entre linhas reduzida)
+   ======================================== */
+.security-notices {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin: 30px 0;
+}
+
+.warning-box,
+.allowed-box {
+    padding: 16px;                  /* padding ligeiramente reduzido */
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    font-size: 0.95em;
+    line-height: 1.3;               /* distância entre linhas reduzida (de 1.5 para 1.3) */
+}
+
+.warning-box p,
+.allowed-box p {
+    margin: 8px 0;                  /* margem menor entre parágrafos */
+}
+
+.warning-box {
+    background: #fff5f5;
+    border-left: 6px solid var(--danger);
+}
+
+.allowed-box {
+    background: #f0fff4;
+    border-left: 6px solid var(--success);
+}
+
+.warning-box strong,
+.allowed-box strong {
+/*    display: block;
+    font-size: 1.1em;
+    margin-bottom: 8px;             /* margem reduzida */
+    color: var(--text);
+}
+
+@media (max-width: 768px) {
+    .security-notices {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+}
+
+/* Melhorar aparência do dropdown de fóruns no ACP */
+#announce_forum option:disabled {
+    font-weight: bold;          /* Categorias em negrito */
+    color: #000;                /* Cor preta forte */
+    background-color: #f0f8ff;  /* Fundo azul claro para destacar cabeçalhos */
+    padding-left: 10px;         /* Indentação extra */
+    font-style: italic;         /* Opcional: itálico para diferenciar */
+}
+
+#announce_forum option {
+    padding-left: 20px;         /* Indentação maior nos fóruns filhos */
+}
+
+/* Fundo geral do select */
+#announce_forum {
+    width: 100%;
+    max-width: 500px;
+    padding: 8px;
+    font-size: 14px;
 }

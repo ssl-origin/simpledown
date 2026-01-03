@@ -1,12 +1,10 @@
 <!-- INCLUDE overall_header.html -->
-
 <!-- INCLUDECSS @mundophpbb_simpledown/acp_simpledown_logs.css -->
 
 <div id="acp_simpledown">
     <h2>{L_ACP_SIMPLEDOWN_LOGS}</h2>
     <p>{L_ACP_SIMPLEDOWN_LOGS_EXPLAIN}</p>
 
-    <!-- Estatísticas rápidas -->
     <div class="stats-box">
         <div class="stat-item">
             <strong>{TOTAL_LOGS}</strong>
@@ -16,13 +14,20 @@
             <strong>{STATS_TOTAL_DOWNLOADS}</strong>
             <span>{L_ACP_SIMPLEDOWN_STATS_TOTAL_DOWNLOADS}</span>
         </div>
+        <!-- ><div class="stat-item">
+            <strong>{STATS_TOTAL_VIEWS}</strong>
+            <span>{L_ACP_SIMPLEDOWN_STATS_TOTAL_VIEWS}</span>
+        </div><! -->
         <div class="stat-item">
-            <strong>{STATS_TOP_FILE}</strong>
+            <strong>{STATS_TOTAL_DENIED}</strong>
+            <span>{L_ACP_SIMPLEDOWN_STATS_TOTAL_DENIED}</span>
+        </div> 
+        <div class="stat-item">
+            <strong>{STATS_TOP_FILE}</strong><br />
             <span>{L_ACP_SIMPLEDOWN_STATS_TOP_FILE}</span>
         </div>
     </div>
 
-    <!-- Aviso de limite máximo -->
     <!-- IF S_MAX_DISPLAY_WARNING -->
     <div class="errorbox">
         <h3>{L_WARNING}</h3>
@@ -31,50 +36,17 @@
     <!-- ENDIF -->
 
     <form id="logs_form" method="post" action="{U_ACTION}">
-        <fieldset>
-            <legend>{L_ACP_LOGS_FILTERS_ACTIONS}</legend>
+        {S_FORM_TOKEN}
 
-            <div class="acp-controls-top">
-                <div class="control-group">
-                    <div class="control-item">
-                        <label for="username">{L_USERNAME}</label>
-                        <input type="text" name="username" id="username" value="{USERNAME_FILTER}" placeholder="{L_ACP_LOGS_FILTER_USERNAME}" />
-                    </div>
-                    <div class="control-item">
-                        <label for="action">{L_ACP_LOGS_ACTION}</label>
-                        <select name="action" id="action">
-                            <option value="">{L_ALL}</option>
-                            <option value="download"<!-- IF ACTION_FILTER eq 'download' --> selected<!-- ENDIF -->>{L_ACP_LOGS_ACTION_DOWNLOAD}</option>
-                            <option value="preview"<!-- IF ACTION_FILTER eq 'preview' --> selected<!-- ENDIF -->>{L_ACP_LOGS_ACTION_PREVIEW}</option>
-                            <option value="access_denied"<!-- IF ACTION_FILTER eq 'access_denied' --> selected<!-- ENDIF -->>{L_ACP_LOGS_ACTION_DENIED}</option>
-                        </select>
-                    </div>
-                    <div class="control-item">
-                        <label for="date_from">{L_DATE_FROM}</label>
-                        <input type="date" name="date_from" id="date_from" value="{DATE_FROM}" />
-                    </div>
-                    <div class="control-item">
-                        <label for="date_to">{L_DATE_TO}</label>
-                        <input type="date" name="date_to" id="date_to" value="{DATE_TO}" />
-                    </div>
-                    <div class="control-item" style="align-self: end;">
-                        <input type="submit" class="button1" name="filter" value="{L_SUBMIT}" />
-                        <input type="reset" class="button2" value="{L_RESET}" />
-                    </div>
-                </div>
-
-                <div style="display: flex; gap: 12px; flex-wrap: wrap; align-self: end;">
-                    <button type="submit" class="button2 danger" name="action" value="clear_all"
-                            onclick="return confirm('{L_CONFIRM_CLEAR_ALL_LOGS|e('js')}');">
-                        <i class="fa fa-trash" aria-hidden="true"></i> {L_ACP_LOGS_CLEAR_ALL}
-                    </button>
-                    <button type="submit" class="button2 danger" name="action" value="clear_old"
-                            onclick="return confirm('{L_CONFIRM_CLEAR_OLD_LOGS|e('js')}');">
-                        <i class="fa fa-clock" aria-hidden="true"></i> {L_ACP_LOGS_CLEAR_OLD}
-                    </button>
-                </div>
-            </div>
-        </fieldset>
+        <!-- Botões de limpeza (com confirmação JavaScript) -->
+        <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: flex-end; margin: 20px 0;">
+            <button type="submit" class="button2 danger" name="clear_old" value="1" onclick="return confirm('{L_CONFIRM_CLEAR_OLD_LOGS|e('js')}');">
+                <i class="fa fa-clock" aria-hidden="true"></i> {L_ACP_LOGS_CLEAR_OLD}
+            </button>
+            <button type="submit" class="button2 danger" name="clear_all" value="1" onclick="return confirm('{L_CONFIRM_CLEAR_ALL_LOGS|e('js')}');">
+                <i class="fa fa-trash" aria-hidden="true"></i> {L_ACP_LOGS_CLEAR_ALL}
+            </button>
+        </div>
 
         <div class="table-responsive">
             <table class="table1 zebra-table">
@@ -92,73 +64,82 @@
                     </tr>
                 </thead>
                 <tbody>
+                    <!-- IF .logs -->
                     <!-- BEGIN logs -->
                     <tr class="<!-- IF logs.S_ROW_COUNT is even -->bg1<!-- ELSE -->bg2<!-- ENDIF -->">
-                        <td><input type="checkbox" name="log_id[]" value="{logs.LOG_ID}" /></td>
+                        <td style="text-align:center;">
+                            <input type="checkbox" name="log_id[]" value="{logs.LOG_ID}" />
+                        </td>
                         <td>{logs.LOG_TIME}</td>
-                        <td>{logs.USERNAME}</td>
+                        <td>
+                            <!-- IF logs.USER_ID -->
+                            <a href="{logs.U_USER_PROFILE}">{logs.USERNAME}</a>
+                            <!-- ELSE -->
+                            {logs.USERNAME}
+                            <!-- ENDIF -->
+                        </td>
                         <td>
                             <!-- IF logs.FILE_NAME -->
-                                {logs.FILE_NAME}
+                            <strong>{logs.FILE_NAME}</strong>
                             <!-- ELSE -->
-                                <em>{L_ACP_SIMPLEDOWN_UNKNOWN_FILE}</em>
+                            <em>{L_ACP_SIMPLEDOWN_UNKNOWN_FILE}</em>
                             <!-- ENDIF -->
                         </td>
-                        <td>
-                            <!-- IF logs.ACTION eq 'download' -->
-                                <span class="download-action">{L_ACP_LOGS_ACTION_DOWNLOAD}</span>
-                            <!-- ELSEIF logs.ACTION eq 'preview' -->
-                                <span class="preview-action">{L_ACP_LOGS_ACTION_PREVIEW}</span>
-                            <!-- ELSEIF logs.ACTION eq 'access_denied' -->
-                                <span class="denied-action">{L_ACP_LOGS_ACTION_DENIED}</span>
+                        <td style="text-align:center;">
+                            <!-- IF logs.ACTION == 'download' -->
+                            <span class="download-action">{L_ACP_LOGS_ACTION_DOWNLOAD}</span>
+                            <!-- ELSEIF logs.ACTION == 'view' -->
+                            <span class="view-action">{L_ACP_LOGS_ACTION_PREVIEW}</span>
+                            <!-- ELSEIF logs.ACTION == 'denied' -->
+                            <span class="denied-action">{L_ACP_LOGS_ACTION_DENIED}</span>
                             <!-- ELSE -->
-                                {logs.ACTION}
+                            <span style="padding:4px 10px; border-radius:20px; background:#95a5a6; color:white; font-size:0.8em;">{logs.ACTION}</span>
                             <!-- ENDIF -->
                         </td>
-                        <td>{logs.IP_ADDRESS}</td>
-                        <td title="{logs.USER_AGENT}">{logs.USER_AGENT}</td>
-                    </tr>
-                    <!-- BEGINELSE -->
-                    <tr>
-                        <td colspan="7" style="text-align: center; padding: 60px;">
-                            <i class="fa fa-inbox fa-5x" aria-hidden="true"></i><br /><br />
-                            <strong>{L_NO_LOGS_FOUND}</strong>
+                        <td style="font-family:monospace; font-size:0.9em;">{logs.IP_ADDRESS}</td>
+                        <td title="{logs.USER_AGENT_FULL}" style="max-width:200px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
+                            {logs.USER_AGENT}
                         </td>
                     </tr>
                     <!-- END logs -->
+                    <!-- ELSE -->
+                    <tr>
+                        <td colspan="7" style="text-align: center; padding: 80px 20px; color: var(--text-light);">
+                            <i class="fa fa-inbox fa-5x" aria-hidden="true" style="opacity:0.3;"></i><br /><br />
+                            <strong style="font-size:1.2em;">{L_NO_LOGS_FOUND}</strong>
+                        </td>
+                    </tr>
+                    <!-- ENDIF -->
                 </tbody>
             </table>
         </div>
 
-        <!-- AÇÕES EM MASSA - VERSÃO FINAL E FUNCIONAL -->
-        <!-- IF logs -->
-        <div class="submit-buttons" style="text-align: right; margin-top: 20px;">
-            <input type="hidden" name="action" value="delete_selected" />
+        <!-- IF .logs -->
+        <div style="text-align: right; margin-top: 20px;">
             <button type="submit" class="button2 danger" name="delete_selected" value="1"
-                    onclick="return confirm('{L_CONFIRM_DELETE_SELECTED_LOGS|e('js')}');">
+                    onclick="if (document.querySelectorAll('input[name=\'log_id[]\']:checked').length === 0) { alert('{L_NO_LOGS_SELECTED|e('js')}'); return false; } return confirm('{L_CONFIRM_DELETE_SELECTED_LOGS|e('js')}');">
                 <i class="fa fa-trash" aria-hidden="true"></i> {L_DELETE_SELECTED}
             </button>
         </div>
         <!-- ENDIF -->
 
-        <!-- Paginação -->
         <!-- IF .pagination -->
+        <div style="margin-top: 20px;">
             {% INCLUDE 'pagination.html' %}
+        </div>
         <!-- ENDIF -->
-
-        {S_FORM_TOKEN}
     </form>
 </div>
 
 <script>
-    function checkAll(form, name) {
-        for (var i = 0; i < form.elements.length; i++) {
-            var e = form.elements[i];
-            if (e.name != 'mark_all' && e.type == 'checkbox' && e.name == name + '[]') {
-                e.checked = form.elements['mark_all'].checked;
-            }
+function checkAll(form, name) {
+    for (var i = 0; i < form.elements.length; i++) {
+        var e = form.elements[i];
+        if (e.name !== 'mark_all' && e.type === 'checkbox' && e.name === name + '[]') {
+            e.checked = form.elements['mark_all'].checked;
         }
     }
+}
 </script>
 
 <!-- INCLUDE overall_footer.html -->

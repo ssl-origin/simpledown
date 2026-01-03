@@ -1,356 +1,407 @@
 <!-- INCLUDE overall_header.html -->
-<h1>{L_ACP_SIMPLEDOWN_TITLE} - {L_ACP_SIMPLEDOWN_SETTINGS}</h1>
-
+<!-- INCLUDECSS @mundophpbb_simpledown/acp_simpledown.css -->
+<h1>{{ lang('ACP_SIMPLEDOWN_TITLE') }} - {{ lang('ACP_SIMPLEDOWN_SETTINGS') }}</h1>
 <div id="acp_simpledown">
-
     <!-- ======================================== -->
     <!-- SEÇÃO 1: CONFIGURAÇÕES GERAIS -->
     <!-- ======================================== -->
-    <form id="config-form" method="post" action="{U_ACTION}">
-        {S_FORM_TOKEN}
+    <form id="config-form" method="post" action="{{ U_ACTION }}">
+        {{ S_FORM_TOKEN }}
         <fieldset>
-            <legend>{L_ACP_SIMPLEDOWN_SETTINGS}</legend>
-
-            <!-- Tamanho máximo de upload -->
+            <legend>{{ lang('ACP_SIMPLEDOWN_GENERAL_SETTINGS') }}</legend>
             <dl>
-                <dt><label for="max_upload_size">{L_ACP_SIMPLEDOWN_MAX_UPLOAD_SIZE}:</label><br />
-                    <span>{L_ACP_SIMPLEDOWN_MAX_UPLOAD_SIZE_EXPLAIN}</span>
-                </dt>
+                <dt><label for="max_upload_size">{{ lang('ACP_SIMPLEDOWN_MAX_UPLOAD_SIZE') }}:</label><br>
+                    <span>{{ lang('ACP_SIMPLEDOWN_MAX_UPLOAD_SIZE_EXPLAIN') }}</span></dt>
+                <dd><input type="number" id="max_upload_size" name="max_upload_size" value="{{ MAX_UPLOAD_SIZE }}" min="1" max="500" step="1"> MB</dd>
+            </dl>
+            <dl>
+                <dt><label for="short_desc_limit">{{ lang('ACP_SIMPLEDOWN_SHORT_DESC_LIMIT') }}:</label><br>
+                    <span>{{ lang('ACP_SIMPLEDOWN_SHORT_DESC_LIMIT_EXPLAIN') }}</span></dt>
+                <dd><input type="number" id="short_desc_limit" name="short_desc_limit" value="{{ SHORT_DESC_LIMIT }}" min="50" max="500" step="10"> {{ lang('CHARACTERS') }}</dd>
+            </dl>
+            <dl>
+                <dt><label>{{ lang('ACP_SIMPLEDOWN_SITE_THEME') }}:</label><br>
+                    <span>{{ lang('ACP_SIMPLEDOWN_SITE_THEME_EXPLAIN') }}</span></dt>
                 <dd>
-                    <input type="number" id="max_upload_size" name="max_upload_size" value="{MAX_UPLOAD_SIZE}" min="1" max="500" step="1" /> MB
+                    <select name="site_theme">
+                        <option value="light" {% if SITE_THEME == 'light' or not SITE_THEME %}selected{% endif %}>{{ lang('ACP_SIMPLEDOWN_LIGHT_THEME') }}</option>
+                        <option value="dark" {% if SITE_THEME == 'dark' %}selected{% endif %}>{{ lang('ACP_SIMPLEDOWN_DARK_THEME') }}</option>
+                    </select>
                 </dd>
             </dl>
-
-            <!-- Limite de descrição curta -->
             <dl>
-                <dt><label for="short_desc_limit">{L_ACP_SIMPLEDOWN_SHORT_DESC_LIMIT}:</label><br />
-                    <span>{L_ACP_SIMPLEDOWN_SHORT_DESC_LIMIT_EXPLAIN}</span>
-                </dt>
-                <dd>
-                    <input type="number" id="short_desc_limit" name="short_desc_limit" value="{SHORT_DESC_LIMIT}" min="50" max="500" step="10" /> {L_CHARACTERS}
-                </dd>
-            </dl>
-
-            <!-- Tema do site público (claro/escuro) -->
-            <dl>
-                <dt><label>{L_ACP_SIMPLEDOWN_SITE_THEME}:</label><br />
-                    <span>{L_ACP_SIMPLEDOWN_SITE_THEME_EXPLAIN}</span>
-                </dt>
-                <dd>
-                    <label><input type="radio" name="site_theme" value="light" <!-- IF SITE_THEME == 'light' or not SITE_THEME -->checked="checked"<!-- ENDIF --> /> {L_ACP_SIMPLEDOWN_LIGHT_THEME}</label>&nbsp;&nbsp;&nbsp;&nbsp;
-                    <label><input type="radio" name="site_theme" value="dark" <!-- IF SITE_THEME == 'dark' -->checked="checked"<!-- ENDIF --> /> {L_ACP_SIMPLEDOWN_DARK_THEME}</label>
-                </dd>
-            </dl>
-
-            <!-- Número de cards por linha na página pública -->
-            <dl>
-                <dt><label for="cards_per_row">{L_ACP_SIMPLEDOWN_CARDS_PER_ROW}:</label><br />
-                    <span>{L_ACP_SIMPLEDOWN_CARDS_PER_ROW_EXPLAIN}</span>
-                </dt>
+                <dt><label for="cards_per_row">{{ lang('ACP_SIMPLEDOWN_CARDS_PER_ROW') }}:</label><br>
+                    <span>{{ lang('ACP_SIMPLEDOWN_CARDS_PER_ROW_EXPLAIN') }}</span></dt>
                 <dd>
                     <select id="cards_per_row" name="cards_per_row">
-                        <option value="2" <!-- IF CARDS_PER_ROW == 2 -->selected="selected"<!-- ENDIF -->>2 {L_ACP_SIMPLEDOWN_CARDS}</option>
-                        <option value="3" <!-- IF CARDS_PER_ROW == 3 or not CARDS_PER_ROW -->selected="selected"<!-- ENDIF -->>3 {L_ACP_SIMPLEDOWN_CARDS}</option>
+                        <option value="2" {% if CARDS_PER_ROW == 2 %}selected{% endif %}>2 {{ lang('ACP_SIMPLEDOWN_CARDS') }}</option>
+                        <option value="3" {% if CARDS_PER_ROW == 3 or not CARDS_PER_ROW %}selected{% endif %}>3 {{ lang('ACP_SIMPLEDOWN_CARDS') }}</option>
                     </select>
                 </dd>
             </dl>
-
-            <!-- NOVA OPÇÃO: Permitir que usuários escolham entre grid e lista -->
             <dl>
-                <dt><label>{L_ACP_SIMPLEDOWN_ALLOW_USER_LAYOUT_CHOICE}:</label><br />
-                    <span>{L_ACP_SIMPLEDOWN_ALLOW_USER_LAYOUT_CHOICE_EXPLAIN}</span>
-                </dt>
+                <dt><label>{{ lang('ACP_SIMPLEDOWN_ALLOW_USER_LAYOUT_CHOICE') }}:</label><br>
+                    <span>{{ lang('ACP_SIMPLEDOWN_ALLOW_USER_LAYOUT_CHOICE_EXPLAIN') }}</span></dt>
                 <dd>
-                    <label><input type="radio" name="allow_user_layout_choice" value="1" <!-- IF ALLOW_USER_LAYOUT_CHOICE -->checked="checked"<!-- ENDIF --> /> {L_YES}</label>&nbsp;&nbsp;&nbsp;
-                    <label><input type="radio" name="allow_user_layout_choice" value="0" <!-- IF not ALLOW_USER_LAYOUT_CHOICE -->checked="checked"<!-- ENDIF --> /> {L_NO}</label>
+                    <label><input type="radio" name="allow_user_layout_choice" value="1" {% if ALLOW_USER_LAYOUT_CHOICE %}checked{% endif %} /> {{ lang('YES') }}</label>&nbsp;&nbsp;&nbsp;
+                    <label><input type="radio" name="allow_user_layout_choice" value="0" {% if not ALLOW_USER_LAYOUT_CHOICE %}checked{% endif %} /> {{ lang('NO') }}</label>
                 </dd>
             </dl>
-
-            <!-- Visibilidade padrão para novos arquivos -->
             <dl>
-                <dt><label>{L_ACP_SIMPLEDOWN_DEFAULT_VISIBILITY}:</label><br />
-                    <span>{L_ACP_SIMPLEDOWN_DEFAULT_VISIBILITY_EXPLAIN}</span>
-                </dt>
+                <dt><label>{{ lang('ACP_SIMPLEDOWN_DEFAULT_VISIBILITY') }}:</label><br>
+                    <span>{{ lang('ACP_SIMPLEDOWN_DEFAULT_VISIBILITY_EXPLAIN') }}</span></dt>
                 <dd>
-                    <label><input type="radio" name="default_is_private" value="0" <!-- IF not DEFAULT_IS_PRIVATE -->checked="checked"<!-- ENDIF --> /> {L_ACP_SIMPLEDOWN_PUBLIC}</label>&nbsp;&nbsp;&nbsp;
-                    <label><input type="radio" name="default_is_private" value="1" <!-- IF DEFAULT_IS_PRIVATE -->checked="checked"<!-- ENDIF --> /> {L_ACP_SIMPLEDOWN_PRIVATE}</label>
+                    <label><input type="radio" name="default_is_private" value="0" {% if not DEFAULT_IS_PRIVATE %}checked{% endif %} /> {{ lang('ACP_SIMPLEDOWN_PUBLIC') }}</label>&nbsp;&nbsp;&nbsp;
+                    <label><input type="radio" name="default_is_private" value="1" {% if DEFAULT_IS_PRIVATE %}checked{% endif %} /> {{ lang('ACP_SIMPLEDOWN_PRIVATE') }}</label>
                 </dd>
             </dl>
-
-            <!-- Categorias privadas (multiseleção) -->
             <dl>
-                <dt><label>{L_ACP_SIMPLEDOWN_PRIVATE_CATEGORIES}:</label><br />
-                    <span>{L_ACP_SIMPLEDOWN_PRIVATE_CATEGORIES_EXPLAIN}<br />
-                        <em>{L_ACP_SIMPLEDOWN_PRIVATE_CATEGORIES_HOLD_CTRL}</em></span>
-                </dt>
+                <dt><label>{{ lang('ACP_SIMPLEDOWN_PRIVATE_CATEGORIES') }}:</label><br>
+                    <span>{{ lang('ACP_SIMPLEDOWN_PRIVATE_CATEGORIES_EXPLAIN') }}<br><em>{{ lang('ACP_SIMPLEDOWN_PRIVATE_CATEGORIES_HOLD_CTRL') }}</em></span></dt>
                 <dd>
-                    <select name="private_categories[]" multiple="multiple" size="8">
-                        <option value="0" disabled>{L_ACP_SIMPLEDOWN_NO_CATEGORY}</option>
-                        <!-- BEGIN categories -->
-                        <option value="{categories.ID}" <!-- IF categories.ID in PRIVATE_CATEGORIES -->selected="selected"<!-- ENDIF -->>{categories.NAME}</option>
-                        <!-- END categories -->
+                    <select name="private_categories[]" multiple size="8">
+                        <option value="0" disabled>{{ lang('ACP_SIMPLEDOWN_NO_CATEGORY') }}</option>
+                        {% for category in loops.categories %}
+                        <option value="{{ category.ID }}" {% if category.ID in PRIVATE_CATEGORIES %}selected{% endif %}>{{ category.NAME }}</option>
+                        {% endfor %}
                     </select>
                 </dd>
             </dl>
-
-            <p class="submit-buttons">
-                <input class="button1" type="submit" name="config_submit" value="{L_ACP_SIMPLEDOWN_SAVE_CONFIG}" />
-            </p>
         </fieldset>
+
+        <!-- ======================================== -->
+        <!-- SEÇÃO: ANÚNCIOS AUTOMÁTICOS EM FÓRUNS -->
+        <!-- ======================================== -->
+        <fieldset>
+            <legend>{{ lang('ACP_SIMPLEDOWN_ANNOUNCE_TITLE') }}</legend>
+            <p>{{ lang('ACP_SIMPLEDOWN_ANNOUNCE_EXPLAIN') }}</p>
+
+            <dl>
+                <dt><label>{{ lang('ACP_SIMPLEDOWN_AUTO_ANNOUNCE') }}:</label></dt>
+                <dd>
+                    <label><input type="radio" name="auto_announce" value="1" {% if AUTO_ANNOUNCE %}checked{% endif %} /> {{ lang('YES') }}</label>&nbsp;&nbsp;&nbsp;
+                    <label><input type="radio" name="auto_announce" value="0" {% if not AUTO_ANNOUNCE %}checked{% endif %} /> {{ lang('NO') }}</label>
+                </dd>
+            </dl>
+
+            <dl>
+                <dt><label for="announce_forum">{{ lang('ACP_SIMPLEDOWN_ANNOUNCE_FORUM') }}:</label></dt>
+                <dd>{{ ANNOUNCE_FORUM_SELECT|raw }}</dd>
+            </dl>
+
+            <dl>
+                <dt><label for="announce_title_template">{{ lang('ACP_SIMPLEDOWN_ANNOUNCE_TITLE_TEMPLATE') }}:</label><br>
+                    <span>{{ lang('ACP_SIMPLEDOWN_ANNOUNCE_TITLE_EXPLAIN') }}</span></dt>
+                <dd><input type="text" name="announce_title_template" id="announce_title_template" value="{{ ANNOUNCE_TITLE_TEMPLATE }}" size="80" maxlength="255" /></dd>
+            </dl>
+
+            <dl>
+                <dt><label for="announce_message_template">{{ lang('ACP_SIMPLEDOWN_ANNOUNCE_MESSAGE_TEMPLATE') }}:</label><br>
+                    <span>{{ lang('ACP_SIMPLEDOWN_ANNOUNCE_MESSAGE_EXPLAIN') }}</span></dt>
+                <dd><textarea name="announce_message_template" id="announce_message_template" rows="10" cols="80">{{ ANNOUNCE_MESSAGE_TEMPLATE }}</textarea></dd>
+            </dl>
+        </fieldset>
+
+        <p class="submit-buttons">
+            <input class="button1" type="submit" name="config_submit" value="{{ lang('ACP_SIMPLEDOWN_SAVE_CONFIG') }}" />
+        </p>
     </form>
 
     <!-- ======================================== -->
     <!-- SEÇÃO 2: GERENCIAMENTO DE CATEGORIAS -->
     <!-- ======================================== -->
-    <form id="category-form" method="post" action="{U_ACTION}">
-        {S_FORM_TOKEN}
+    <form id="add-category-form" method="post" action="{{ U_ACTION }}">
+        {{ S_FORM_TOKEN }}
         <fieldset>
-            <legend>{L_ACP_SIMPLEDOWN_ADD_CATEGORY}</legend>
+            <legend>{{ lang('ACP_SIMPLEDOWN_ADD_CATEGORY') }}</legend>
             <dl>
-                <dt><label for="cat_name">{L_ACP_SIMPLEDOWN_CATEGORY_NAME}:</label></dt>
-                <dd><input type="text" id="cat_name" name="cat_name" maxlength="255" /></dd>
+                <dt><label for="cat_name">{{ lang('ACP_SIMPLEDOWN_CATEGORY_NAME') }}:</label></dt>
+                <dd><input type="text" id="cat_name" name="cat_name" maxlength="255" required /></dd>
             </dl>
             <p class="submit-buttons">
-                <input class="button1" type="submit" name="add_cat" value="{L_ACP_SIMPLEDOWN_ADD_CATEGORY}" />
+                <input class="button1" type="submit" name="add_cat" value="{{ lang('ACP_SIMPLEDOWN_ADD_CATEGORY') }}" />
             </p>
+        </fieldset>
+    </form>
+
+    <form id="delete-category-form" method="post" action="{{ U_ACTION }}">
+        {{ S_FORM_TOKEN }}
+        <fieldset>
+            <legend>{{ lang('ACP_SIMPLEDOWN_DELETE_CATEGORY') }}</legend>
             <dl>
-                <dt><label for="delete_category">{L_ACP_SIMPLEDOWN_DELETE_CATEGORY}:</label></dt>
+                <dt><label for="delete_category">{{ lang('ACP_SIMPLEDOWN_SELECT_CATEGORY_TO_DELETE') }}:</label></dt>
                 <dd>
                     <select id="delete_category" name="delete_category">
-                        <option value="0">{L_ACP_SIMPLEDOWN_SELECT_CATEGORY_TO_DELETE}</option>
-                        <!-- BEGIN delete_categories -->
-                        <option value="{delete_categories.ID}">{delete_categories.NAME}</option>
-                        <!-- END delete_categories -->
+                        <option value="">{{ lang('ACP_SIMPLEDOWN_SELECT_CATEGORY_TO_DELETE') }}</option>
+                        {% for category in loops.delete_categories %}
+                        <option value="{{ category.ID }}">{{ category.NAME }}</option>
+                        {% endfor %}
                     </select>
-                    <input class="button2 danger" type="submit" name="delete_cat_submit" value="{L_ACP_SIMPLEDOWN_DELETE}" />
+                    <input class="button2 danger" type="submit" name="delete_cat_submit" value="{{ lang('ACP_SIMPLEDOWN_DELETE') }}" />
                 </dd>
             </dl>
-            <!-- IF not delete_categories -->
-            <p>{L_ACP_SIMPLEDOWN_NO_CATEGORIES_YET}</p>
-            <!-- ENDIF -->
+            {% if loops.delete_categories is empty %}
+            <p class="notice">{{ lang('ACP_SIMPLEDOWN_NO_CATEGORIES_YET') }}</p>
+            {% endif %}
         </fieldset>
     </form>
 
     <!-- ======================================== -->
     <!-- SEÇÃO 3: ADICIONAR ARQUIVO -->
     <!-- ======================================== -->
-    <form id="upload-file-form" method="post" action="{U_ACTION}" enctype="multipart/form-data">
-        {S_FORM_TOKEN}
+    <form id="upload-file-form" method="post" action="{{ U_ACTION }}" enctype="multipart/form-data">
+        {{ S_FORM_TOKEN }}
         <fieldset>
-            <legend>{L_ACP_SIMPLEDOWN_ADD_FILE}</legend>
-
+            <legend>{{ lang('ACP_SIMPLEDOWN_ADD_FILE') }}</legend>
             <div class="security-notices">
                 <div class="warning-box">
-                    <strong><i class="fas fa-exclamation-triangle"></i> {L_ACP_SIMPLEDOWN_SECURITY_WARNING_TITLE}</strong><br />
-                    {L_ACP_SIMPLEDOWN_SECURITY_WARNING_TEXT_1}<br />
-                    {L_ACP_SIMPLEDOWN_SECURITY_WARNING_TEXT_2}
+                    <strong><i class="fas fa-exclamation-triangle"></i> {{ lang('ACP_SIMPLEDOWN_SECURITY_WARNING_TITLE') }}</strong><br>
+                    {{ lang('ACP_SIMPLEDOWN_SECURITY_WARNING_TEXT_1') }}<br>
+                    {{ lang('ACP_SIMPLEDOWN_SECURITY_WARNING_TEXT_2') }}
                 </div>
                 <div class="allowed-box">
-                    <strong><i class="fas fa-check-circle"></i> {L_ACP_SIMPLEDOWN_ALLOWED_FILES_TITLE}</strong><br />
-                    {L_ACP_SIMPLEDOWN_ALLOWED_FILES_TEXT_1}<br />
-                    {L_ACP_SIMPLEDOWN_ALLOWED_FILES_TEXT_2}
+                    <strong><i class="fas fa-check-circle"></i> {{ lang('ACP_SIMPLEDOWN_ALLOWED_FILES_TITLE') }}</strong><br>
+                    {{ lang('ACP_SIMPLEDOWN_ALLOWED_FILES_TEXT_1') }}<br>
+                    {{ lang('ACP_SIMPLEDOWN_ALLOWED_FILES_TEXT_2') }}
                 </div>
             </div>
-
             <dl>
-                <dt><label for="file_name">{L_ACP_SIMPLEDOWN_FILE_NAME}:</label></dt>
-                <dd><input type="text" id="file_name" name="file_name" maxlength="255" /></dd>
+                <dt><label for="file_name">{{ lang('ACP_SIMPLEDOWN_FILE_NAME') }}:</label><br>
+                    <span>{{ lang('ACP_SIMPLEDOWN_FILE_NAME_EXPLAIN') }}</span></dt>
+                <dd><input type="text" id="file_name" name="file_name" maxlength="255" required /></dd>
             </dl>
-
             <dl>
-                <dt><label for="file_desc_short">{L_ACP_SIMPLEDOWN_SHORT_DESCRIPTION}:</label><br />
-                    <span>{L_ACP_SIMPLEDOWN_SHORT_DESCRIPTION_EXPLAIN}</span>
-                </dt>
-                <dd><textarea id="file_desc_short" name="file_desc_short" rows="3" cols="60" maxlength="500"></textarea></dd>
+                <dt><label for="file_desc_short">{{ lang('ACP_SIMPLEDOWN_SHORT_DESCRIPTION') }}:</label><br>
+                    <span>{{ lang('ACP_SIMPLEDOWN_SHORT_DESCRIPTION_EXPLAIN') }}</span></dt>
+                <dd><textarea id="file_desc_short" name="file_desc_short" rows="4" cols="80" class="inputbox" maxlength="500"></textarea></dd>
             </dl>
-
             <dl>
-                <dt><label for="file_desc">{L_ACP_SIMPLEDOWN_DESCRIPTION}:</label></dt>
-                <dd><textarea id="file_desc" name="file_desc" rows="6" cols="60"></textarea></dd>
+                <dt><label for="file_desc">{{ lang('ACP_SIMPLEDOWN_DESCRIPTION') }}:</label><br>
+                    <span>{{ lang('ACP_SIMPLEDOWN_DESCRIPTION_EXPLAIN') }}</span></dt>
+                <dd>
+                    <div class="bbcode-toolbar">
+                        <button type="button" class="bbcode-btn" data-tag="b" title="Negrito"><strong>B</strong></button>
+                        <button type="button" class="bbcode-btn" data-tag="i" title="Itálico"><em>I</em></button>
+                        <button type="button" class="bbcode-btn" data-tag="u" title="Sublinhado"><u>U</u></button>
+                        <button type="button" class="bbcode-btn" data-tag="quote" title="Citação">Quote</button>
+                        <button type="button" class="bbcode-btn" data-tag="code" title="Código">Code</button>
+                        <button type="button" class="bbcode-btn" data-tag="url" title="Link">URL</button>
+                        <button type="button" class="bbcode-btn" data-tag="img" title="Imagem">IMG</button>
+                        <button type="button" class="bbcode-btn" data-tag="list" title="Lista">List</button>
+                        <label for="color-picker-add" class="bbcode-btn color-btn" title="{{ lang('ACP_SIMPLEDOWN_BBCODE_SIZE_TITLE') }}">
+                            <i class="fa-solid fa-palette"></i> Cor
+                        </label>
+                        <input type="color" id="color-picker-add" style="position:absolute; left:-9999px;">
+                        <select class="bbcode-btn size-select" title="{{ lang('ACP_SIMPLEDOWN_BBCODE_SIZE_TITLE') }}">
+                            <option value="" disabled selected>{{ lang('ACP_SIMPLEDOWN_BBCODE_SIZE') }}</option>
+                            <option value="50">{{ lang('ACP_SIMPLEDOWN_BBCODE_SIZE_VERY_SMALL') }}</option>
+                            <option value="85">{{ lang('ACP_SIMPLEDOWN_BBCODE_SIZE_SMALL') }}</option>
+                            <option value="100">{{ lang('ACP_SIMPLEDOWN_BBCODE_SIZE_NORMAL') }}</option>
+                            <option value="150">{{ lang('ACP_SIMPLEDOWN_BBCODE_SIZE_LARGE') }}</option>
+                            <option value="200">{{ lang('ACP_SIMPLEDOWN_BBCODE_SIZE_VERY_LARGE') }}</option>
+                        </select>
+                    </div>
+                    <textarea id="file_desc" name="file_desc" rows="12" cols="80" class="inputbox"></textarea>
+                </dd>
             </dl>
-
             <dl>
-                <dt><label for="file_version">{L_ACP_SIMPLEDOWN_VERSION}:</label><br />
-                    <span>{L_ACP_SIMPLEDOWN_VERSION_EXPLAIN}</span>
-                </dt>
-                <dd><input type="text" id="file_version" name="file_version" maxlength="50" size="20" /></dd>
+                <dt><label for="file_version">{{ lang('ACP_SIMPLEDOWN_VERSION') }}:</label><br>
+                    <span>{{ lang('ACP_SIMPLEDOWN_VERSION_EXPLAIN') }}</span></dt>
+                <dd><input type="text" id="file_version" name="file_version" maxlength="50" size="20" placeholder="ex: 2.1.0" /></dd>
             </dl>
-
             <dl>
-                <dt><label for="category">{L_ACP_SIMPLEDOWN_CATEGORY}:</label></dt>
+                <dt><label for="category">{{ lang('ACP_SIMPLEDOWN_CATEGORY') }}:</label></dt>
                 <dd>
                     <select id="category" name="category" required>
-                        <option value="" disabled selected>{L_ACP_SIMPLEDOWN_SELECT_CATEGORY_REQUIRED}</option>
-                        <!-- BEGIN categories -->
-                        <option value="{categories.ID}">{categories.NAME}</option>
-                        <!-- END categories -->
-                        <!-- IF not categories -->
-                        <option value="" disabled>{L_ACP_SIMPLEDOWN_NO_CATEGORIES_YET}</option>
-                        <!-- ENDIF -->
+                        <option value="" disabled selected>{{ lang('ACP_SIMPLEDOWN_SELECT_CATEGORY_REQUIRED') }}</option>
+                        {% for category in loops.categories %}
+                        <option value="{{ category.ID }}">{{ category.NAME }}</option>
+                        {% endfor %}
+                        {% if loops.categories is empty %}
+                        <option value="" disabled>{{ lang('ACP_SIMPLEDOWN_NO_CATEGORIES_YET') }}</option>
+                        {% endif %}
                     </select>
                 </dd>
             </dl>
-
-            <!-- Visibilidade individual -->
             <dl>
-                <dt><label>{L_ACP_SIMPLEDOWN_VISIBILITY}:</label><br />
-                    <span>{L_ACP_SIMPLEDOWN_VISIBILITY_EXPLAIN}</span>
-                </dt>
+                <dt><label>{{ lang('ACP_SIMPLEDOWN_VISIBILITY') }}:</label><br>
+                    <span>{{ lang('ACP_SIMPLEDOWN_VISIBILITY_EXPLAIN') }}</span></dt>
                 <dd>
-                    <label><input type="radio" name="is_private" value="0" <!-- IF not DEFAULT_IS_PRIVATE -->checked="checked"<!-- ENDIF --> /> {L_ACP_SIMPLEDOWN_PUBLIC}</label>&nbsp;&nbsp;
-                    <label><input type="radio" name="is_private" value="1" <!-- IF DEFAULT_IS_PRIVATE -->checked="checked"<!-- ENDIF --> /> {L_ACP_SIMPLEDOWN_PRIVATE}</label>
+                    <label><input type="radio" name="is_private" value="0" {% if not DEFAULT_IS_PRIVATE %}checked{% endif %} /> {{ lang('ACP_SIMPLEDOWN_PUBLIC') }}</label>&nbsp;&nbsp;&nbsp;
+                    <label><input type="radio" name="is_private" value="1" {% if DEFAULT_IS_PRIVATE %}checked{% endif %} /> {{ lang('ACP_SIMPLEDOWN_PRIVATE') }}</label>
                 </dd>
             </dl>
-
-            <!-- Upload do arquivo principal -->
             <dl>
-                <dt><label for="file_upload">{L_ACP_SIMPLEDOWN_UPLOAD_FILE}:</label></dt>
+                <dt><label for="file_upload">{{ lang('ACP_SIMPLEDOWN_UPLOAD_FILE') }}:</label></dt>
                 <dd>
                     <div class="custom-file-upload">
                         <input type="file" id="file_upload" name="file_upload" required />
                         <label for="file_upload" class="custom-file-label">
-                            <span>{L_ACP_SIMPLEDOWN_CHOOSE_FILE}</span>
+                            <span>{{ lang('ACP_SIMPLEDOWN_CHOOSE_FILE') }}</span>
                         </label>
-                        <span class="file-name-display" id="file-name-display">{L_ACP_SIMPLEDOWN_NO_FILE_SELECTED}</span>
+                        <span class="file-name-display" id="file-name-display">{{ lang('ACP_SIMPLEDOWN_NO_FILE_SELECTED') }}</span>
                     </div>
                 </dd>
             </dl>
-
-            <!-- Selecionar miniatura existente -->
             <dl>
-                <dt><label for="existing_thumb">{L_ACP_SIMPLEDOWN_SELECT_THUMB}:</label></dt>
+                <dt><label for="existing_thumb">{{ lang('ACP_SIMPLEDOWN_SELECT_THUMB') }}:</label></dt>
                 <dd>
-                    <!-- IF S_THUMBS_EXIST -->
+                    {% if S_THUMBS_EXIST %}
                     <select id="existing_thumb" name="existing_thumb">
-                        <option value="">{L_ACP_SIMPLEDOWN_NO_THUMB}</option>
-                        <!-- BEGIN thumbs -->
-                        <option value="{thumbs.FILENAME}">{thumbs.FILENAME}</option>
-                        <!-- END thumbs -->
+                        <option value="">{{ lang('ACP_SIMPLEDOWN_NO_THUMB') }}</option>
+                        {% for thumb in loops.thumbs %}
+                        <option value="{{ thumb.FILENAME }}">{{ thumb.FILENAME }}</option>
+                        {% endfor %}
                     </select>
-                    <div id="thumb-preview" style="margin-top: 15px; text-align: center; display: none;">
-                        <p><strong>{L_ACP_SIMPLEDOWN_THUMB_PREVIEW}</strong></p>
-                        <img id="thumb-preview-img" src="" alt="Pré-visualização" style="max-width: 150px; max-height: 150px; border: 1px solid #ccc; border-radius: 8px;">
+                    <div id="thumb-preview" style="margin-top:15px;text-align:center;display:none;">
+                        <p><strong>{{ lang('ACP_SIMPLEDOWN_THUMB_PREVIEW') }}</strong></p>
+                        <img id="thumb-preview-img" src="" alt="Pré-visualização" style="max-width:200px;max-height:200px;border:2px solid #444;border-radius:12px;">
                     </div>
-                    <!-- ELSE -->
-                    <p>{L_ACP_SIMPLEDOWN_NO_THUMBS}</p>
-                    <!-- ENDIF -->
+                    {% else %}
+                    <p>{{ lang('ACP_SIMPLEDOWN_NO_THUMBS') }}</p>
+                    {% endif %}
                 </dd>
             </dl>
-
             <p class="submit-buttons">
-                <input class="button1" type="submit" name="submit" value="{L_ACP_SIMPLEDOWN_UPLOAD_FILE}" />
+                <input class="button1" type="submit" name="submit" value="{{ lang('ACP_SIMPLEDOWN_UPLOAD_FILE') }}" />
             </p>
         </fieldset>
     </form>
 
-    <!-- ======================================== -->
-    <!-- SEÇÃO 4: ENVIAR MINIATURA AVULSA -->
-    <!-- ======================================== -->
-    <form id="upload-thumb-form" method="post" action="{U_ACTION}" enctype="multipart/form-data">
-        {S_FORM_TOKEN}
+    <!-- SEÇÃO 4: MINIATURA AVULSA -->
+    <form id="upload-thumb-form" method="post" action="{{ U_ACTION }}" enctype="multipart/form-data">
+        {{ S_FORM_TOKEN }}
         <fieldset>
-            <legend>{L_ACP_SIMPLEDOWN_UPLOAD_THUMB}</legend>
-            <p>{L_ACP_SIMPLEDOWN_UPLOAD_THUMB_EXPLAIN}</p>
+            <legend>{{ lang('ACP_SIMPLEDOWN_UPLOAD_THUMB') }}</legend>
+            <p>{{ lang('ACP_SIMPLEDOWN_UPLOAD_THUMB_EXPLAIN') }}</p>
             <dl>
-                <dt><label for="thumb_upload">{L_ACP_SIMPLEDOWN_UPLOAD_THUMB}:</label></dt>
+                <dt><label for="thumb_upload">{{ lang('ACP_SIMPLEDOWN_UPLOAD_THUMB') }}:</label></dt>
                 <dd>
                     <div class="custom-file-upload">
                         <input type="file" id="thumb_upload" name="thumb_upload" accept="image/*" />
                         <label for="thumb_upload" class="custom-file-label">
-                            <span>{L_ACP_SIMPLEDOWN_CHOOSE_FILE}</span>
+                            <span>{{ lang('ACP_SIMPLEDOWN_CHOOSE_FILE') }}</span>
                         </label>
-                        <span class="file-name-display" id="thumb-name-display">{L_ACP_SIMPLEDOWN_NO_FILE_SELECTED}</span>
+                        <span class="file-name-display" id="thumb-name-display">{{ lang('ACP_SIMPLEDOWN_NO_FILE_SELECTED') }}</span>
                     </div>
                 </dd>
             </dl>
             <p class="submit-buttons">
-                <input class="button1" type="submit" name="thumb_submit" value="{L_ACP_SIMPLEDOWN_UPLOAD_THUMB}" />
+                <input class="button1" type="submit" name="thumb_submit" value="{{ lang('ACP_SIMPLEDOWN_UPLOAD_THUMB') }}" />
             </p>
         </fieldset>
     </form>
+</div>
 
-</div> <!-- Fim do #acp_simpledown -->
-
-<!-- ======================================== -->
-<!-- SEÇÃO 5: MODAL PARA MENSAGENS DE SUCESSO/ERRO/AVISO -->
-<!-- ======================================== -->
-<div id="message-modal" class="modal">
+<!-- MODAL DE MENSAGENS -->
+<div id="message-modal" class="modal" style="display:none;">
     <div class="modal-content">
-        <span class="close-modal" title="{L_CLOSE}">&times;</span>
-        <!-- IF ERROR_MESSAGE -->
-        <h3 style="color: #e74c3c;">{L_ACP_SIMPLEDOWN_ERROR}</h3>
-        <p id="error-message">{ERROR_MESSAGE}</p>
-        <!-- ELSEIF SUCCESS_MESSAGE -->
-        <h3 style="color: #27ae60;">{L_ACP_SIMPLEDOWN_SUCCESS}</h3>
-        <p id="success-message">{SUCCESS_MESSAGE}</p>
-        <!-- ELSEIF WARNING_MESSAGE -->
-        <h3 style="color: #f39c12;">{L_ACP_SIMPLEDOWN_WARNING}</h3>
-        <p id="warning-message">{WARNING_MESSAGE}</p>
-        <!-- ENDIF -->
+        <span class="close-modal">×</span>
+        {% if ERROR_MESSAGE %}
+        <h3 style="color:#e74c3c;"><i class="fas fa-times-circle"></i> {{ lang('ACP_SIMPLEDOWN_ERROR') }}</h3>
+        <p>{{ ERROR_MESSAGE }}</p>
+        {% endif %}
+        {% if SUCCESS_MESSAGE %}
+        <h3 style="color:#27ae60;"><i class="fas fa-check-circle"></i> {{ lang('ACP_SIMPLEDOWN_SUCCESS') }}</h3>
+        <p>{{ SUCCESS_MESSAGE }}</p>
+        {% endif %}
+        {% if WARNING_MESSAGE %}
+        <h3 style="color:#f39c12;"><i class="fas fa-exclamation-triangle"></i> {{ lang('ACP_SIMPLEDOWN_WARNING') }}</h3>
+        <p>{{ WARNING_MESSAGE }}</p>
+        {% endif %}
     </div>
 </div>
 
-<!-- ======================================== -->
-<!-- SEÇÃO 6: SCRIPTS (PREVIEW, NOME DO ARQUIVO, MODAL) -->
-<!-- ======================================== -->
+<!-- SCRIPT UNIFICADO -->
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-    // Nome do arquivo principal
+    const textarea = document.getElementById('file_desc');
+    if (!textarea) return;
+    const picker = document.getElementById('color-picker-add');
+
+    document.querySelectorAll('.bbcode-btn[data-tag]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            let open = '[' + btn.dataset.tag + ']';
+            let close = '[/' + btn.dataset.tag + ']';
+            if (btn.dataset.tag === 'url') open = '[url=https://]';
+            if (btn.dataset.tag === 'list') {
+                open = '[list]';
+                close = '\n[*]item1\n[*]item2\n[*]item3[/list]';
+            }
+            insertBBCode(open, close);
+        });
+    });
+
+    if (picker) {
+        picker.addEventListener('change', () => {
+            const color = picker.value.toUpperCase();
+            if (color) insertBBCode('[color=' + color + ']', '[/color]');
+            picker.value = '#000000';
+        });
+    }
+
+    document.querySelectorAll('.size-select').forEach(select => {
+        select.addEventListener('change', () => {
+            const size = select.value;
+            if (size) insertBBCode('[size=' + size + ']', '[/size]');
+            select.value = '';
+        });
+    });
+
+    function insertBBCode(open, close) {
+        const start = textarea.selectionStart;
+        const end = textarea.selectionEnd;
+        const selected = textarea.value.substring(start, end);
+        const replacement = open + selected + close;
+        textarea.value = textarea.value.substring(0, start) + replacement + textarea.value.substring(end);
+        textarea.focus();
+        textarea.selectionStart = start + open.length;
+        textarea.selectionEnd = start + open.length + selected.length;
+    }
+
     const fileInput = document.getElementById('file_upload');
-    const fileNameDisplay = document.getElementById('file-name-display');
-    if (fileInput && fileNameDisplay) {
-        fileInput.addEventListener('change', e => {
-            fileNameDisplay.textContent = e.target.files.length > 0 ? e.target.files[0].name : '{L_ACP_SIMPLEDOWN_NO_FILE_SELECTED}';
+    const fileDisplay = document.getElementById('file-name-display');
+    const noFileText = "{{ lang('ACP_SIMPLEDOWN_NO_FILE_SELECTED')|escape('js') }}";
+    if (fileInput && fileDisplay) {
+        fileInput.addEventListener('change', () => {
+            fileDisplay.textContent = fileInput.files.length ? fileInput.files[0].name : noFileText;
         });
     }
 
-    // Nome da miniatura avulsa
     const thumbInput = document.getElementById('thumb_upload');
-    const thumbNameDisplay = document.getElementById('thumb-name-display');
-    if (thumbInput && thumbNameDisplay) {
-        thumbInput.addEventListener('change', e => {
-            thumbNameDisplay.textContent = e.target.files.length > 0 ? e.target.files[0].name : '{L_ACP_SIMPLEDOWN_NO_FILE_SELECTED}';
+    const thumbDisplay = document.getElementById('thumb-name-display');
+    if (thumbInput && thumbDisplay) {
+        thumbInput.addEventListener('change', () => {
+            thumbDisplay.textContent = thumbInput.files.length ? thumbInput.files[0].name : noFileText;
         });
     }
 
-    // Preview de thumbnail existente
-    const select = document.getElementById('existing_thumb');
+    const selectThumb = document.getElementById('existing_thumb');
     const previewDiv = document.getElementById('thumb-preview');
     const previewImg = document.getElementById('thumb-preview-img');
-    if (select && previewDiv && previewImg) {
-        const thumbsDir = '{THUMBS_DIR|escape("js")}';
-        const updatePreview = () => {
-            const val = select.value.trim();
+    if (selectThumb && previewDiv && previewImg) {
+        const thumbsDir = "{{ THUMBS_DIR|escape('js') }}";
+        selectThumb.addEventListener('change', () => {
+            const val = selectThumb.value.trim();
             if (val) {
-                previewImg.src = thumbsDir + encodeURIComponent(val) + '?t=' + new Date().getTime();
+                previewImg.src = thumbsDir + encodeURIComponent(val) + '?t=' + Date.now();
                 previewDiv.style.display = 'block';
             } else {
                 previewDiv.style.display = 'none';
-                previewImg.src = '';
             }
-        };
-        select.addEventListener('change', updatePreview);
-        if (select.value) {
-            updatePreview();
-        }
+        });
+        if (selectThumb.value) selectThumb.dispatchEvent(new Event('change'));
     }
 
-    // Modal de mensagens
     const modal = document.getElementById('message-modal');
     if (modal) {
-        const closeModal = modal.querySelector('.close-modal');
-        if (closeModal) {
-            closeModal.addEventListener('click', () => modal.style.display = 'none');
-        }
-        window.addEventListener('click', e => {
-            if (e.target === modal) modal.style.display = 'none';
-        });
-        if ('{ERROR_MESSAGE}' || '{SUCCESS_MESSAGE}' || '{WARNING_MESSAGE}') {
-            modal.style.display = 'flex';
-        }
+        modal.querySelector('.close-modal').addEventListener('click', () => modal.style.display = 'none');
+        window.addEventListener('click', e => { if (e.target === modal) modal.style.display = 'none'; });
+        {% if ERROR_MESSAGE or SUCCESS_MESSAGE or WARNING_MESSAGE %}
+        modal.style.display = 'flex';
+        {% endif %}
     }
 });
 </script>
-
-<!-- INCLUDECSS @mundophpbb_simpledown/acp_simpledown.css -->
 <!-- INCLUDE overall_footer.html -->

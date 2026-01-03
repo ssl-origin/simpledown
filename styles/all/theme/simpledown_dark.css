@@ -3,7 +3,6 @@
    ======================================== */
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css');
 @import url('https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@400;500;600;700&display=swap');
-
 /* ======================================== */
 /* CONTAINER PRINCIPAL E ESTRUTURA GERAL */
 /* ======================================== */
@@ -15,7 +14,6 @@
     background: #0f172a;
     color: #e2e8f0;
 }
-
 /* Título principal - igual ao light */
 .simpledown-header-panel {
     background: #1e293b;
@@ -33,7 +31,6 @@
     color: #ffffff;
     margin: 0;
 }
-
 /* Controles superiores */
 .simpledown-top-controls {
     display: flex;
@@ -46,7 +43,6 @@
 }
 .search-box-wrapper { flex: 2; min-width: 300px; }
 .filter-select-wrapper { flex: 1; min-width: 240px; }
-
 /* BARRA DE BUSCA - tamanhos iguais ao light */
 .search-box-outer {
     display: flex;
@@ -94,7 +90,6 @@
 .search-box-outer.has-value .external-clear-btn {
     display: flex;
 }
-
 /* Filtros - igual ao light */
 .category-filter-select {
     width: 100%;
@@ -113,7 +108,6 @@
     border-color: #60a5fa;
     box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.3);
 }
-
 /* Toggle grid/lista - igual ao light */
 .view-mode-toggle {
     text-align: right;
@@ -136,7 +130,6 @@
     background: #60a5fa;
     color: #0f172a;
 }
-
 /* GRADE DE CARDS */
 .downloads-grid {
     display: grid;
@@ -166,14 +159,12 @@
         padding: 15px;
     }
 }
-
 /* MODO LISTA - layout idêntico ao light (com suas correções) */
 .downloads-list {
     display: grid;
     gap: 16px;
     padding: 0 20px;
 }
-
 .list-item {
     display: flex;
     align-items: flex-start;
@@ -184,12 +175,10 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.7);
     transition: all 0.3s ease;
 }
-
 .list-item:hover {
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.8);
     transform: translateY(-2px);
 }
-
 /* Ícone do tipo de arquivo */
 .list-icon {
     font-size: 3.2em;
@@ -197,7 +186,6 @@
     flex-shrink: 0;
     color: #cbd5e1;
 }
-
 /* Cores vibrantes para ícones de tipo de arquivo */
 .list-icon.fa-file-pdf { color: #f87171; }
 .list-icon.fa-file-image { color: #60a5fa; }
@@ -208,7 +196,6 @@
 .list-icon.fa-file-audio { color: #fde047; }
 .list-icon.fa-file-video { color: #f87171; }
 .list-icon.fa-file { color: #94a3b8; }
-
 /* Conteúdo principal */
 .list-main {
     flex: 1;
@@ -229,7 +216,6 @@
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
-
 /* Linha inferior */
 .list-bottom-row {
     display: flex;
@@ -239,7 +225,6 @@
     gap: 16px;
     margin-top: 12px;
 }
-
 /* Infos alinhadas à esquerda */
 .list-info-row {
     display: flex;
@@ -249,29 +234,24 @@
     color: #94a3b8;
     flex-wrap: wrap;
 }
-
 .list-info-row span {
     /* display: flex; */ /* sua correção — mantém alinhamento natural */
     align-items: center;
     gap: 6px;
     white-space: nowrap;
 }
-
 .list-info-row i.fa-download { color: #4ade80; }
 .list-info-row i.fa-hdd-o { color: #c4b5fd; }
 .list-info-row i.fa-tag { color: #fb923c; }
 .list-info-row i.fa-eye { color: #60a5fa; cursor: pointer; }
 .list-info-row i.fa-lock { color: #ef4444; }
-
 .preview-btn:hover i {
     color: #93c5fd;
 }
-
 .private-badge {
     color: #ef4444;
     font-weight: 600;
 }
-
 /* Botões alinhados à direita */
 .list-actions {
     display: flex;
@@ -304,7 +284,6 @@
 .list-actions i {
     font-size: 1.2em;
 }
-
 /* Responsivo - modo lista */
 @media (max-width: 992px) {
     .list-item {
@@ -329,7 +308,6 @@
         flex: 1;
     }
 }
-
 /* CARD PRINCIPAL E CONTEÚDO (MODO GRID) - tamanhos iguais ao light */
 .simpledown-card {
     background: #1e293b;
@@ -425,7 +403,6 @@
     padding: 2px 8px;
     border-radius: 10px;
 }
-
 /* Ícones por tipo de arquivo (mantidos vibrantes) */
 .file-name-below i.fa-file-pdf { color: #f87171; }
 .file-name-below i.fa-file-image { color: #60a5fa; }
@@ -437,7 +414,6 @@
 .file-name-below i.fa-file-video { color: #f87171; }
 .file-name-below i.fa-file-lines { color: #94a3b8; }
 .file-name-below i.fa-file { color: #94a3b8; }
-
 /* Rodapé do card */
 .card-footer {
     padding: 18px 35px 22px;
@@ -449,7 +425,6 @@
     background: #1e293b;
     border-top: 1px solid #334155;
 }
-
 /* BOTÕES DO CARD - tamanhos iguais ao light */
 .details-btn-small,
 .download-btn {
@@ -485,7 +460,6 @@
     font-size: 1.2em;
     color: #ffffff !important;
 }
-
 /* Responsivo - botões */
 @media (max-width: 768px) {
     .card-footer { padding: 16px 25px 20px; gap: 20px; }
@@ -499,7 +473,6 @@
     .card-footer { flex-wrap: wrap; gap: 12px; }
     .details-btn-small, .download-btn { flex: 1 1 100%; max-width: none; }
 }
-
 /* MENSAGEM SEM ARQUIVOS - igual ao light */
 .simpledown-empty-state {
     background: #1e293b;
@@ -518,7 +491,6 @@
     margin: 0;
     line-height: 1.4;
 }
-
 /* MODAL DE IMAGEM */
 .image-modal {
     display: none;
@@ -581,7 +553,6 @@
 .modal-close i {
     font-size: 32px;
 }
-
 /* PÁGINA DE DETALHES - tamanhos iguais ao light */
 .simpledown-header-panel {
     padding: 30px 40px;
@@ -653,7 +624,6 @@
 .details-single-info-row .info-downloads i.fa-download { color: #4ade80; }
 .details-single-info-row .info-size i.fa-hdd-o { color: #c4b5fd; }
 .details-single-info-row .details-file-name i { font-size: 1.4em; }
-
 /* Cores por tipo de arquivo */
 .details-single-info-row i.fa-file-pdf { color: #f87171; }
 .details-single-info-row i.fa-file-image { color: #60a5fa; }
@@ -665,7 +635,6 @@
 .details-single-info-row i.fa-file-video { color: #f87171; }
 .details-single-info-row i.fa-file-lines { color: #94a3b8; }
 .details-single-info-row i.fa-file { color: #94a3b8; }
-
 .info-version {
     font-size: 0.95em;
     color: #cbd5e1;
@@ -700,7 +669,6 @@
     flex-shrink: 0;
     white-space: nowrap;
 }
-
 /* Link "Voltar para Downloads" */
 .back-link {
     text-align: center;
@@ -721,7 +689,6 @@
     color: #0f172a;
     text-decoration: none;
 }
-
 /* Layout da página de detalhes com thumbnail */
 .details-wrapper {
     display: flex;
@@ -776,7 +743,6 @@
     background: #1e293b;
     border-top: 1px solid #334155;
 }
-
 /* RESPONSIVO GERAL */
 @media (max-width: 992px) {
     .simpledown-top-controls { flex-direction: column; align-items: stretch; }
@@ -812,7 +778,6 @@
         object-fit: contain;
     }
 }
-
 /* MODAL DE ARQUIVO PRIVADO - DARK */
 .private-modal-content {
     max-width: 420px;
@@ -849,7 +814,6 @@
     padding: 12px 28px;
     margin: 0;
 }
-
 /* Sobrescreve o h3 do prosilver apenas dentro do modal privado */
 #login-required-modal h3 {
     font-family: 'Bai Jamjuree', 'Roboto', Arial, Helvetica, sans-serif !important;
@@ -860,4 +824,79 @@
     padding-bottom: 0 !important;
     font-size: 1.6em !important;
     margin-top: 0 !important;
+}
+
+/* ======================================== */
+/* DESCRIÇÃO COMPLETA - SEM ESPAÇAMENTO ENTRE LINHAS (ADICIONADO - DARK) */
+/* ======================================== */
+.simpledown-container .details-description .file-description-full,
+.simpledown-container .details-description.full-width .file-description-full {
+    font-size: 1.35em !important;
+    line-height: 1.4 !important;           /* linha bem apertada */
+    color: #e2e8f0 !important;
+    margin: 0 0 40px 0 !important;
+    padding: 0 !important;
+    white-space: normal !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+}
+
+/* Remove completamente margem dos parágrafos */
+.simpledown-container .details-description .file-description-full p,
+.simpledown-container .details-description.full-width .file-description-full p {
+    margin: 0 !important;
+    padding: 0 !important;
+    line-height: inherit !important;
+}
+
+/* <br> como quebra simples sem espaço extra */
+.simpledown-container .details-description .file-description-full br,
+.simpledown-container .details-description.full-width .file-description-full br {
+    display: block !important;
+    content: "" !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    line-height: 0 !important;
+}
+
+/* Caso tenha dois <br> seguidos (parágrafo), ainda sem margem extra */
+.simpledown-container .details-description .file-description-full br + br,
+.simpledown-container .details-description.full-width .file-description-full br + br {
+    margin-bottom: 0 !important;
+}
+
+/* Sem descrição - mantém estilo original do dark */
+.simpledown-container .details-description .file-description-full.no-description {
+    color: #94a3b8 !important;
+    font-style: italic !important;
+    font-size: 1.4em !important;
+    margin-bottom: 30px !important;
+}
+
+/* ======================================== */
+/* MENSAGEM DE ARQUIVO PRIVADO NA PÁGINA DE DETALHES (DESTAQUE - DARK) */
+/* ======================================== */
+.private-download-message {
+    background: #334155; /* fundo escuro azul-acinzentado, igual ao header */
+    border: 1px solid #475569;
+    border-radius: 12px;
+    padding: 18px 24px;
+    margin: 24px 0;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-size: 1.15em;
+    color: #60a5fa; /* texto em azul claro para destaque */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.7);
+}
+
+.private-download-message i {
+    font-size: 1.6em;
+    color: #60a5fa;
+    flex-shrink: 0;
+}
+
+.private-download-message strong {
+    color: #ffffff;
+    flex-shrink: 0;
 }

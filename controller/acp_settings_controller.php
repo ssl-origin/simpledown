@@ -1,7 +1,7 @@
 <?php
 /**
  * @package mundophpbb/simpledown
- * @copyright (c) 2025 Mundo phpBB
+ * @copyright (c) 2026 Mundo phpBB
  * @license http://opensource.org/licenses/gpl-license.php GNU General Public License, version 2.
  */
 namespace mundophpbb\simpledown\controller;
@@ -29,6 +29,7 @@ class acp_settings_controller
     protected $php_ext;
     protected $categories_table;
     protected $files_table;
+    protected $forums_table;
     protected $u_action;
 
     public function __construct(
@@ -56,18 +57,21 @@ class acp_settings_controller
         $this->php_ext = $php_ext;
         $this->categories_table = $table_prefix . 'simpledown_categories';
         $this->files_table = $table_prefix . 'simpledown_files';
+        $this->forums_table = $table_prefix . 'forums';
     }
 
     /**
- * Define a URL da página atual (usada para redirecionamentos e links)
- */
-public function set_page_url($u_action)
-{
-    $this->u_action = $u_action;
-}
+     * Método obrigatório para módulos ACP – define a URL da página atual
+     */
+    public function set_page_url($u_action)
+    {
+        $this->u_action = $u_action;
+    }
 
     public function handle()
     {
+        add_form_key('mundophpbb_simpledown');
+
         // Salvar configurações gerais
         if ($this->request->is_set_post('config_submit')) {
             if (!check_form_key('mundophpbb_simpledown')) {
@@ -79,13 +83,15 @@ public function set_page_url($u_action)
             $private_categories = $this->request->variable('private_categories', [0]);
             $default_is_private = $this->request->variable('default_is_private', 0);
             $site_theme = $this->request->variable('site_theme', 'light');
-
-            // Número de cards por linha
             $cards_per_row = $this->request->variable('cards_per_row', 3);
             $cards_per_row = ($cards_per_row == 2) ? 2 : 3;
-
-            // NOVA OPÇÃO: Permitir que usuários escolham entre grid e lista
             $allow_user_layout_choice = $this->request->variable('allow_user_layout_choice', 0);
+
+            // Anúncios automáticos
+            $auto_announce = $this->request->variable('auto_announce', 0);
+            $announce_forum = $this->request->variable('announce_forum', 0);
+            $announce_title_template = $this->request->variable('announce_title_template', '', true);
+            $announce_message_template = $this->request->variable('announce_message_template', '', true);
 
             $this->config->set('simpledown_max_upload_size', $max_upload_mb);
             $this->config->set('simpledown_short_desc_limit', $short_desc_limit);
@@ -94,6 +100,10 @@ public function set_page_url($u_action)
             $this->config->set('simpledown_theme', $site_theme);
             $this->config->set('simpledown_cards_per_row', $cards_per_row);
             $this->config->set('simpledown_allow_user_layout_choice', $allow_user_layout_choice);
+            $this->config->set('simpledown_auto_announce', $auto_announce);
+            $this->config->set('simpledown_announce_forum', $announce_forum);
+            $this->config->set('simpledown_announce_title_template', $announce_title_template);
+            $this->config->set('simpledown_announce_message_template', $announce_message_template);
 
             trigger_error($this->language->lang('ACP_SIMPLEDOWN_CONFIG_SAVED') . adm_back_link($this->u_action . '&mode=settings'));
         }
@@ -133,7 +143,6 @@ public function set_page_url($u_action)
             }
         }
 
-        // Preparar dados para o template
         $this->prepare_template();
     }
 
@@ -145,9 +154,7 @@ public function set_page_url($u_action)
         if (is_dir($thumbs_dir)) {
             $files = scandir($thumbs_dir);
             foreach ($files as $file) {
-                if ($file === '.' || $file === '..') {
-                    continue;
-                }
+                if ($file === '.' || $file === '..') continue;
                 $ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
                 if (in_array($ext, ['jpg', 'jpeg', 'png', 'gif', 'webp'])) {
                     $thumbs_list[] = $file;
@@ -175,6 +182,18 @@ public function set_page_url($u_action)
         }
         $this->db->sql_freeresult($result);
 
+        // Select de fóruns para anúncio automático
+        $sql = 'SELECT forum_id, forum_name FROM ' . $this->forums_table . ' WHERE forum_type = ' . FORUM_POST . ' ORDER BY left_id';
+        $result = $this->db->sql_query($sql);
+        $announce_forum_select = '<select name="announce_forum" id="announce_forum">';
+        $announce_forum_select .= '<option value="0">' . $this->language->lang('ACP_SIMPLEDOWN_NO_FORUM') . '</option>';
+        while ($row = $this->db->sql_fetchrow($result)) {
+            $selected = ($row['forum_id'] == ($this->config['simpledown_announce_forum'] ?? 0)) ? ' selected' : '';
+            $announce_forum_select .= '<option value="' . $row['forum_id'] . '"' . $selected . '>' . $row['forum_name'] . '</option>';
+        }
+        $announce_forum_select .= '</select>';
+        $this->db->sql_freeresult($result);
+
         // Configurações atuais
         $private_categories = unserialize($this->config['simpledown_private_categories'] ?? serialize([]));
         $default_is_private = (int)($this->config['simpledown_default_is_private'] ?? 0);
@@ -184,26 +203,33 @@ public function set_page_url($u_action)
         $allow_user_layout_choice = (int)($this->config['simpledown_allow_user_layout_choice'] ?? 0);
 
         $this->template->assign_vars([
-            'MAX_UPLOAD_SIZE'           => $this->config['simpledown_max_upload_size'] ?? 100,
-            'SHORT_DESC_LIMIT'          => $this->config['simpledown_short_desc_limit'] ?? 150,
-            'PRIVATE_CATEGORIES'        => $private_categories,
-            'DEFAULT_IS_PRIVATE'        => $default_is_private,
-            'SITE_THEME'                => $site_theme,
-            'CARDS_PER_ROW'             => $cards_per_row,
-            'ALLOW_USER_LAYOUT_CHOICE'  => $allow_user_layout_choice,
-            'U_ACTION'                  => $this->u_action . '&mode=settings',
-            'THUMBS_DIR'                => $this->path_helper->get_web_root_path() . 'ext/mundophpbb/simpledown/files/thumbs/',
-            'S_THUMBS_EXIST'            => !empty($thumbs_list),
+            'MAX_UPLOAD_SIZE'               => $this->config['simpledown_max_upload_size'] ?? 100,
+            'SHORT_DESC_LIMIT'              => $this->config['simpledown_short_desc_limit'] ?? 150,
+            'PRIVATE_CATEGORIES'            => $private_categories,
+            'DEFAULT_IS_PRIVATE'            => $default_is_private,
+            'SITE_THEME'                    => $site_theme,
+            'CARDS_PER_ROW'                 => $cards_per_row,
+            'ALLOW_USER_LAYOUT_CHOICE'      => $allow_user_layout_choice,
+            'AUTO_ANNOUNCE'                 => (int)($this->config['simpledown_auto_announce'] ?? 0),
+            'ANNOUNCE_FORUM_SELECT'         => $announce_forum_select,
+            'ANNOUNCE_TITLE_TEMPLATE'       => $this->config['simpledown_announce_title_template'] ?? '[Novo Download] {NAME} v{VERSION}',
+            'ANNOUNCE_MESSAGE_TEMPLATE'     => $this->config['simpledown_announce_message_template'] ?? "{DESC_FORMATTED}\n\n[center][url={URL_DETAILS}]Baixar agora[/url][/center]",
+            'U_ACTION'                      => $this->u_action . '&mode=settings',
+            'THUMBS_DIR'                    => $this->path_helper->get_web_root_path() . 'ext/mundophpbb/simpledown/files/thumbs/',
+            'S_THUMBS_EXIST'                => !empty($thumbs_list),
         ]);
     }
 
     protected function upload_file()
     {
+        // Carregar funções necessárias
+        if (!function_exists('submit_post')) {
+            include($this->root_path . 'includes/functions_posting.' . $this->php_ext);
+        }
+
         $file = $this->request->file('file_upload');
         if (empty($file['name'])) {
-            $this->template->assign_vars([
-                'ERROR_MESSAGE' => $this->language->lang('ACP_SIMPLEDOWN_NO_FILE_UPLOADED'),
-            ]);
+            $this->template->assign_vars(['ERROR_MESSAGE' => $this->language->lang('ACP_SIMPLEDOWN_NO_FILE_UPLOADED')]);
             return;
         }
 
@@ -226,23 +252,18 @@ public function set_page_url($u_action)
         }
 
         if (!move_uploaded_file($file['tmp_name'], $dest)) {
-            $this->template->assign_vars([
-                'ERROR_MESSAGE' => $this->language->lang('ACP_SIMPLEDOWN_UPLOAD_FAILED'),
-            ]);
+            $this->template->assign_vars(['ERROR_MESSAGE' => $this->language->lang('ACP_SIMPLEDOWN_UPLOAD_FAILED')]);
             return;
         }
 
-        // Calcular hash para verificação de duplicidade
+        // Verificar duplicidade por hash
         $hash = md5_file($dest);
-
-        // Verificar se já existe um arquivo com o mesmo conteúdo
         $sql = 'SELECT file_name, file_realname FROM ' . $this->files_table . ' WHERE file_hash = \'' . $this->db->sql_escape($hash) . '\' LIMIT 1';
         $result = $this->db->sql_query($sql);
         $existing = $this->db->sql_fetchrow($result);
         $this->db->sql_freeresult($result);
 
         if ($existing) {
-            // Arquivo duplicado: apaga o que acabou de ser enviado
             @unlink($dest);
             $this->template->assign_vars([
                 'ERROR_MESSAGE' => $this->language->lang(
@@ -263,56 +284,139 @@ public function set_page_url($u_action)
         $selected_thumb = $this->request->variable('existing_thumb', '', true);
         $is_private = $this->request->variable('is_private', 0);
 
-        // Validação obrigatória de categoria
         if ($cat <= 0) {
             $sql = 'SELECT COUNT(*) AS total FROM ' . $this->categories_table;
             $result = $this->db->sql_query($sql);
             $row = $this->db->sql_fetchrow($result);
             $this->db->sql_freeresult($result);
-
             $error_msg = ($row['total'] == 0)
                 ? $this->language->lang('ACP_SIMPLEDOWN_NO_CATEGORIES_EXIST')
                 : $this->language->lang('ACP_SIMPLEDOWN_CATEGORY_REQUIRED');
-
             @unlink($dest);
-            $this->template->assign_vars([
-                'ERROR_MESSAGE' => $error_msg,
-            ]);
+            $this->template->assign_vars(['ERROR_MESSAGE' => $error_msg]);
             return;
         }
 
-        // Inserir no banco
+        // Processar BBCode na descrição completa
+        $uid = $bitfield = $flags = '';
+        generate_text_for_storage($desc_full, $uid, $bitfield, $flags, true, true, true);
+
         $sql_data = [
-            'file_name'       => $name,
-            'file_realname'   => $filename,
-            'file_desc_short' => $desc_short,
-            'file_desc'       => $desc_full,
-            'version'         => $version ?: null,
-            'category_id'     => (int)$cat,
-            'downloads'       => 0,
-            'file_size'       => (int)$file['size'],
-            'file_hash'       => $hash,
-            'thumbnail'       => $selected_thumb !== '' ? $selected_thumb : null,
-            'is_private'      => (int)$is_private,
+            'file_name'                  => $name,
+            'file_realname'              => $filename,
+            'file_desc_short'            => $desc_short,
+            'file_desc'                  => $desc_full,
+            'file_desc_bbcode_uid'       => $uid,
+            'file_desc_bbcode_bitfield'  => $bitfield,
+            'file_desc_bbcode_flags'     => $flags,
+            'version'                    => $version ?: null,
+            'category_id'                => (int)$cat,
+            'downloads'                  => 0,
+            'file_size'                  => (int)$file['size'],
+            'file_hash'                  => $hash,
+            'thumbnail'                  => $selected_thumb !== '' ? $selected_thumb : null,
+            'is_private'                 => (int)$is_private,
+            'topic_id'                   => 0,
         ];
 
         $sql = 'INSERT INTO ' . $this->files_table . ' ' . $this->db->sql_build_array('INSERT', $sql_data);
         $this->db->sql_query($sql);
+        $file_id = $this->db->sql_nextid();
 
         $this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'LOG_SIMPLEDOWN_FILE_ADDED', false, [$name]);
 
-        $this->template->assign_vars([
-            'SUCCESS_MESSAGE' => $this->language->lang('ACP_SIMPLEDOWN_FILE_ADDED'),
-        ]);
+                // CRIAÇÃO AUTOMÁTICA DO TÓPICO DE ANÚNCIO
+        if (!empty($this->config['simpledown_auto_announce'])) {
+            $forum_id = (int)($this->config['simpledown_announce_forum'] ?? 0);
+            if ($forum_id > 0) {
+                $details_url = generate_board_url() . '/downloads/details/' . $file_id;
+
+                // Usa o BBCode puro da descrição completa (do formulário, antes do processamento)
+                $desc_full_raw = $this->request->variable('file_desc', '', true);
+
+                // Template do config (pode usar {DESC_FULL_RAW} se quiser)
+                $title_template   = trim($this->config['simpledown_announce_title_template'] ?? '[Novo Download] {NAME} v{VERSION}');
+                $message_template = trim($this->config['simpledown_announce_message_template'] ?? "{DESC_FULL_RAW}\n\n[center][url={URL_DETAILS}]Baixar agora[/url][/center]");
+
+                $subject = str_replace(
+                    ['{NAME}', '{VERSION}'],
+                    [$name, $version ?: ''],
+                    $title_template
+                );
+
+                $message = str_replace(
+                    [
+                        '{NAME}',
+                        '{VERSION}',
+                        '{URL_DETAILS}',
+                        '{URL_DOWNLOAD}',
+                        '{DESC_SHORT}',
+                        '{DESC_FORMATTED}',
+                        '{DESC_FULL_RAW}'
+                    ],
+                    [
+                        $name,
+                        $version ?: '',
+                        $details_url,
+                        $details_url,
+                        $desc_short ?: '',
+                        $desc_full_raw,  // compatibilidade antiga
+                        $desc_full_raw   // novo placeholder
+                    ],
+                    $message_template
+                );
+
+                // Processamento do BBCode (com texto puro = funciona perfeitamente)
+                $uid = $bitfield = $options = false;
+                generate_text_for_storage($subject, $uid, $bitfield, $options, true, false, false);
+                generate_text_for_storage($message, $uid, $bitfield, $options, true, true, true);
+
+                $poll = [];
+
+                $data = [
+                    'forum_id'          => $forum_id,
+                    'topic_title'       => $subject,
+                    'message'           => $message,
+                    'message_md5'       => md5($message),
+                    'bbcode_bitfield'   => $bitfield,
+                    'bbcode_uid'        => $uid,
+                    'enable_bbcode'     => true,
+                    'enable_smilies'    => true,
+                    'enable_urls'       => true,
+                    'enable_sig'        => false,
+                    'poster_id'         => $this->user->data['user_id'],
+                    'post_time'         => time(),
+                    'post_edit_locked'  => 0,
+                    'topic_time_limit'  => 0,
+                    'icon_id'           => 0,
+                    'enable_indexing'   => true,
+                    'notify'            => false,
+                    'notify_poster'     => false,
+                    'notify_set'        => false,
+                    'topic_type'        => POST_NORMAL,
+                ];
+
+                submit_post('post', $subject, $this->user->data['username'], POST_NORMAL, $poll, $data);
+
+                if (!empty($data['topic_id'])) {
+                    $sql = 'UPDATE ' . $this->files_table . '
+                            SET topic_id = ' . (int)$data['topic_id'] . '
+                            WHERE id = ' . (int)$file_id;
+                    $this->db->sql_query($sql);
+
+                    $this->log->add('admin', $this->user->data['user_id'], $this->user->ip,
+                        'LOG_SIMPLEDOWN_ANNOUNCE_CREATED', false, [$subject, $forum_id]);
+                }
+            }
+        }
+        $this->template->assign_vars(['SUCCESS_MESSAGE' => $this->language->lang('ACP_SIMPLEDOWN_FILE_ADDED')]);
     }
 
     protected function upload_thumb()
     {
         $file = $this->request->file('thumb_upload');
         if (empty($file['name'])) {
-            $this->template->assign_vars([
-                'ERROR_MESSAGE' => $this->language->lang('ACP_SIMPLEDOWN_NO_FILE_UPLOADED'),
-            ]);
+            $this->template->assign_vars(['ERROR_MESSAGE' => $this->language->lang('ACP_SIMPLEDOWN_NO_FILE_UPLOADED')]);
             return;
         }
 
@@ -326,9 +430,7 @@ public function set_page_url($u_action)
         $destination = $thumbs_dir . $safe_name;
 
         if (file_exists($destination)) {
-            $this->template->assign_vars([
-                'WARNING_MESSAGE' => $this->language->lang('ACP_SIMPLEDOWN_THUMB_ALREADY_EXISTS_WARNING'),
-            ]);
+            $this->template->assign_vars(['WARNING_MESSAGE' => $this->language->lang('ACP_SIMPLEDOWN_THUMB_ALREADY_EXISTS_WARNING')]);
         }
 
         $allowed = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
@@ -337,21 +439,15 @@ public function set_page_url($u_action)
         finfo_close($finfo);
 
         if (!in_array($mime, $allowed)) {
-            $this->template->assign_vars([
-                'ERROR_MESSAGE' => 'Apenas imagens JPG, PNG, GIF ou WEBP são permitidas.',
-            ]);
+            $this->template->assign_vars(['ERROR_MESSAGE' => 'Apenas imagens JPG, PNG, GIF ou WEBP são permitidas.']);
             return;
         }
 
         if (move_uploaded_file($file['tmp_name'], $destination)) {
             $this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'LOG_SIMPLEDOWN_THUMB_ADDED', false, [$safe_name]);
-            $this->template->assign_vars([
-                'SUCCESS_MESSAGE' => $this->language->lang('ACP_SIMPLEDOWN_THUMB_UPLOAD_SUCCESS'),
-            ]);
+            $this->template->assign_vars(['SUCCESS_MESSAGE' => $this->language->lang('ACP_SIMPLEDOWN_THUMB_UPLOAD_SUCCESS')]);
         } else {
-            $this->template->assign_vars([
-                'ERROR_MESSAGE' => $this->language->lang('ACP_SIMPLEDOWN_UPLOAD_FAILED'),
-            ]);
+            $this->template->assign_vars(['ERROR_MESSAGE' => $this->language->lang('ACP_SIMPLEDOWN_UPLOAD_FAILED')]);
         }
     }
 
@@ -374,7 +470,6 @@ public function set_page_url($u_action)
         $this->db->sql_query($sql);
 
         $this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'LOG_SIMPLEDOWN_CAT_ADDED', false, [$cat_name]);
-
         trigger_error($this->language->lang('ACP_SIMPLEDOWN_CAT_ADDED') . adm_back_link($this->u_action . '&mode=settings'));
     }
 
@@ -398,7 +493,6 @@ public function set_page_url($u_action)
         $this->db->sql_query($sql);
 
         $this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'LOG_SIMPLEDOWN_CAT_DELETED', false, [$cat_name]);
-
         trigger_error($this->language->lang('ACP_SIMPLEDOWN_CAT_DELETED') . adm_back_link($this->u_action . '&mode=settings'));
     }
 }

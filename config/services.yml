@@ -1,4 +1,5 @@
 services:
+    # Listener principal (eventos do phpBB)
     mundophpbb.simpledown.listener:
         class: mundophpbb\simpledown\event\listener
         arguments:
@@ -8,7 +9,7 @@ services:
         tags:
             - { name: event.listener }
 
-    # Controller do frontend (página /downloads, download, preview, details)
+    # Controller do frontend (/downloads, download, preview, detalhes etc.)
     mundophpbb.simpledown.controller:
         class: mundophpbb\simpledown\controller\main_controller
         arguments:
@@ -27,7 +28,7 @@ services:
         tags:
             - { name: controller.service_arguments }
 
-    # ACP: Controller para Configurações
+    # ACP: Controller de Configurações (Settings)
     mundophpbb.simpledown.acp_settings_controller:
         class: mundophpbb\simpledown\controller\acp_settings_controller
         arguments:
@@ -43,7 +44,7 @@ services:
             - '%core.php_ext%'
             - '%core.table_prefix%'
 
-    # ACP: Controller para Listagem e Gerenciamento de Arquivos
+    # ACP: Controller de Gerenciamento de Arquivos (Files)
     mundophpbb.simpledown.acp_files_controller:
         class: mundophpbb\simpledown\controller\acp_files_controller
         arguments:
@@ -59,18 +60,23 @@ services:
             - '%core.php_ext%'
             - '%core.table_prefix%'
 
-    # ACP: Controller para a página Ferramentas (Tools)
+    # ACP: Controller de Ferramentas (Tools)
     mundophpbb.simpledown.acp_tools_controller:
         class: mundophpbb\simpledown\controller\acp_tools_controller
         arguments:
             - '@config'
+            - '@dbal.conn'          # Adicionado para consistência e possíveis consultas futuras
             - '@language'
+            - '@log'                # Adicionado caso precise logar ações de limpeza
             - '@request'
             - '@template'
             - '@user'
+            - '@path_helper'        # Útil para caminhos de arquivos
             - '%core.root_path%'
+            - '%core.php_ext%'
+            - '%core.table_prefix%'
 
-    # ACP: Controller para a página de Logs
+    # ACP: Controller de Logs de Downloads
     mundophpbb.simpledown.acp_logs_controller:
         class: mundophpbb\simpledown\controller\acp_logs_controller
         arguments:
@@ -81,5 +87,8 @@ services:
             - '@request'
             - '@template'
             - '@user'
+            - '@pagination'         # Necessário para generate_template_pagination()
+            - '@path_helper'        # Adicionado para consistência
+            - '%core.root_path%'
+            - '%core.php_ext%'
             - '%core.table_prefix%'
-            - '@pagination'   # ← ADICIONADO: necessário para generate_template_pagination()

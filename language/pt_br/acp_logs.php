@@ -63,7 +63,7 @@ $lang = array_merge($lang, [
     'ACP_LOGS_MAX_DISPLAY_WARNING'      => 'Existem mais de 10.000 registros. Por razões de desempenho, apenas os 10.000 mais recentes estão sendo exibidos.',
 
     // Mensagem quando não há logs
-    'NO_LOGS_FOUND'                      => 'Nenhum registro encontrado',
+    'NO_LOGS_FOUND'                     => 'Nenhum registro encontrado',
 
     // Mensagem de erro (caso nenhum log seja selecionado)
     'NO_LOGS_SELECTED'                  => 'Nenhum log foi selecionado.',
@@ -71,11 +71,14 @@ $lang = array_merge($lang, [
     // Estatísticas no topo
     'ACP_SIMPLEDOWN_TOTAL_LOGS'         => 'Total de registros',
     'ACP_SIMPLEDOWN_STATS_TOTAL_DOWNLOADS' => 'Total de downloads registrados',
-    'ACP_SIMPLEDOWN_STATS_TOP_FILE'     => 'Arquivo mais baixado',
-    // Filtro (label acima do select)
-'ACP_LOGS_ACTION'               => 'Ação',
+    'ACP_SIMPLEDOWN_STATS_TOTAL_VIEWS'     => 'Total de visualizações registradas',
+    'ACP_SIMPLEDOWN_STATS_TOTAL_DENIED'    => 'Total de acessos negados registrados',
+    'ACP_SIMPLEDOWN_STATS_TOP_FILE'        => 'Arquivo mais baixado',
 
-// Cabeçalho da tabela (mais descritivo)
-'ACP_SIMPLEDOWN_LOG_ACTION'     => 'Ação',
+    // Filtro (label acima do select)
+    'ACP_LOGS_ACTION'                   => 'Ação',
+
+    // Cabeçalho da tabela (mais descritivo)
+    'ACP_SIMPLEDOWN_LOG_ACTION'         => 'Ação',
 
 ]);

@@ -1,21 +1,38 @@
 mundophpbb_simpledown_index:
     path: /downloads
-    defaults: { _controller: mundophpbb.simpledown.controller:handle }
+    defaults:
+        _controller: mundophpbb.simpledown.controller:handle
+    methods: [GET]
 
 mundophpbb_simpledown_download:
     path: /downloads/download/{id}
-    defaults: { _controller: mundophpbb.simpledown.controller:download }
+    defaults:
+        _controller: mundophpbb.simpledown.controller:download
+    methods: [GET]
     requirements:
         id: \d+
 
 mundophpbb_simpledown_preview:
     path: /downloads/preview/{id}
-    defaults: { _controller: mundophpbb.simpledown.controller:preview }
+    defaults:
+        _controller: mundophpbb.simpledown.controller:preview
+    methods: [GET]
     requirements:
         id: \d+
 
 mundophpbb_simpledown_details:
     path: /downloads/details/{id}
-    defaults: { _controller: mundophpbb.simpledown.controller:details }
+    defaults:
+        _controller: mundophpbb.simpledown.controller:details
+    methods: [GET]
+    requirements:
+        id: \d+
+
+# Rota AJAX para registrar "denied" (nome claro e consistente)
+mundophpbb_simpledown_log_denied:
+    path: /downloads/denied/{id}
+    defaults:
+        _controller: mundophpbb.simpledown.controller:log_denied
+    methods: [GET]
     requirements:
         id: \d+
