@@ -1,0 +1,437 @@
+<!-- INCLUDE overall_header.html -->
+<!-- ======================================== -->
+<!-- SEÇÃO 1: CARREGAMENTO CONDICIONAL DE CSS (TEMA CLARO/ESCURO) -->
+<!-- ======================================== -->
+<!-- IF S_SIMPLEDOWN_THEME == 'dark' -->
+    <!-- INCLUDECSS @mundophpbb_simpledown/simpledown_dark.css -->
+<!-- ELSE -->
+    <!-- INCLUDECSS @mundophpbb_simpledown/simpledown_dark.css -->
+<!-- ENDIF -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- ======================================== -->
+<!-- SEÇÃO 2: CONTAINER PRINCIPAL -->
+<!-- ======================================== -->
+<div class="simpledown-container">
+    <div>
+        <!-- ======================================== -->
+        <!-- SEÇÃO 2.1: TÍTULO PRINCIPAL -->
+        <!-- ======================================== -->
+        <div class="simpledown-header-panel">
+            <h2>{L_SIMPLEDOWN_TITLE}</h2>
+        </div>
+
+        <!-- ======================================== -->
+        <!-- SEÇÃO 2.2: CONTROLES SUPERIORES (BUSCA + FILTROS) -->
+        <!-- ======================================== -->
+        <div class="simpledown-top-controls">
+            <!-- Busca -->
+            <div class="search-box-wrapper">
+                <div class="search-box-outer">
+                    <input type="text" id="search-input" class="simpledown-search-input"
+                           placeholder="{L_SIMPLEDOWN_SEARCH_PLACEHOLDER}" autocomplete="off" />
+                    <button type="button" class="search-clear-btn external-clear-btn" id="search-clear-btn"
+                            title="{L_SIMPLEDOWN_CLEAR_SEARCH}">
+                        <i class="icon fas fa-times fa-fw"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Filtro por categoria -->
+            <div class="filter-select-wrapper">
+                <select id="category-filter" class="category-filter-select" onchange="applyFilters();">
+                    <option value="all" selected>{L_SIMPLEDOWN_SHOW_ALL_CATEGORIES}</option>
+                    <!-- BEGIN dropdown_categories -->
+                    <option value="{dropdown_categories.ID}">{dropdown_categories.NAME}</option>
+                    <!-- END dropdown_categories -->
+                    <!-- IF not .dropdown_categories -->
+                    <option value="0" disabled>{L_SIMPLEDOWN_NO_CATEGORIES_YET}</option>
+                    <!-- ENDIF -->
+                </select>
+            </div>
+
+            <!-- Ordenação -->
+            <div class="filter-select-wrapper">
+                <select id="sort-filter" class="category-filter-select" onchange="applyFilters();">
+                    <option value="" selected disabled>{L_SIMPLEDOWN_SORT_DEFAULT}</option>
+                    <option value="name-asc">{L_SORT_NAME_ASC}</option>
+                    <option value="name-desc">{L_SORT_NAME_DESC}</option>
+                    <option value="downloads-desc">{L_SORT_DOWNLOADS_DESC}</option>
+                    <option value="downloads-asc">{L_SORT_DOWNLOADS_ASC}</option>
+                    <option value="size-desc">{L_SORT_SIZE_DESC}</option>
+                    <option value="size-asc">{L_SORT_SIZE_ASC}</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- ======================================== -->
+        <!-- SEÇÃO 2.3: TOGGLE DE VISUALIZAÇÃO (GRID / LISTA) -->
+        <!-- ======================================== -->
+        <!-- IF ALLOW_USER_LAYOUT_CHOICE -->
+        <div class="view-mode-toggle">
+            <button id="view-grid" class="view-btn active" title="Visualização em grade">
+                <i class="icon fas fa-th-large fa-fw"></i>
+            </button>
+            <button id="view-list" class="view-btn" title="Visualização em lista">
+                <i class="icon fas fa-list fa-fw"></i>
+            </button>
+        </div>
+        <!-- ENDIF -->
+
+        <!-- ======================================== -->
+        <!-- SEÇÃO 2.4: CONTEÚDO DINÂMICO (GRID OU LISTA) -->
+        <!-- ======================================== -->
+        <div class="downloads-view">
+            <!-- Modo GRID (cards) -->
+            <div class="downloads-grid <!-- IF CARDS_PER_ROW == 2 -->grid-2-cols<!-- ELSE -->grid-3-cols<!-- ENDIF -->" id="view-grid-container">
+                <!-- BEGIN categories -->
+                    <!-- BEGIN files -->
+                    <div class="simpledown-card" data-cat-id="{categories.ID}">
+                        <div class="card-content">
+                            <h3 class="file-title">{categories.files.NAME}</h3>
+                            <span class="file-category-label">
+                                <strong>{L_SIMPLEDOWN_CATEGORY}:</strong> {categories.NAME}
+                            </span>
+                            <p class="file-description">{categories.files.DESC_SHORT}</p>
+                            <div class="file-info-row">
+                                <span><i class="icon fa-download fa-fw"></i> {categories.files.DOWNLOADS}</span>
+                                <!-- IF categories.files.IS_IMAGE -->
+                                <span class="preview-btn"
+                                      data-preview-route="{categories.files.U_PREVIEW_ROUTE}"
+                                      onclick="openImageModal(this)"
+                                      title="{L_SIMPLEDOWN_PREVIEW_IMAGE}"
+                                      style="cursor: pointer;">
+                                    <i class="icon fa-eye fa-fw"></i>
+                                </span>
+                                <!-- ENDIF -->
+                                <span><i class="icon fa-hdd-o fa-fw"></i> {categories.files.SIZE}</span>
+                            </div>
+                            <span class="file-name-below">
+                                <i class="icon fa-fw {categories.files.FILE_ICON}" aria-hidden="true"></i>
+                                <span class="file-realname-truncate">{categories.files.REAL_NAME}</span>
+                                <!-- IF categories.files.VERSION -->
+                                <span class="version-badge">v{categories.files.VERSION}</span>
+                                <!-- ENDIF -->
+                                <!-- IF categories.files.IS_PRIVATE -->
+                                <span class="private-badge" title="{L_SIMPLEDOWN_PRIVATE_FILE}">
+                                    <i class="icon fas fa-lock fa-fw"></i> {L_SIMPLEDOWN_PRIVATE_FILE}
+                                </span>
+                                <!-- ENDIF -->
+                            </span>
+                        </div>
+                        <div class="card-footer">
+                            <a href="{categories.files.U_DETAILS}" class="details-btn-small">
+                                <i class="icon fa-info-circle fa-fw"></i> {L_SIMPLEDOWN_DETAILS_BUTTON}
+                            </a>
+                            <a href="javascript:void(0)"
+                               class="download-btn"
+                               data-private="{categories.files.IS_PRIVATE}"
+                               data-file-id="{categories.files.ID}"
+                               data-download-url="{categories.files.U_DOWNLOAD_URL}"
+                               data-denied-url="{categories.files.U_LOG_DENIED}"
+                               onclick="handleDownloadClick(this)">
+                                <i class="icon fa-download fa-fw"></i> {L_DOWNLOAD_BUTTON}
+                            </a>
+                        </div>
+                    </div>
+                    <!-- END files -->
+                <!-- END categories -->
+            </div>
+
+            <!-- Modo LISTA - LAYOUT DEFINITIVO (tudo abaixo da descrição) -->
+            <div class="downloads-list" id="view-list-container" style="display: none;">
+                <!-- BEGIN categories -->
+                    <!-- BEGIN files -->
+                    <div class="list-item" data-cat-id="{categories.ID}">
+                        <!-- Ícone grande à esquerda -->
+                        <i class="icon fa-fw {categories.files.FILE_ICON} list-icon"></i>
+
+                        <!-- Conteúdo principal: título + descrição -->
+                        <div class="list-main">
+                            <h3 class="list-title">{categories.files.NAME}</h3>
+                            <p class="list-description">{categories.files.DESC_SHORT}</p>
+
+                            <!-- Linha inferior: nome real + infos + botões -->
+                            <div class="list-bottom-row">
+                                <!-- Nome real do arquivo + versão + private -->
+                                <div class="list-file-name-row">
+                                    <i class="icon fa-fw {categories.files.FILE_ICON}" aria-hidden="true"></i>
+                                    <span class="file-realname-truncate">{categories.files.REAL_NAME}</span>
+                                    <!-- IF categories.files.VERSION -->
+                                    <span class="version-badge">v{categories.files.VERSION}</span>
+                                    <!-- ENDIF -->
+                                    <!-- IF categories.files.IS_PRIVATE -->
+                                    <span class="private-badge" title="{L_SIMPLEDOWN_PRIVATE_FILE}">
+                                        <i class="icon fas fa-lock fa-fw"></i>
+                                    </span>
+                                    <!-- ENDIF -->
+                                </div>
+
+                                <!-- Infos -->
+                                <div class="list-info-row">
+                                    <span class="info-downloads"><i class="icon fa-download fa-fw"></i> {categories.files.DOWNLOADS}</span>
+                                    <span class="info-size"><i class="icon fa-hdd-o fa-fw"></i> {categories.files.SIZE}</span>
+                                    <!-- IF categories.files.IS_IMAGE -->
+                                    <span class="preview-btn"
+                                          data-preview-route="{categories.files.U_PREVIEW_ROUTE}"
+                                          onclick="openImageModal(this)"
+                                          title="{L_SIMPLEDOWN_PREVIEW_IMAGE}"
+                                          style="cursor: pointer;">
+                                        <i class="icon fa-eye fa-fw"></i>
+                                    </span>
+                                    <!-- ENDIF -->
+                                </div>
+
+                                <!-- Botões à direita -->
+                                <div class="list-actions">
+                                    <a href="{categories.files.U_DETAILS}" class="details-btn-small">
+                                        <i class="icon fa-info-circle fa-fw"></i> {L_SIMPLEDOWN_DETAILS_BUTTON}
+                                    </a>
+                                    <a href="javascript:void(0)"
+                                       class="download-btn"
+                                       data-private="{categories.files.IS_PRIVATE}"
+                                       data-file-id="{categories.files.ID}"
+                                       data-download-url="{categories.files.U_DOWNLOAD_URL}"
+                                       data-denied-url="{categories.files.U_LOG_DENIED}"
+                                       onclick="handleDownloadClick(this)">
+                                        <i class="icon fa-download fa-fw"></i> {L_DOWNLOAD_BUTTON}
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END files -->
+                <!-- END categories -->
+            </div>
+        </div>
+
+        <!-- ======================================== -->
+        <!-- SEÇÃO 2.5: MENSAGENS DE ESTADO VAZIO -->
+        <!-- ======================================== -->
+        <div class="simpledown-search-empty" id="search-empty-message" style="display: none;">
+            <div class="simpledown-empty-state">
+                <p>{L_SIMPLEDOWN_SEARCH_EMPTY}</p>
+                <p style="font-size: 1.2em; margin-top: 12px; color: #777;">
+                    {L_SIMPLEDOWN_SEARCH_EMPTY_HINT}
+                </p>
+            </div>
+        </div>
+
+        <!-- IF not .categories -->
+        <div class="simpledown-empty-state">
+            <p>{L_SIMPLEDOWN_NO_DOWNLOADS_AVAILABLE}</p>
+        </div>
+        <!-- ENDIF -->
+
+        <!-- ======================================== -->
+        <!-- SEÇÃO 2.6: MODAIS -->
+        <!-- ======================================== -->
+        <div id="image-modal" class="image-modal">
+            <div class="modal-image-wrapper">
+                <span class="modal-close" onclick="closeImageModal()"><i class="icon fas fa-times fa-fw"></i></span>
+                <img id="modal-image" class="modal-image-content" alt="{L_SIMPLEDOWN_IMAGE_PREVIEW_ALT}" />
+            </div>
+        </div>
+
+        <div id="login-required-modal" class="image-modal" style="display: none;">
+            <div class="modal-image-wrapper private-modal-content">
+                <span class="modal-close" onclick="document.getElementById('login-required-modal').style.display='none'">
+                    <i class="icon fas fa-times fa-fw"></i>
+                </span>
+                <i class="icon fas fa-lock fa-4x" style="color: #e74c3c; margin-bottom: 20px;"></i>
+                <h3>{L_SIMPLEDOWN_LOGIN_REQUIRED}</h3>
+                <p>{L_SIMPLEDOWN_PRIVATE_MODAL_TEXT}</p>
+                <div>
+                    <a href="{U_LOGIN}" class="download-btn">
+                        <i class="icon fas fa-sign-in-alt fa-fw"></i> {L_SIMPLEDOWN_LOGIN_BUTTON}
+                    </a>
+                    <a href="{U_REGISTER}" class="details-btn-small">
+                        <i class="icon fas fa-user-plus fa-fw"></i> {L_SIMPLEDOWN_REGISTER_BUTTON}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ======================================== -->
+<!-- SEÇÃO 3: SCRIPT PRINCIPAL (com toggle corrigido) -->
+<!-- ======================================== -->
+<script>
+    const SIMPLE_DOWN_IS_LOGGED_IN = <!-- IF S_IS_LOGGED_IN -->true<!-- ELSE -->false<!-- ENDIF -->;
+
+    function applyFilters() {
+        const categoryValue = document.getElementById('category-filter').value || 'all';
+        const searchValue = document.getElementById('search-input').value.trim().toLowerCase();
+        const sortValue = document.getElementById('sort-filter').value || 'downloads-desc';
+
+        if (sortValue) {
+            document.cookie = "simpledown_sort=" + sortValue + "; path=/; max-age=" + (30*24*60*60);
+        }
+
+        const gridContainer = document.getElementById('view-grid-container');
+        const listContainer = document.getElementById('view-list-container');
+        const activeContainer = gridContainer.style.display === 'none' ? listContainer : gridContainer;
+
+        const items = Array.from(activeContainer.querySelectorAll('.simpledown-card, .list-item'));
+        let hasVisible = false;
+
+        items.forEach(item => {
+            const catId = item.getAttribute('data-cat-id');
+            const title = item.querySelector('.file-title, .list-title')?.textContent.toLowerCase() || '';
+            const desc = item.querySelector('.file-description, .list-description')?.textContent.toLowerCase() || '';
+            const matchesCategory = categoryValue === 'all' || catId === categoryValue;
+            const matchesSearch = searchValue === '' || title.includes(searchValue) || desc.includes(searchValue);
+            const show = matchesCategory && matchesSearch;
+            item.style.display = show ? '' : 'none';
+            if (show) hasVisible = true;
+        });
+
+        const visibleItems = items.filter(item => item.style.display !== 'none');
+        visibleItems.sort((a, b) => {
+            let cmp = 0;
+            if (sortValue === 'name-asc' || sortValue === 'name-desc') {
+                const nameA = a.querySelector('.file-title, .list-title')?.textContent.trim().toLowerCase() || '';
+                const nameB = b.querySelector('.file-title, .list-title')?.textContent.trim().toLowerCase() || '';
+                cmp = nameA.localeCompare(nameB);
+                if (sortValue === 'name-desc') cmp = -cmp;
+            } else if (sortValue.includes('downloads')) {
+                const dlA = parseInt(a.querySelector('.info-downloads, .file-info-row span:first-child')?.textContent.replace(/\D/g, '') || '0');
+                const dlB = parseInt(b.querySelector('.info-downloads, .file-info-row span:first-child')?.textContent.replace(/\D/g, '') || '0');
+                cmp = dlB - dlA;
+                if (sortValue === 'downloads-asc') cmp = -cmp;
+            } else if (sortValue.includes('size')) {
+                const sizeA = parseSize(a.querySelector('.info-size, .file-info-row span:last-child')?.textContent.trim() || '0');
+                const sizeB = parseSize(b.querySelector('.info-size, .file-info-row span:last-child')?.textContent.trim() || '0');
+                cmp = sizeB - sizeA;
+                if (sortValue === 'size-asc') cmp = -cmp;
+            }
+            return cmp;
+        });
+
+        visibleItems.forEach(item => activeContainer.appendChild(item));
+
+        const emptyMessage = document.getElementById('search-empty-message');
+        if (emptyMessage) {
+            emptyMessage.style.display = hasVisible ? 'none' : 'block';
+        }
+    }
+
+    function parseSize(sizeStr) {
+        const matches = sizeStr.match(/([\d.]+)\s*(bytes|KB|MB|GB)/i);
+        if (!matches) return 0;
+        const value = parseFloat(matches[1]);
+        const unit = matches[2].toLowerCase();
+        switch (unit) {
+            case 'gb': return value * 1073741824;
+            case 'mb': return value * 1048576;
+            case 'kb': return value * 1024;
+            case 'bytes': return value;
+            default: return 0;
+        }
+    }
+
+    function handleDownloadClick(element) {
+        const isPrivate = element.getAttribute('data-private') === '1';
+        const downloadUrl = element.getAttribute('data-download-url');
+        const deniedUrl = element.getAttribute('data-denied-url');
+
+        if (isPrivate && !SIMPLE_DOWN_IS_LOGGED_IN) {
+            document.getElementById('login-required-modal').style.display = 'flex';
+            if (deniedUrl) {
+                fetch(deniedUrl, { method: 'GET', credentials: 'same-origin' }).catch(() => {});
+            }
+            return;
+        }
+        window.location.href = downloadUrl;
+    }
+
+    function openImageModal(param) {
+        let src = (typeof param === 'string') ? param : param.getAttribute('data-preview-route');
+        if (!src) return;
+        const modal = document.getElementById('image-modal');
+        const img = document.getElementById('modal-image');
+        img.src = src + (src.indexOf('?') === -1 ? '?t=' : '&t=') + Date.now();
+        modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeImageModal() {
+        document.getElementById('image-modal').style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
+
+    // === TOGGLE GRID / LISTA (CORRIGIDO) ===
+    const viewToggle = document.querySelector('.view-mode-toggle');
+    if (viewToggle) {
+        const gridBtn = document.getElementById('view-grid');
+        const listBtn = document.getElementById('view-list');
+        const gridContainer = document.getElementById('view-grid-container');
+        const listContainer = document.getElementById('view-list-container');
+
+        const setView = (mode) => {
+            if (mode === 'list') {
+                gridContainer.style.display = 'none';
+                listContainer.style.display = '';
+                gridBtn.classList.remove('active');
+                listBtn.classList.add('active');
+            } else {
+                gridContainer.style.display = '';
+                listContainer.style.display = 'none';
+                gridBtn.classList.add('active');
+                listBtn.classList.remove('active');
+            }
+            document.cookie = `simpledown_view_mode=${mode}; path=/; max-age=${365*24*60*60}`;
+            applyFilters();
+        };
+
+        gridBtn.addEventListener('click', () => setView('grid'));
+        listBtn.addEventListener('click', () => setView('list'));
+
+        let savedMode = 'grid';
+        document.cookie.split('; ').forEach(cookie => {
+            const [name, value] = cookie.split('=');
+            if (name === 'simpledown_view_mode' && (value === 'grid' || value === 'list')) {
+                savedMode = value;
+            }
+        });
+
+        setView(savedMode);
+    }
+
+    // === EVENTOS DOM ===
+    document.addEventListener('DOMContentLoaded', () => {
+        const searchInput = document.getElementById('search-input');
+        const clearBtn = document.getElementById('search-clear-btn');
+        const searchOuter = document.querySelector('.search-box-outer');
+
+        const updateClearButton = () => {
+            const hasValue = searchInput.value.trim().length > 0;
+            clearBtn.style.display = hasValue ? 'flex' : 'none';
+            searchOuter.classList.toggle('has-value', hasValue);
+        };
+
+        searchInput.addEventListener('input', applyFilters);
+        document.getElementById('category-filter')?.addEventListener('change', applyFilters);
+        document.getElementById('sort-filter')?.addEventListener('change', applyFilters);
+
+        clearBtn.addEventListener('click', () => {
+            searchInput.value = '';
+            searchInput.focus();
+            updateClearButton();
+            applyFilters();
+        });
+
+        window.addEventListener('click', (event) => {
+            if (event.target.id === 'image-modal') closeImageModal();
+            if (event.target.id === 'login-required-modal') document.getElementById('login-required-modal').style.display = 'none';
+        });
+
+        updateClearButton();
+        applyFilters();
+    });
+</script>
+
+<!-- INCLUDE overall_footer.html -->

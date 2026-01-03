@@ -76,7 +76,6 @@
                 </dd>
             </dl>
         </fieldset>
-
         <!-- ======================================== -->
         <!-- SEÇÃO: ANÚNCIOS AUTOMÁTICOS EM FÓRUNS -->
         <!-- ======================================== -->
@@ -124,12 +123,10 @@
                 <dd><textarea name="announce_message_template" id="announce_message_template" rows="10" cols="80">{{ ANNOUNCE_MESSAGE_TEMPLATE }}</textarea></dd>
             </dl>
         </fieldset>
-
         <p class="submit-buttons">
             <input class="button1" type="submit" name="config_submit" value="{{ lang('ACP_SIMPLEDOWN_SAVE_CONFIG') }}" />
         </p>
     </form>
-
     <!-- ======================================== -->
     <!-- SEÇÃO 2: GERENCIAMENTO DE CATEGORIAS -->
     <!-- ======================================== -->
@@ -146,7 +143,6 @@
             </p>
         </fieldset>
     </form>
-
     <form id="delete-category-form" method="post" action="{{ U_ACTION }}">
         {{ S_FORM_TOKEN }}
         <fieldset>
@@ -168,7 +164,6 @@
             {% endif %}
         </fieldset>
     </form>
-
     <!-- ======================================== -->
     <!-- SEÇÃO 3: ADICIONAR ARQUIVO -->
     <!-- ======================================== -->
@@ -229,7 +224,7 @@
             </dl>
             <dl>
                 <dt><label for="file_version">{{ lang('ACP_SIMPLEDOWN_VERSION') }}:</label><br>
-                    <span>{{ lang('ACP_SIMPLEDOWN_VERSION_EXPLAIN ')}}</span></dt>
+                    <span>{{ lang('ACP_SIMPLEDOWN_VERSION_EXPLAIN') }}</span></dt>
                 <dd><input type="text" id="file_version" name="file_version" maxlength="50" size="20" placeholder="ex: 2.1.0" /></dd>
             </dl>
             <dl>
@@ -250,8 +245,8 @@
                 <dt><label>{{ lang('ACP_SIMPLEDOWN_VISIBILITY') }}:</label><br>
                     <span>{{ lang('ACP_SIMPLEDOWN_VISIBILITY_EXPLAIN') }}</span></dt>
                 <dd>
-                    <label><input type="radio" name="is_private" value="0" checked /> {{ lang('ACP_SIMPLEDOWN_PUBLIC') }}</label>&nbsp;&nbsp;&nbsp;
-                    <label><input type="radio" name="is_private" value="1" /> {{ lang('ACP_SIMPLEDOWN_PRIVATE') }}</label>
+                    <label><input type="radio" name="is_private" value="0" {% if not DEFAULT_IS_PRIVATE %}checked{% endif %} /> {{ lang('ACP_SIMPLEDOWN_PUBLIC') }}</label>&nbsp;&nbsp;&nbsp;
+                    <label><input type="radio" name="is_private" value="1" {% if DEFAULT_IS_PRIVATE %}checked{% endif %} /> {{ lang('ACP_SIMPLEDOWN_PRIVATE') }}</label>
                 </dd>
             </dl>
             <dl>
@@ -290,7 +285,6 @@
             </p>
         </fieldset>
     </form>
-
     <!-- SEÇÃO 4: MINIATURA AVULSA -->
     <form id="upload-thumb-form" method="post" action="{{ U_ACTION }}" enctype="multipart/form-data">
         {{ S_FORM_TOKEN }}
@@ -315,7 +309,6 @@
         </fieldset>
     </form>
 </div>
-
 <!-- MODAL DE MENSAGENS -->
 <div id="message-modal" class="modal" style="display:none;">
     <div class="modal-content">
@@ -334,7 +327,6 @@
         {% endif %}
     </div>
 </div>
-
 <!-- SCRIPT UNIFICADO -->
 <script>
 document.addEventListener('DOMContentLoaded', () => {
