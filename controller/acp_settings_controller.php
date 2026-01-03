@@ -212,8 +212,11 @@ class acp_settings_controller
             'ALLOW_USER_LAYOUT_CHOICE'      => $allow_user_layout_choice,
             'AUTO_ANNOUNCE'                 => (int)($this->config['simpledown_auto_announce'] ?? 0),
             'ANNOUNCE_FORUM_SELECT'         => $announce_forum_select,
-            'ANNOUNCE_TITLE_TEMPLATE'       => $this->config['simpledown_announce_title_template'] ?? '[Novo Download] {NAME} v{VERSION}',
-            'ANNOUNCE_MESSAGE_TEMPLATE'     => $this->config['simpledown_announce_message_template'] ?? "{DESC_FORMATTED}\n\n[center][url={URL_DETAILS}]Baixar agora[/url][/center]",
+            // Valores padrão agora vêm do idioma
+            'ANNOUNCE_TITLE_TEMPLATE'       => $this->config['simpledown_announce_title_template']
+                ?? $this->language->lang('ACP_SIMPLEDOWN_ANNOUNCE_TITLE_TEMPLATE_DEFAULT'),
+            'ANNOUNCE_MESSAGE_TEMPLATE'     => $this->config['simpledown_announce_message_template']
+                ?? $this->language->lang('ACP_SIMPLEDOWN_ANNOUNCE_MESSAGE_TEMPLATE_DEFAULT'),
             'U_ACTION'                      => $this->u_action . '&mode=settings',
             'THUMBS_DIR'                    => $this->path_helper->get_web_root_path() . 'ext/mundophpbb/simpledown/files/thumbs/',
             'S_THUMBS_EXIST'                => !empty($thumbs_list),
@@ -325,18 +328,21 @@ class acp_settings_controller
 
         $this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'LOG_SIMPLEDOWN_FILE_ADDED', false, [$name]);
 
-                // CRIAÇÃO AUTOMÁTICA DO TÓPICO DE ANÚNCIO
+        // CRIAÇÃO AUTOMÁTICA DO TÓPICO DE ANÚNCIO
         if (!empty($this->config['simpledown_auto_announce'])) {
             $forum_id = (int)($this->config['simpledown_announce_forum'] ?? 0);
             if ($forum_id > 0) {
                 $details_url = generate_board_url() . '/downloads/details/' . $file_id;
 
-                // Usa o BBCode puro da descrição completa (do formulário, antes do processamento)
+                // Descrição completa bruta (antes do processamento BBCode)
                 $desc_full_raw = $this->request->variable('file_desc', '', true);
 
-                // Template do config (pode usar {DESC_FULL_RAW} se quiser)
-                $title_template   = trim($this->config['simpledown_announce_title_template'] ?? '[Novo Download] {NAME} v{VERSION}');
-                $message_template = trim($this->config['simpledown_announce_message_template'] ?? "{DESC_FULL_RAW}\n\n[center][url={URL_DETAILS}]Baixar agora[/url][/center]");
+                // Templates com fallback para valores traduzidos do idioma
+                $title_template = trim($this->config['simpledown_announce_title_template']
+                    ?? $this->language->lang('ACP_SIMPLEDOWN_ANNOUNCE_TITLE_TEMPLATE_DEFAULT'));
+
+                $message_template = trim($this->config['simpledown_announce_message_template']
+                    ?? $this->language->lang('ACP_SIMPLEDOWN_ANNOUNCE_MESSAGE_TEMPLATE_DEFAULT'));
 
                 $subject = str_replace(
                     ['{NAME}', '{VERSION}'],
@@ -360,13 +366,13 @@ class acp_settings_controller
                         $details_url,
                         $details_url,
                         $desc_short ?: '',
-                        $desc_full_raw,  // compatibilidade antiga
-                        $desc_full_raw   // novo placeholder
+                        $desc_full_raw,
+                        $desc_full_raw
                     ],
                     $message_template
                 );
 
-                // Processamento do BBCode (com texto puro = funciona perfeitamente)
+                // Processamento do BBCode
                 $uid = $bitfield = $options = false;
                 generate_text_for_storage($subject, $uid, $bitfield, $options, true, false, false);
                 generate_text_for_storage($message, $uid, $bitfield, $options, true, true, true);
@@ -409,10 +415,11 @@ class acp_settings_controller
                 }
             }
         }
+
         $this->template->assign_vars(['SUCCESS_MESSAGE' => $this->language->lang('ACP_SIMPLEDOWN_FILE_ADDED')]);
     }
 
-    protected function upload_thumb()
+     protected function upload_thumb()
     {
         $file = $this->request->file('thumb_upload');
         if (empty($file['name'])) {
