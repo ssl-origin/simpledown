@@ -44,16 +44,18 @@ class install extends \phpbb\db\migration\migration
             ['config.add', ['simpledown_theme', 'light']],
             ['config.add', ['simpledown_cards_per_row', 3]],
             ['config.add', ['simpledown_allow_user_layout_choice', 0]],
-            ['config.add', ['simpledown_private_message', 'Este arquivo é exclusivo para membros cadastrados. Faça login ou registre-se para baixar.']],
+            // Mensagem de acesso privado agora será traduzida via idioma (sem valor fixo aqui)
+            ['config.add', ['simpledown_private_message', '']],
             ['config.add', ['simpledown_thumbs_dir', 'ext/mundophpbb/simpledown/files/thumbs/']],
             // Configurações de logs
             ['config.add', ['simpledown_enable_logging', 1]],
             ['config.add', ['simpledown_logs_per_page', 50]],
             ['config.add', ['simpledown_logs_retention_days', 0]],
             // CONFIGURAÇÕES PARA ANÚNCIOS AUTOMÁTICOS EM FÓRUNS
-            ['config.add', ['simpledown_auto_announce', 0]], // Toggle global (desativado por padrão)
-            ['config.add', ['simpledown_announce_forums', serialize([])]], // mapeamento categoria → fórum
-            // Removido intencionalmente: os templates padrão agora vêm do idioma via fallback no controller
+            ['config.add', ['simpledown_auto_announce', 0]],
+            ['config.add', ['simpledown_announce_forums', serialize([])]],
+            ['config.add', ['simpledown_announce_type', 'normal']],     // novo
+            ['config.add', ['simpledown_announce_locked', 0]],          // novo
             // Criação das pastas de upload
             ['custom', [[$this, 'create_upload_dirs']]],
         ];
@@ -87,7 +89,6 @@ class install extends \phpbb\db\migration\migration
                         'file_hash' => ['VCHAR:32', ''],
                         'thumbnail' => ['VCHAR:255', null],
                         'is_private' => ['BOOL', 0],
-                        // COLUNA PARA ARMAZENAR O TÓPICO DE ANÚNCIO CRIADO
                         'topic_id' => ['UINT', 0],
                     ],
                     'PRIMARY_KEY' => 'id',
@@ -145,19 +146,15 @@ class install extends \phpbb\db\migration\migration
             ['config.remove', ['simpledown_enable_logging']],
             ['config.remove', ['simpledown_logs_per_page']],
             ['config.remove', ['simpledown_logs_retention_days']],
-            // REMOÇÃO DAS CONFIGS DE ANÚNCIOS
             ['config.remove', ['simpledown_auto_announce']],
             ['config.remove', ['simpledown_announce_forums']],
-            ['config.remove', ['simpledown_announce_title_template']],
-            ['config.remove', ['simpledown_announce_message_template']],
+            ['config.remove', ['simpledown_announce_type']],
+            ['config.remove', ['simpledown_announce_locked']],
             ['module.remove', ['acp', 'ACP_SIMPLEDOWN_TITLE', '']],
             ['module.remove', ['acp', 'ACP_CAT_DOT_MODS', 'ACP_SIMPLEDOWN_TITLE']],
         ];
     }
 
-    /**
-     * Cria as pastas necessárias para uploads e miniaturas
-     */
     public function create_upload_dirs()
     {
         $root_path = $this->phpbb_root_path;
@@ -172,9 +169,6 @@ class install extends \phpbb\db\migration\migration
         }
     }
 
-    /**
-     * Remove todos os arquivos físicos ao desinstalar
-     */
     public function delete_all_files()
     {
         $root_path = $this->phpbb_root_path;
@@ -184,9 +178,6 @@ class install extends \phpbb\db\migration\migration
         }
     }
 
-    /**
-     * Remove diretório recursivamente
-     */
     protected function rrmdir($dir)
     {
         if (!is_dir($dir)) {

@@ -67,6 +67,15 @@
                     </select>
                 </dd>
             </dl>
+
+            <!-- NOVO CAMPO: MENSAGEM PARA ARQUIVOS PRIVADOS -->
+            <dl>
+                <dt><label for="private_message">{{ lang('ACP_SIMPLEDOWN_PRIVATE_MESSAGE') }}:</label><br>
+                    <span>{{ lang('ACP_SIMPLEDOWN_PRIVATE_MESSAGE_EXPLAIN') }}</span></dt>
+                <dd>
+                    <textarea name="private_message" id="private_message" rows="4" cols="80" class="inputbox">{{ PRIVATE_MESSAGE }}</textarea>
+                </dd>
+            </dl>
         </fieldset>
 
         <!-- ======================================== -->
@@ -87,6 +96,27 @@
             <dl>
                 <dt><label for="announce_forum">{{ lang('ACP_SIMPLEDOWN_ANNOUNCE_FORUM') }}:</label></dt>
                 <dd>{{ ANNOUNCE_FORUM_SELECT|raw }}</dd>
+            </dl>
+
+            <dl>
+                <dt><label for="announce_type">{{ lang('ACP_SIMPLEDOWN_ANNOUNCE_TYPE') }}:</label><br>
+                    <span>{{ lang('ACP_SIMPLEDOWN_ANNOUNCE_TYPE_EXPLAIN') }}</span></dt>
+                <dd>
+                    <select name="announce_type" id="announce_type">
+                        <option value="normal" {% if ANNOUNCE_TYPE == 'normal' or not ANNOUNCE_TYPE %}selected{% endif %}>{{ lang('ACP_SIMPLEDOWN_ANNOUNCE_TYPE_NORMAL') }}</option>
+                        <option value="sticky" {% if ANNOUNCE_TYPE == 'sticky' %}selected{% endif %}>{{ lang('ACP_SIMPLEDOWN_ANNOUNCE_TYPE_STICKY') }}</option>
+                        <option value="announce" {% if ANNOUNCE_TYPE == 'announce' %}selected{% endif %}>{{ lang('ACP_SIMPLEDOWN_ANNOUNCE_TYPE_ANNOUNCE') }}</option>
+                        <option value="global" {% if ANNOUNCE_TYPE == 'global' %}selected{% endif %}>{{ lang('ACP_SIMPLEDOWN_ANNOUNCE_TYPE_GLOBAL') }}</option>
+                    </select>
+                </dd>
+            </dl>
+
+            <dl>
+                <dt><label>{{ lang('ACP_SIMPLEDOWN_ANNOUNCE_LOCKED') }}:</label><br>
+                    <span>{{ lang('ACP_SIMPLEDOWN_ANNOUNCE_LOCKED_EXPLAIN') }}</span></dt>
+                <dd>
+                    <label><input type="checkbox" name="announce_locked" value="1" {% if ANNOUNCE_LOCKED %}checked{% endif %} /> {{ lang('YES') }}</label>
+                </dd>
             </dl>
 
             <dl>
@@ -318,7 +348,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const textarea = document.getElementById('file_desc');
     if (!textarea) return;
     const picker = document.getElementById('color-picker-add');
-
     document.querySelectorAll('.bbcode-btn[data-tag]').forEach(btn => {
         btn.addEventListener('click', (e) => {
             e.preventDefault();
@@ -332,7 +361,6 @@ document.addEventListener('DOMContentLoaded', () => {
             insertBBCode(open, close);
         });
     });
-
     if (picker) {
         picker.addEventListener('change', () => {
             const color = picker.value.toUpperCase();
@@ -340,7 +368,6 @@ document.addEventListener('DOMContentLoaded', () => {
             picker.value = '#000000';
         });
     }
-
     document.querySelectorAll('.size-select').forEach(select => {
         select.addEventListener('change', () => {
             const size = select.value;
@@ -348,7 +375,6 @@ document.addEventListener('DOMContentLoaded', () => {
             select.value = '';
         });
     });
-
     function insertBBCode(open, close) {
         const start = textarea.selectionStart;
         const end = textarea.selectionEnd;
@@ -359,7 +385,6 @@ document.addEventListener('DOMContentLoaded', () => {
         textarea.selectionStart = start + open.length;
         textarea.selectionEnd = start + open.length + selected.length;
     }
-
     const fileInput = document.getElementById('file_upload');
     const fileDisplay = document.getElementById('file-name-display');
     const noFileText = "{{ lang('ACP_SIMPLEDOWN_NO_FILE_SELECTED')|escape('js') }}";
@@ -368,7 +393,6 @@ document.addEventListener('DOMContentLoaded', () => {
             fileDisplay.textContent = fileInput.files.length ? fileInput.files[0].name : noFileText;
         });
     }
-
     const thumbInput = document.getElementById('thumb_upload');
     const thumbDisplay = document.getElementById('thumb-name-display');
     if (thumbInput && thumbDisplay) {
@@ -376,7 +400,6 @@ document.addEventListener('DOMContentLoaded', () => {
             thumbDisplay.textContent = thumbInput.files.length ? thumbInput.files[0].name : noFileText;
         });
     }
-
     const selectThumb = document.getElementById('existing_thumb');
     const previewDiv = document.getElementById('thumb-preview');
     const previewImg = document.getElementById('thumb-preview-img');
@@ -393,7 +416,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         if (selectThumb.value) selectThumb.dispatchEvent(new Event('change'));
     }
-
     const modal = document.getElementById('message-modal');
     if (modal) {
         modal.querySelector('.close-modal').addEventListener('click', () => modal.style.display = 'none');

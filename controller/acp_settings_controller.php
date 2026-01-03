@@ -60,9 +60,6 @@ class acp_settings_controller
         $this->forums_table = $table_prefix . 'forums';
     }
 
-    /**
-     * Método obrigatório para módulos ACP – define a URL da página atual
-     */
     public function set_page_url($u_action)
     {
         $this->u_action = $u_action;
@@ -92,6 +89,11 @@ class acp_settings_controller
             $announce_forum = $this->request->variable('announce_forum', 0);
             $announce_title_template = $this->request->variable('announce_title_template', '', true);
             $announce_message_template = $this->request->variable('announce_message_template', '', true);
+            $announce_type = $this->request->variable('announce_type', 'normal');
+            $announce_locked = $this->request->variable('announce_locked', 0);
+
+            // Nova: mensagem para arquivos privados
+            $private_message = $this->request->variable('private_message', '', true);
 
             $this->config->set('simpledown_max_upload_size', $max_upload_mb);
             $this->config->set('simpledown_short_desc_limit', $short_desc_limit);
@@ -104,6 +106,9 @@ class acp_settings_controller
             $this->config->set('simpledown_announce_forum', $announce_forum);
             $this->config->set('simpledown_announce_title_template', $announce_title_template);
             $this->config->set('simpledown_announce_message_template', $announce_message_template);
+            $this->config->set('simpledown_announce_type', $announce_type);
+            $this->config->set('simpledown_announce_locked', (int)$announce_locked);
+            $this->config->set('simpledown_private_message', $private_message); // salvo
 
             trigger_error($this->language->lang('ACP_SIMPLEDOWN_CONFIG_SAVED') . adm_back_link($this->u_action . '&mode=settings'));
         }
@@ -212,11 +217,15 @@ class acp_settings_controller
             'ALLOW_USER_LAYOUT_CHOICE'      => $allow_user_layout_choice,
             'AUTO_ANNOUNCE'                 => (int)($this->config['simpledown_auto_announce'] ?? 0),
             'ANNOUNCE_FORUM_SELECT'         => $announce_forum_select,
-            // Valores padrão agora vêm do idioma
             'ANNOUNCE_TITLE_TEMPLATE'       => $this->config['simpledown_announce_title_template']
                 ?? $this->language->lang('ACP_SIMPLEDOWN_ANNOUNCE_TITLE_TEMPLATE_DEFAULT'),
             'ANNOUNCE_MESSAGE_TEMPLATE'     => $this->config['simpledown_announce_message_template']
                 ?? $this->language->lang('ACP_SIMPLEDOWN_ANNOUNCE_MESSAGE_TEMPLATE_DEFAULT'),
+            'ANNOUNCE_TYPE'                 => $this->config['simpledown_announce_type'] ?? 'normal',
+            'ANNOUNCE_LOCKED'               => (int)($this->config['simpledown_announce_locked'] ?? 0),
+            // Nova: mensagem para arquivos privados (com fallback traduzido)
+            'PRIVATE_MESSAGE'               => $this->config['simpledown_private_message']
+                ?? $this->language->lang('ACP_SIMPLEDOWN_PRIVATE_MESSAGE_DEFAULT'),
             'U_ACTION'                      => $this->u_action . '&mode=settings',
             'THUMBS_DIR'                    => $this->path_helper->get_web_root_path() . 'ext/mundophpbb/simpledown/files/thumbs/',
             'S_THUMBS_EXIST'                => !empty($thumbs_list),
@@ -334,10 +343,8 @@ class acp_settings_controller
             if ($forum_id > 0) {
                 $details_url = generate_board_url() . '/downloads/details/' . $file_id;
 
-                // Descrição completa bruta (antes do processamento BBCode)
                 $desc_full_raw = $this->request->variable('file_desc', '', true);
 
-                // Templates com fallback para valores traduzidos do idioma
                 $title_template = trim($this->config['simpledown_announce_title_template']
                     ?? $this->language->lang('ACP_SIMPLEDOWN_ANNOUNCE_TITLE_TEMPLATE_DEFAULT'));
 
@@ -377,6 +384,23 @@ class acp_settings_controller
                 generate_text_for_storage($subject, $uid, $bitfield, $options, true, false, false);
                 generate_text_for_storage($message, $uid, $bitfield, $options, true, true, true);
 
+                // Tipo de tópico e trancamento
+                $announce_type = $this->config['simpledown_announce_type'] ?? 'normal';
+                $announce_locked = !empty($this->config['simpledown_announce_locked']);
+
+                $topic_type = POST_NORMAL;
+                switch ($announce_type) {
+                    case 'sticky':
+                        $topic_type = POST_STICKY;
+                        break;
+                    case 'announce':
+                        $topic_type = POST_ANNOUNCE;
+                        break;
+                    case 'global':
+                        $topic_type = POST_GLOBAL;
+                        break;
+                }
+
                 $poll = [];
 
                 $data = [
@@ -392,14 +416,14 @@ class acp_settings_controller
                     'enable_sig'        => false,
                     'poster_id'         => $this->user->data['user_id'],
                     'post_time'         => time(),
-                    'post_edit_locked'  => 0,
+                    'post_edit_locked'  => $announce_locked ? 1 : 0,
                     'topic_time_limit'  => 0,
                     'icon_id'           => 0,
                     'enable_indexing'   => true,
                     'notify'            => false,
                     'notify_poster'     => false,
                     'notify_set'        => false,
-                    'topic_type'        => POST_NORMAL,
+                    'topic_type'        => $topic_type,
                 ];
 
                 submit_post('post', $subject, $this->user->data['username'], POST_NORMAL, $poll, $data);
@@ -419,7 +443,7 @@ class acp_settings_controller
         $this->template->assign_vars(['SUCCESS_MESSAGE' => $this->language->lang('ACP_SIMPLEDOWN_FILE_ADDED')]);
     }
 
-     protected function upload_thumb()
+    protected function upload_thumb()
     {
         $file = $this->request->file('thumb_upload');
         if (empty($file['name'])) {
