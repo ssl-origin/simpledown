@@ -67,7 +67,6 @@
                     </select>
                 </dd>
             </dl>
-
             <!-- NOVO CAMPO: MENSAGEM PARA ARQUIVOS PRIVADOS -->
             <dl>
                 <dt><label for="private_message">{{ lang('ACP_SIMPLEDOWN_PRIVATE_MESSAGE') }}:</label><br>
@@ -84,7 +83,6 @@
         <fieldset>
             <legend>{{ lang('ACP_SIMPLEDOWN_ANNOUNCE_TITLE') }}</legend>
             <p>{{ lang('ACP_SIMPLEDOWN_ANNOUNCE_EXPLAIN') }}</p>
-
             <dl>
                 <dt><label>{{ lang('ACP_SIMPLEDOWN_AUTO_ANNOUNCE') }}:</label></dt>
                 <dd>
@@ -92,12 +90,10 @@
                     <label><input type="radio" name="auto_announce" value="0" {% if not AUTO_ANNOUNCE %}checked{% endif %} /> {{ lang('NO') }}</label>
                 </dd>
             </dl>
-
             <dl>
                 <dt><label for="announce_forum">{{ lang('ACP_SIMPLEDOWN_ANNOUNCE_FORUM') }}:</label></dt>
                 <dd>{{ ANNOUNCE_FORUM_SELECT|raw }}</dd>
             </dl>
-
             <dl>
                 <dt><label for="announce_type">{{ lang('ACP_SIMPLEDOWN_ANNOUNCE_TYPE') }}:</label><br>
                     <span>{{ lang('ACP_SIMPLEDOWN_ANNOUNCE_TYPE_EXPLAIN') }}</span></dt>
@@ -110,21 +106,18 @@
                     </select>
                 </dd>
             </dl>
-
             <dl>
-                <dt><label>{{ lang('ACP_SIMPLEDOWN_ANNOUNCE_LOCKED') }}:</label><br>
+                <dt><label for="announce_locked">{{ lang('ACP_SIMPLEDOWN_ANNOUNCE_LOCKED') }}:</label><br>
                     <span>{{ lang('ACP_SIMPLEDOWN_ANNOUNCE_LOCKED_EXPLAIN') }}</span></dt>
                 <dd>
-                    <label><input type="checkbox" name="announce_locked" value="1" {% if ANNOUNCE_LOCKED %}checked{% endif %} /> {{ lang('YES') }}</label>
+                    <label><input type="checkbox" name="announce_locked" id="announce_locked" value="1" {% if ANNOUNCE_LOCKED %}checked{% endif %} /> {{ lang('YES') }}</label>
                 </dd>
             </dl>
-
             <dl>
                 <dt><label for="announce_title_template">{{ lang('ACP_SIMPLEDOWN_ANNOUNCE_TITLE_TEMPLATE') }}:</label><br>
                     <span>{{ lang('ACP_SIMPLEDOWN_ANNOUNCE_TITLE_EXPLAIN') }}</span></dt>
                 <dd><input type="text" name="announce_title_template" id="announce_title_template" value="{{ ANNOUNCE_TITLE_TEMPLATE }}" size="80" maxlength="255" /></dd>
             </dl>
-
             <dl>
                 <dt><label for="announce_message_template">{{ lang('ACP_SIMPLEDOWN_ANNOUNCE_MESSAGE_TEMPLATE') }}:</label><br>
                     <span>{{ lang('ACP_SIMPLEDOWN_ANNOUNCE_MESSAGE_EXPLAIN') }}</span></dt>
@@ -236,7 +229,7 @@
             </dl>
             <dl>
                 <dt><label for="file_version">{{ lang('ACP_SIMPLEDOWN_VERSION') }}:</label><br>
-                    <span>{{ lang('ACP_SIMPLEDOWN_VERSION_EXPLAIN') }}</span></dt>
+                    <span>{{ lang('ACP_SIMPLEDOWN_VERSION_EXPLAIN ')}}</span></dt>
                 <dd><input type="text" id="file_version" name="file_version" maxlength="50" size="20" placeholder="ex: 2.1.0" /></dd>
             </dl>
             <dl>
@@ -257,8 +250,8 @@
                 <dt><label>{{ lang('ACP_SIMPLEDOWN_VISIBILITY') }}:</label><br>
                     <span>{{ lang('ACP_SIMPLEDOWN_VISIBILITY_EXPLAIN') }}</span></dt>
                 <dd>
-                    <label><input type="radio" name="is_private" value="0" {% if not DEFAULT_IS_PRIVATE %}checked{% endif %} /> {{ lang('ACP_SIMPLEDOWN_PUBLIC') }}</label>&nbsp;&nbsp;&nbsp;
-                    <label><input type="radio" name="is_private" value="1" {% if DEFAULT_IS_PRIVATE %}checked{% endif %} /> {{ lang('ACP_SIMPLEDOWN_PRIVATE') }}</label>
+                    <label><input type="radio" name="is_private" value="0" checked /> {{ lang('ACP_SIMPLEDOWN_PUBLIC') }}</label>&nbsp;&nbsp;&nbsp;
+                    <label><input type="radio" name="is_private" value="1" /> {{ lang('ACP_SIMPLEDOWN_PRIVATE') }}</label>
                 </dd>
             </dl>
             <dl>

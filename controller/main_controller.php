@@ -381,7 +381,8 @@ class main_controller
         $response = new BinaryFileResponse($file_path);
         $response->headers->set('Content-Type', 'application/octet-stream');
         $response->headers->set('Content-Length', (string) filesize($file_path));
-        $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, $row['file_name']);
+        // CORREÇÃO: usar o nome real do arquivo (file_realname), não o nome bonito (file_name)
+        $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, $row['file_realname']);
 
         return $response;
     }

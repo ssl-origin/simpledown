@@ -108,7 +108,7 @@ class acp_settings_controller
             $this->config->set('simpledown_announce_message_template', $announce_message_template);
             $this->config->set('simpledown_announce_type', $announce_type);
             $this->config->set('simpledown_announce_locked', (int)$announce_locked);
-            $this->config->set('simpledown_private_message', $private_message); // salvo
+            $this->config->set('simpledown_private_message', $private_message);
 
             trigger_error($this->language->lang('ACP_SIMPLEDOWN_CONFIG_SAVED') . adm_back_link($this->u_action . '&mode=settings'));
         }
@@ -223,7 +223,6 @@ class acp_settings_controller
                 ?? $this->language->lang('ACP_SIMPLEDOWN_ANNOUNCE_MESSAGE_TEMPLATE_DEFAULT'),
             'ANNOUNCE_TYPE'                 => $this->config['simpledown_announce_type'] ?? 'normal',
             'ANNOUNCE_LOCKED'               => (int)($this->config['simpledown_announce_locked'] ?? 0),
-            // Nova: mensagem para arquivos privados (com fallback traduzido)
             'PRIVATE_MESSAGE'               => $this->config['simpledown_private_message']
                 ?? $this->language->lang('ACP_SIMPLEDOWN_PRIVATE_MESSAGE_DEFAULT'),
             'U_ACTION'                      => $this->u_action . '&mode=settings',
@@ -234,7 +233,6 @@ class acp_settings_controller
 
     protected function upload_file()
     {
-        // Carregar funções necessárias
         if (!function_exists('submit_post')) {
             include($this->root_path . 'includes/functions_posting.' . $this->php_ext);
         }
@@ -309,7 +307,7 @@ class acp_settings_controller
             return;
         }
 
-        // Processar BBCode na descrição completa
+        // Processar BBCode na descrição completa (do arquivo, não do anúncio)
         $uid = $bitfield = $flags = '';
         generate_text_for_storage($desc_full, $uid, $bitfield, $flags, true, true, true);
 
@@ -380,9 +378,11 @@ class acp_settings_controller
                 );
 
                 // Processamento do BBCode
-                $uid = $bitfield = $options = false;
-                generate_text_for_storage($subject, $uid, $bitfield, $options, true, false, false);
-                generate_text_for_storage($message, $uid, $bitfield, $options, true, true, true);
+                // REMOVIDO O PROCESSAMENTO DO TÍTULO: títulos de tópicos no phpBB são texto plano (não suportam BBCode).
+                // Isso evita <t></t> ou UID nas tags.
+                // Apenas a mensagem do post recebe BBCode completo.
+                $message_uid = $message_bitfield = $message_flags = '';
+                generate_text_for_storage($message, $message_uid, $message_bitfield, $message_flags, true, true, true);
 
                 // Tipo de tópico e trancamento
                 $announce_type = $this->config['simpledown_announce_type'] ?? 'normal';
@@ -408,8 +408,8 @@ class acp_settings_controller
                     'topic_title'       => $subject,
                     'message'           => $message,
                     'message_md5'       => md5($message),
-                    'bbcode_bitfield'   => $bitfield,
-                    'bbcode_uid'        => $uid,
+                    'bbcode_bitfield'   => $message_bitfield,
+                    'bbcode_uid'        => $message_uid,
                     'enable_bbcode'     => true,
                     'enable_smilies'    => true,
                     'enable_urls'       => true,
@@ -417,6 +417,7 @@ class acp_settings_controller
                     'poster_id'         => $this->user->data['user_id'],
                     'post_time'         => time(),
                     'post_edit_locked'  => $announce_locked ? 1 : 0,
+                    'topic_status'      => $announce_locked ? ITEM_LOCKED : ITEM_UNLOCKED,
                     'topic_time_limit'  => 0,
                     'icon_id'           => 0,
                     'enable_indexing'   => true,
@@ -426,7 +427,7 @@ class acp_settings_controller
                     'topic_type'        => $topic_type,
                 ];
 
-                submit_post('post', $subject, $this->user->data['username'], POST_NORMAL, $poll, $data);
+                submit_post('post', $subject, $this->user->data['username'], $topic_type, $poll, $data);
 
                 if (!empty($data['topic_id'])) {
                     $sql = 'UPDATE ' . $this->files_table . '
