@@ -3,9 +3,9 @@
 <!-- INCLUSÃO CONDICIONAL DO TEMA CLARO/ESCURO -->
 <!-- ======================================== -->
 <!-- IF S_SIMPLEDOWN_THEME == 'dark' -->
-    <!-- INCLUDECSS @mundophpbb_simpledown/simpledown_dark.css -->
+    <!-- INCLUDECSS @mundophpbb_simpledown/simpledown_dark.css?v=20260103 -->
 <!-- ELSE -->
-    <!-- INCLUDECSS @mundophpbb_simpledown/simpledown_light.css -->
+    <!-- INCLUDECSS @mundophpbb_simpledown/simpledown_light.css?v=20260103 -->
 <!-- ENDIF -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -22,10 +22,16 @@
             <div class="details-wrapper">
                 <!-- IF HAS_THUMBNAIL -->
                 <div class="details-thumbnail">
-                    <img src="{U_THUMBNAIL}?v={@time()}"
+                    <img src="{U_THUMBNAIL}"
                          alt="{FILE_NAME}"
                          class="thumbnail-fixed"
-                          style="cursor: pointer;" />
+                         loading="lazy"
+                         <!-- IF IS_IMAGE -->
+                         onclick="openImageModal('{U_PREVIEW_ROUTE}')"
+                         style="cursor: pointer;"
+                         <!-- ELSE -->
+                         style="cursor: default;"
+                         <!-- ENDIF --> />
                 </div>
                 <!-- ENDIF -->
                 <div class="details-description <!-- IF not HAS_THUMBNAIL -->full-width<!-- ENDIF -->">
@@ -56,7 +62,7 @@
                     <i class="icon fas fa-lock fa-fw"></i> {L_SIMPLEDOWN_PRIVATE_FILE}
                 </span>
                 <!-- ENDIF -->
-                <!-- Preview de imagem -->
+                <!-- Preview de imagem (botão separado mantido) -->
                 <!-- IF IS_IMAGE -->
                 <span class="preview-btn"
                       onclick="openImageModal('{U_PREVIEW_ROUTE}')"
@@ -115,16 +121,13 @@
 <!-- ======================================== -->
 <script>
     const SIMPLE_DOWN_IS_LOGGED_IN = <!-- IF S_IS_LOGGED_IN -->true<!-- ELSE -->false<!-- ENDIF -->;
-
     function handleDownloadClick(element) {
         const isPrivate = element.getAttribute('data-private') === '1';
         const downloadUrl = element.getAttribute('data-download-url');
         const deniedUrl = element.getAttribute('data-denied-url');
-
         if (isPrivate && !SIMPLE_DOWN_IS_LOGGED_IN) {
             // Abre o modal de login
             document.getElementById('login-required-modal').style.display = 'flex';
-
             // Registra acesso negado via AJAX (silencioso)
             if (deniedUrl) {
                 fetch(deniedUrl, {
@@ -137,23 +140,19 @@
             }
             return;
         }
-
         // Download direto (público ou usuário logado)
         window.location.href = downloadUrl;
     }
-
     function openImageModal(src) {
         const modalImage = document.getElementById('modal-image');
         modalImage.src = src + (src.indexOf('?') === -1 ? '?t=' : '&t=') + Date.now();
         document.getElementById('image-modal').style.display = 'flex';
         document.body.style.overflow = 'hidden';
     }
-
     function closeImageModal() {
         document.getElementById('image-modal').style.display = 'none';
         document.body.style.overflow = 'auto';
     }
-
     // Fechar modais ao clicar no fundo
     window.addEventListener('click', function(e) {
         if (e.target.id === 'image-modal') {

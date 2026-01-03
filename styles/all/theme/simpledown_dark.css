@@ -1,5 +1,5 @@
 /* ========================================
-   SimpleDown Frontend - Tema Escuro 2025
+   SimpleDown Frontend - Tema Escuro 2026
    ======================================== */
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css');
 @import url('https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@400;500;600;700&display=swap');
@@ -14,7 +14,7 @@
     background: #0f172a;
     color: #e2e8f0;
 }
-/* Título principal - igual ao light */
+/* Título principal */
 .simpledown-header-panel {
     background: #1e293b;
     border: 1px solid #334155;
@@ -26,7 +26,7 @@
     max-width: 1200px;
 }
 .simpledown-header-panel h2 {
-    font-size: 2.6em; /* igual ao light */
+    font-size: 2.6em;
     font-weight: 700;
     color: #ffffff;
     margin: 0;
@@ -43,7 +43,7 @@
 }
 .search-box-wrapper { flex: 2; min-width: 300px; }
 .filter-select-wrapper { flex: 1; min-width: 240px; }
-/* BARRA DE BUSCA - tamanhos iguais ao light */
+/* BARRA DE BUSCA */
 .search-box-outer {
     display: flex;
     align-items: stretch;
@@ -59,7 +59,7 @@
 .simpledown-search-input {
     flex: 1;
     padding: 14px 20px;
-    font-size: 1.3em; /* igual ao light */
+    font-size: 1.3em;
     border: none;
     background: transparent;
     outline: none;
@@ -77,7 +77,7 @@
     justify-content: center;
     background: #1e293b;
     color: #94a3b8;
-    font-size: 1.3em; /* igual ao light */
+    font-size: 1.3em;
     cursor: pointer;
     padding: 0 18px;
     border-left: 1px solid #475569;
@@ -90,11 +90,11 @@
 .search-box-outer.has-value .external-clear-btn {
     display: flex;
 }
-/* Filtros - igual ao light */
+/* Filtros */
 .category-filter-select {
     width: 100%;
     padding: 12px 18px;
-    font-size: 1.25em; /* igual ao light */
+    font-size: 1.25em;
     border: 1px solid #475569;
     border-radius: 8px;
     background: #1e293b;
@@ -108,7 +108,7 @@
     border-color: #60a5fa;
     box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.3);
 }
-/* Toggle grid/lista - igual ao light */
+/* Toggle grid/lista */
 .view-mode-toggle {
     text-align: right;
     margin: 10px 0 20px 0;
@@ -122,7 +122,7 @@
     border-radius: 8px;
     margin-left: 8px;
     cursor: pointer;
-    font-size: 1.2em; /* igual ao light */
+    font-size: 1.2em;
     transition: all 0.3s;
 }
 .view-btn:hover,
@@ -159,7 +159,7 @@
         padding: 15px;
     }
 }
-/* MODO LISTA - layout idêntico ao light (com suas correções) */
+/* MODO LISTA */
 .downloads-list {
     display: grid;
     gap: 16px;
@@ -235,7 +235,6 @@
     flex-wrap: wrap;
 }
 .list-info-row span {
-    /* display: flex; */ /* sua correção — mantém alinhamento natural */
     align-items: center;
     gap: 6px;
     white-space: nowrap;
@@ -255,7 +254,6 @@
 /* Botões alinhados à direita */
 .list-actions {
     display: flex;
-    /* flex-direction: column; */ /* sua correção — mantém lado a lado */
     gap: 12px;
     flex-shrink: 0;
 }
@@ -308,7 +306,7 @@
         flex: 1;
     }
 }
-/* CARD PRINCIPAL E CONTEÚDO (MODO GRID) - tamanhos iguais ao light */
+/* CARD PRINCIPAL E CONTEÚDO (MODO GRID) */
 .simpledown-card {
     background: #1e293b;
     border: 1px solid #334155;
@@ -403,7 +401,7 @@
     padding: 2px 8px;
     border-radius: 10px;
 }
-/* Ícones por tipo de arquivo (mantidos vibrantes) */
+/* Ícones por tipo de arquivo */
 .file-name-below i.fa-file-pdf { color: #f87171; }
 .file-name-below i.fa-file-image { color: #60a5fa; }
 .file-name-below i.fa-file-word { color: #60a5fa; }
@@ -425,7 +423,7 @@
     background: #1e293b;
     border-top: 1px solid #334155;
 }
-/* BOTÕES DO CARD - tamanhos iguais ao light */
+/* BOTÕES DO CARD */
 .details-btn-small,
 .download-btn {
     flex: 1;
@@ -473,7 +471,7 @@
     .card-footer { flex-wrap: wrap; gap: 12px; }
     .details-btn-small, .download-btn { flex: 1 1 100%; max-width: none; }
 }
-/* MENSAGEM SEM ARQUIVOS - igual ao light */
+/* MENSAGEM SEM ARQUIVOS */
 .simpledown-empty-state {
     background: #1e293b;
     border: 2px dashed #475569;
@@ -553,7 +551,7 @@
 .modal-close i {
     font-size: 32px;
 }
-/* PÁGINA DE DETALHES - tamanhos iguais ao light */
+/* PÁGINA DE DETALHES */
 .simpledown-header-panel {
     padding: 30px 40px;
     margin: 30px auto 40px auto;
@@ -669,25 +667,27 @@
     flex-shrink: 0;
     white-space: nowrap;
 }
-/* Link "Voltar para Downloads" */
+/* Link "Voltar para Downloads" - CENTRALIZAÇÃO MAIS CONFIÁVEL */
 .back-link {
-    text-align: center;
-    margin: 20px 0 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 40px 0 60px 0;
     font-size: 1.4em;
 }
 .back-link a {
+    display: inline-block;
     color: #60a5fa;
     text-decoration: none;
     padding: 12px 30px;
     border: 2px solid #60a5fa;
     border-radius: 12px;
-    transition: all 0.3s;
+    transition: all 0.3s ease;
     font-weight: 600;
 }
 .back-link a:hover {
     background: #60a5fa;
     color: #0f172a;
-    text-decoration: none;
 }
 /* Layout da página de detalhes com thumbnail */
 .details-wrapper {
@@ -698,23 +698,26 @@
     margin-bottom: 40px;
 }
 .details-thumbnail {
-    flex: 0 0 220px;
-    width: 220px;
-    height: 220px;
-    overflow: hidden;
-    border-radius: 12px;
+    flex: 0 0 220px !important;
+    width: 220px !important;
+    height: 220px !important;
+    overflow: hidden !important;
+    border-radius: 12px !important;
     box-shadow: 0 4px 15px rgba(0,0,0,0.6);
     background: #1e293b;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
     border: 1px solid #334155;
 }
 .thumbnail-fixed {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 12px;
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
+    object-fit: cover !important;
+    border-radius: 12px !important;
+    display: block !important;
 }
 .details-thumbnail.no-thumbnail {
     flex-direction: column;
@@ -753,9 +756,9 @@
         align-items: center;
     }
     .details-thumbnail {
-        flex: 0 0 auto;
-        width: 280px;
-        height: 280px;
+        flex: 0 0 auto !important;
+        width: 280px !important;
+        height: 280px !important;
     }
     .details-description.full-width { width: 100%; }
 }
@@ -770,15 +773,15 @@
     .simpledown-header-panel { padding: 20px; }
     .file-name-uppercase { font-size: 1.9em; }
     .details-thumbnail {
-        width: 100%;
-        height: auto;
+        width: 100% !important;
+        height: auto !important;
         aspect-ratio: 1 / 1;
     }
     .thumbnail-fixed {
-        object-fit: contain;
+        object-fit: contain !important;
     }
 }
-/* MODAL DE ARQUIVO PRIVADO - DARK */
+/* MODAL DE ARQUIVO PRIVADO */
 .private-modal-content {
     max-width: 420px;
     width: 90%;
@@ -825,14 +828,11 @@
     font-size: 1.6em !important;
     margin-top: 0 !important;
 }
-
-/* ======================================== */
-/* DESCRIÇÃO COMPLETA - SEM ESPAÇAMENTO ENTRE LINHAS (ADICIONADO - DARK) */
-/* ======================================== */
+/* DESCRIÇÃO COMPLETA - SEM ESPAÇAMENTO ENTRE LINHAS */
 .simpledown-container .details-description .file-description-full,
 .simpledown-container .details-description.full-width .file-description-full {
     font-size: 1.35em !important;
-    line-height: 1.4 !important;           /* linha bem apertada */
+    line-height: 1.4 !important;
     color: #e2e8f0 !important;
     margin: 0 0 40px 0 !important;
     padding: 0 !important;
@@ -840,16 +840,12 @@
     word-wrap: break-word !important;
     overflow-wrap: break-word !important;
 }
-
-/* Remove completamente margem dos parágrafos */
 .simpledown-container .details-description .file-description-full p,
 .simpledown-container .details-description.full-width .file-description-full p {
     margin: 0 !important;
     padding: 0 !important;
     line-height: inherit !important;
 }
-
-/* <br> como quebra simples sem espaço extra */
 .simpledown-container .details-description .file-description-full br,
 .simpledown-container .details-description.full-width .file-description-full br {
     display: block !important;
@@ -858,26 +854,19 @@
     padding: 0 !important;
     line-height: 0 !important;
 }
-
-/* Caso tenha dois <br> seguidos (parágrafo), ainda sem margem extra */
 .simpledown-container .details-description .file-description-full br + br,
 .simpledown-container .details-description.full-width .file-description-full br + br {
     margin-bottom: 0 !important;
 }
-
-/* Sem descrição - mantém estilo original do dark */
 .simpledown-container .details-description .file-description-full.no-description {
     color: #94a3b8 !important;
     font-style: italic !important;
     font-size: 1.4em !important;
     margin-bottom: 30px !important;
 }
-
-/* ======================================== */
-/* MENSAGEM DE ARQUIVO PRIVADO NA PÁGINA DE DETALHES (DESTAQUE - DARK) */
-/* ======================================== */
+/* MENSAGEM DE ARQUIVO PRIVADO NA PÁGINA DE DETALHES */
 .private-download-message {
-    background: #334155; /* fundo escuro azul-acinzentado, igual ao header */
+    background: #334155;
     border: 1px solid #475569;
     border-radius: 12px;
     padding: 18px 24px;
@@ -886,16 +875,14 @@
     align-items: center;
     gap: 14px;
     font-size: 1.15em;
-    color: #60a5fa; /* texto em azul claro para destaque */
+    color: #60a5fa;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.7);
 }
-
 .private-download-message i {
     font-size: 1.6em;
     color: #60a5fa;
     flex-shrink: 0;
 }
-
 .private-download-message strong {
     color: #ffffff;
     flex-shrink: 0;

@@ -1,5 +1,5 @@
 /* ========================================
-   SimpleDown Frontend - Clean & Minimalista 2025
+   SimpleDown Frontend - Clean & Minimalista 2026
    ======================================== */
 @import url('https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@400;500;600;700&display=swap');
 /* ======================================== */
@@ -618,25 +618,27 @@
     flex-shrink: 0;
     white-space: nowrap;
 }
-/* Link "Voltar para Downloads" */
+/* Link "Voltar para Downloads" - CENTRALIZAÇÃO MAIS CONFIÁVEL */
 .back-link {
-    text-align: center;
-    margin: 20px 0 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 40px 0 60px 0;
     font-size: 1.4em;
 }
 .back-link a {
+    display: inline-block;
     color: #3498db;
     text-decoration: none;
     padding: 12px 30px;
     border: 2px solid #3498db;
     border-radius: 12px;
-    transition: all 0.3s;
+    transition: all 0.3s ease;
     font-weight: 600;
 }
 .back-link a:hover {
     background: #3498db;
     color: white;
-    text-decoration: none;
 }
 /* Layout da página de detalhes com thumbnail */
 .details-wrapper {
@@ -647,23 +649,26 @@
     margin-bottom: 40px;
 }
 .details-thumbnail {
-    flex: 0 0 220px;
-    width: 220px;
-    height: 220px;
-    overflow: hidden;
-    border-radius: 12px;
+    flex: 0 0 220px !important;
+    width: 220px !important;
+    height: 220px !important;
+    overflow: hidden !important;
+    border-radius: 12px !important;
     box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     background: #f8f9fa;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
     border: 1px solid #eee;
 }
 .thumbnail-fixed {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 12px;
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
+    object-fit: cover !important;
+    border-radius: 12px !important;
+    display: block !important;
 }
 .details-thumbnail.no-thumbnail {
     flex-direction: column;
@@ -702,9 +707,9 @@
         align-items: center;
     }
     .details-thumbnail {
-        flex: 0 0 auto;
-        width: 280px;
-        height: 280px;
+        flex: 0 0 auto !important;
+        width: 280px !important;
+        height: 280px !important;
     }
     .details-description.full-width { width: 100%; }
 }
@@ -719,12 +724,12 @@
     .simpledown-header-panel { padding: 20px; }
     .file-name-uppercase { font-size: 1.9em; }
     .details-thumbnail {
-        width: 100%;
-        height: auto;
+        width: 100% !important;
+        height: auto !important;
         aspect-ratio: 1 / 1;
     }
     .thumbnail-fixed {
-        object-fit: contain;
+        object-fit: contain !important;
     }
 }
 .private-modal-content {
@@ -788,11 +793,9 @@
 .fa-file-text::before { content: "\f0f6"; }
 .fa-file::before { content: "\f016"; }
 .fa-hdd-o::before { content: "\f0a0"; }
-
 /* Ícones do modal */
 .fa-sign-in-alt::before { content: "\f090"; } /* fa-sign-in clássico */
 .fa-user-plus::before { content: "\f234"; }
-
 /* ======================================== */
 /* MODO LISTA - LAYOUT FINAL (infos esquerda + botões direita) */
 /* ======================================== */
@@ -964,11 +967,9 @@
     font-size: 1.4em !important;
     margin-bottom: 30px !important;
 }
-
 .fa-4x {
     font-size: 4em;
 }
-
 /* ======================================== */
 /* MENSAGEM DE ARQUIVO PRIVADO NA PÁGINA DE DETALHES (DESTAQUE) */
 /* ======================================== */
@@ -985,18 +986,15 @@
     color: #1976d2; /* texto em azul para destaque */
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
 }
-
 .private-download-message i {
     font-size: 1.6em;
     color: #1976d2;
     flex-shrink: 0;
 }
-
 .private-download-message strong {
     color: #000000;
     flex-shrink: 0;
 }
-
 /* Cores para o ícone pequeno do nome do arquivo (modo lista) */
 .list-file-name-row i.fa-file-pdf { color: #e74c3c; }
 .list-file-name-row i.fa-file-image { color: #3498db; }
