@@ -99,13 +99,27 @@ class main_controller
         };
     }
 
+    protected function format_downloads(int $downloads): string
+    {
+        if ($downloads < 1000) {
+            return number_format($downloads);
+        }
+
+        if ($downloads < 1000000) {
+            $formatted = number_format($downloads / 1000, 1);
+            return rtrim(rtrim($formatted, '0'), '.') . 'k';
+        }
+
+        $formatted = number_format($downloads / 1000000, 1);
+        return rtrim(rtrim($formatted, '0'), '.') . 'M';
+    }
+
     protected function log_action(int $file_id, string $action): void
     {
         if (empty($this->config['simpledown_enable_logging'])) {
             return;
         }
 
-        // Convidados: user_id = 0 e username = IP (mais útil no ACP)
         $user_id = $this->user->data['is_registered'] ? (int) $this->user->data['user_id'] : 0;
         $username = $this->user->data['is_registered'] ? $this->user->data['username'] : ($this->user->ip ?: $this->language->lang('GUEST'));
 
@@ -130,6 +144,9 @@ class main_controller
 
         $private_categories = unserialize($this->config['simpledown_private_categories'] ?? serialize([]));
         $is_logged_in = $this->user->data['is_registered'];
+
+        // Mensagem customizada para o modal de arquivos privados
+        $private_modal_message = $this->config['simpledown_private_message'] ?: $this->language->lang('SIMPLEDOWN_PRIVATE_MODAL_TEXT');
 
         $sql = 'SELECT f.*, c.name AS cat_name, f.category_id AS cat_id
                 FROM ' . $this->files_table . ' f
@@ -187,7 +204,7 @@ class main_controller
                     'NAME'           => $file['file_name'],
                     'DESC_SHORT'     => $file_data['short_desc'],
                     'DESC_FORMATTED' => $file_data['desc_formatted'],
-                    'DOWNLOADS'      => $file['downloads'],
+                    'DOWNLOADS'      => $this->format_downloads($file['downloads']),
                     'SIZE'           => $this->get_formatted_filesize($file['file_size']),
                     'REAL_NAME'      => $file['file_realname'],
                     'U_DOWNLOAD'     => $this->helper->route('mundophpbb_simpledown_download', ['id' => $file['id']]),
@@ -236,6 +253,7 @@ class main_controller
             'S_SIMPLEDOWN_THEME'     => $site_theme,
             'CARDS_PER_ROW'          => $cards_per_row,
             'ALLOW_USER_LAYOUT_CHOICE' => $allow_user_layout_choice,
+            'PRIVATE_MODAL_MESSAGE'  => $private_modal_message,
         ]);
 
         return $this->helper->render('downloads_body.html', $this->language->lang('SIMPLEDOWN_TITLE'));
@@ -247,6 +265,9 @@ class main_controller
         include($this->root_path . 'includes/functions_posting.' . $this->php_ext);
 
         $private_categories = unserialize($this->config['simpledown_private_categories'] ?? serialize([]));
+
+        // Mensagem customizada para o modal de arquivos privados
+        $private_modal_message = $this->config['simpledown_private_message'] ?: $this->language->lang('SIMPLEDOWN_PRIVATE_MODAL_TEXT');
 
         $sql = 'SELECT f.*, c.name AS cat_name
                 FROM ' . $this->files_table . ' f
@@ -288,7 +309,7 @@ class main_controller
             'FILE_DESC'         => $desc_formatted,
             'FILE_REALNAME'     => $file['file_realname'],
             'FILE_SIZE'         => $this->get_formatted_filesize($file['file_size']),
-            'FILE_DOWNLOADS'    => $file['downloads'],
+            'FILE_DOWNLOADS'    => $this->format_downloads($file['downloads']),
             'FILE_ICON'         => $this->get_file_icon_class($file['file_realname']),
             'U_DOWNLOAD'        => $this->helper->route('mundophpbb_simpledown_download', ['id' => $file['id']]),
             'U_PREVIEW_ROUTE'   => $preview_route,
@@ -308,6 +329,7 @@ class main_controller
             'FILE_ID'           => $file['id'],
             'U_DOWNLOAD_URL'    => $this->helper->route('mundophpbb_simpledown_download', ['id' => $file['id']]),
             'U_LOG_DENIED'      => $this->helper->route('mundophpbb_simpledown_log_denied', ['id' => $file['id']]),
+            'PRIVATE_MODAL_MESSAGE' => $private_modal_message,
         ]);
 
         return $this->helper->render('download_details.html', $file['file_name'] . ' - ' . $this->language->lang('SIMPLEDOWN_TITLE'));
@@ -381,7 +403,6 @@ class main_controller
         $response = new BinaryFileResponse($file_path);
         $response->headers->set('Content-Type', 'application/octet-stream');
         $response->headers->set('Content-Length', (string) filesize($file_path));
-        // CORREÇÃO: usar o nome real do arquivo (file_realname), não o nome bonito (file_name)
         $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, $row['file_realname']);
 
         return $response;

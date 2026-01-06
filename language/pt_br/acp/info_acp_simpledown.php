@@ -66,6 +66,7 @@ $lang = array_merge($lang, [
     // Categorias
     // ===================================================================
     'ACP_SIMPLEDOWN_CATEGORY'               => 'Categoria',
+    "ACP_SIMPLEDOWN_CATEGORIES"             => 'Adicionar Categoria',
     'ACP_SIMPLEDOWN_ADD_CATEGORY'           => 'Adicionar Categoria',
     'ACP_SIMPLEDOWN_CATEGORY_NAME'          => 'Nome da Categoria',
     'ACP_SIMPLEDOWN_DELETE_CATEGORY'        => 'Excluir Categoria',
@@ -75,6 +76,7 @@ $lang = array_merge($lang, [
     'ACP_SIMPLEDOWN_NO_CATEGORY_NAME'       => 'O nome da categoria é obrigatório.',
     'ACP_SIMPLEDOWN_CATEGORY_NOT_FOUND'     => 'Categoria não encontrada.',
     'ACP_SIMPLEDOWN_CATEGORY_DUPLICATE'     => 'Esta categoria já existe.',
+    
     'ACP_SIMPLEDOWN_SELECT_CATEGORY_REQUIRED'=> 'Selecione uma categoria',
     'ACP_SIMPLEDOWN_CAT_ADDED'              => 'Categoria adicionada com sucesso!',
     'ACP_SIMPLEDOWN_CAT_DELETED'            => 'Categoria excluída com sucesso!',

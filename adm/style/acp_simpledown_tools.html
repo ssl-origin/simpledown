@@ -4,67 +4,107 @@
 <h1>{L_ACP_SIMPLEDOWN_TOOLS}</h1>
 
 <div id="acp_simpledown">
-    <!-- ======================================== -->
-    <!-- SEÇÃO 1: GERENCIAMENTO DE MINIATURAS -->
-    <!-- ======================================== -->
-    <fieldset>
-        <legend>{L_ACP_SIMPLEDOWN_THUMBNAILS_MANAGEMENT}</legend>
-        <p>{L_ACP_SIMPLEDOWN_THUMBNAILS_EXPLAIN_SIMPLE}</p>
-
-        <div class="acp-controls-top">
-            <div class="control-item total-item">
-                {L_ACP_SIMPLEDOWN_TOTAL_THUMBS}: <strong>{TOTAL_THUMBS}</strong>
-            </div>
-        </div>
-
-        <!-- IF S_HAS_THUMBS -->
-        <dl>
-            <dt><label>{L_ACP_SIMPLEDOWN_AVAILABLE_THUMBS}:</label></dt>
-            <dd>
-                <select id="thumb_select" size="1">
-                    <option value="">{L_ACP_SIMPLEDOWN_SELECT_ONE_THUMB}</option>
-                    <!-- BEGIN thumbs -->
-                    <option value="{thumbs.U_DELETE}" data-preview="{thumbs.PREVIEW_URL}">
-                        {thumbs.FILENAME} ({thumbs.SIZE})
-                    </option>
-                    <!-- END thumbs -->
-                </select>
-            </dd>
-        </dl>
-
-        <div id="thumb-preview-container" style="display:none; margin-top:25px;">
-            <div style="text-align:center; padding:20px; background:var(--light-bg); border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow);">
-                <p style="margin-bottom:15px; font-weight:600;">
-                    <strong>{L_ACP_SIMPLEDOWN_PREVIEW_TITLE}</strong>
-                </p>
-                <img id="thumb-preview-img" src="" alt="Preview" style="max-width:350px; max-height:350px; border-radius:8px; box-shadow:var(--shadow);" />
-                <div style="margin-top:20px;">
-                    <a id="delete-thumb-btn" href="javascript:void(0);" class="button2 danger">
-                        <i class="icon fa-trash fa-fw"></i> {L_ACP_SIMPLEDOWN_DELETE_THIS_THUMB}
-                    </a>
+    <!-- GRID PRINCIPAL: 2 COLUNAS PARA MINIATURAS E ÓRFÃOS -->
+    <div class="tools-grid">
+        <!-- COLUNA 1: GERENCIAMENTO DE MINIATURAS -->
+        <fieldset class="tools-column">
+            <legend>{L_ACP_SIMPLEDOWN_THUMBNAILS_MANAGEMENT}</legend>
+            <p>{L_ACP_SIMPLEDOWN_THUMBNAILS_EXPLAIN_SIMPLE}</p>
+            <div class="acp-controls-top">
+                <div class="control-item total-item">
+                    {L_ACP_SIMPLEDOWN_TOTAL_THUMBS}: <strong>{TOTAL_THUMBS}</strong>
                 </div>
             </div>
-        </div>
-        <!-- ELSE -->
-        <p style="text-align:center; color:var(--text-light); font-style:italic; padding:20px;">
-            {L_ACP_SIMPLEDOWN_NO_THUMBS_FOUND}
-        </p>
-        <!-- ENDIF -->
-    </fieldset>
+            <!-- IF S_HAS_THUMBS -->
+            <dl>
+                <dt><label>{L_ACP_SIMPLEDOWN_AVAILABLE_THUMBS}:</label></dt>
+                <dd>
+                    <select id="thumb_select" size="1">
+                        <option value="">{L_ACP_SIMPLEDOWN_SELECT_ONE_THUMB}</option>
+                        <!-- BEGIN thumbs -->
+                        <option value="{thumbs.U_DELETE}" data-preview="{thumbs.PREVIEW_URL}">
+                            {thumbs.FILENAME} ({thumbs.SIZE})
+                        </option>
+                        <!-- END thumbs -->
+                    </select>
+                </dd>
+            </dl>
+            <div id="thumb-preview-container" style="display:none; margin-top:25px;">
+                <div style="text-align:center; padding:20px; background:var(--light-bg); border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow);">
+                    <p style="margin-bottom:15px; font-weight:600;">
+                        <strong>{L_ACP_SIMPLEDOWN_PREVIEW_TITLE}</strong>
+                    </p>
+                    <img id="thumb-preview-img" src="" alt="Preview" style="max-width:350px; max-height:350px; border-radius:8px; box-shadow:var(--shadow);" />
+                    <div style="margin-top:20px;">
+                        <a id="delete-thumb-btn" href="javascript:void(0);" class="button2 danger">
+                            <i class="icon fa-trash fa-fw"></i> {L_ACP_SIMPLEDOWN_DELETE_THIS_THUMB}
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <!-- ELSE -->
+            <p style="text-align:center; color:var(--text-light); font-style:italic; padding:20px;">
+                {L_ACP_SIMPLEDOWN_NO_THUMBS_FOUND}
+            </p>
+            <!-- ENDIF -->
+        </fieldset>
 
-    <!-- ======================================== -->
-    <!-- SEÇÃO 2: ARQUIVOS ASSOCIADOS -->
-    <!-- ======================================== -->
-    <fieldset>
+        <!-- COLUNA 2: ARQUIVOS ÓRFÃOS -->
+        <fieldset class="tools-column">
+            <legend>{L_ACP_SIMPLEDOWN_ORPHAN_FILES_MANAGEMENT}</legend>
+            <p>{L_ACP_SIMPLEDOWN_ORPHAN_FILES_EXPLAIN}</p>
+            <p style="color:#e74c3c; font-weight:600;">{L_ACP_SIMPLEDOWN_ORPHAN_WARNING}</p>
+            <div class="acp-controls-top">
+                <div class="control-item total-item">
+                    {L_ACP_SIMPLEDOWN_TOTAL_ORPHAN_FILES}: <strong>{TOTAL_ORPHANS}</strong>
+                </div>
+            </div>
+            <!-- IF S_HAS_ORPHANS -->
+            <dl>
+                <dt><label>{L_ACP_SIMPLEDOWN_AVAILABLE_ORPHAN_FILES}:</label></dt>
+                <dd>
+                    <select id="orphan_select" size="1">
+                        <option value="">{L_ACP_SIMPLEDOWN_SELECT_ONE_FILE}</option>
+                        <!-- BEGIN orphan_files -->
+                        <option value="{orphan_files.U_DELETE}">
+                            {orphan_files.FILENAME} ({orphan_files.SIZE})
+                        </option>
+                        <!-- END orphan_files -->
+                    </select>
+                </dd>
+            </dl>
+            <div id="orphan-preview-container" style="display:none; margin-top:25px;">
+                <div style="text-align:center; padding:20px; background:var(--light-bg); border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow);">
+                    <p style="margin-bottom:15px; font-weight:600;">
+                        <strong>{L_ACP_SIMPLEDOWN_ORPHAN_WARNING}</strong>
+                    </p>
+                    <p style="margin-bottom:20px; font-family:monospace; word-break:break-all;">
+                        <span id="orphan-filename"></span>
+                    </p>
+                    <div style="margin-top:20px;">
+                        <a id="delete-orphan-btn" href="javascript:void(0);" class="button2 danger">
+                            <i class="icon fa-trash fa-fw"></i> {L_ACP_SIMPLEDOWN_DELETE_THIS_FILE}
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <!-- ELSE -->
+            <p style="text-align:center; color:var(--text-light); font-style:italic; padding:20px;">
+                {L_ACP_SIMPLEDOWN_NO_ORPHAN_FILES_FOUND}
+            </p>
+            <!-- ENDIF -->
+        </fieldset>
+    </div>
+
+    <!-- LINHA DE BAIXO: ARQUIVOS ASSOCIADOS (LARGURA TOTAL) -->
+    <fieldset class="tools-full-width">
         <legend>{L_ACP_SIMPLEDOWN_ASSOCIATED_FILES}</legend>
         <p>{L_ACP_SIMPLEDOWN_ASSOCIATED_FILES_EXPLAIN}</p>
-
         <div class="acp-controls-top">
             <div class="control-item total-item">
                 {L_ACP_SIMPLEDOWN_TOTAL_ASSOCIATED}: <strong>{TOTAL_ASSOCIATED}</strong>
             </div>
         </div>
-
         <!-- IF S_HAS_ASSOCIATED -->
         <table class="table1">
             <thead>
@@ -92,57 +132,6 @@
         </p>
         <!-- ENDIF -->
     </fieldset>
-
-    <!-- ======================================== -->
-    <!-- SEÇÃO 3: ARQUIVOS ÓRFÃOS -->
-    <!-- ======================================== -->
-    <fieldset>
-        <legend>{L_ACP_SIMPLEDOWN_ORPHAN_FILES_MANAGEMENT}</legend>
-        <p>{L_ACP_SIMPLEDOWN_ORPHAN_FILES_EXPLAIN}</p>
-        <p style="color:#e74c3c; font-weight:600;">{L_ACP_SIMPLEDOWN_ORPHAN_WARNING}</p>
-
-        <div class="acp-controls-top">
-            <div class="control-item total-item">
-                {L_ACP_SIMPLEDOWN_TOTAL_ORPHAN_FILES}: <strong>{TOTAL_ORPHANS}</strong>
-            </div>
-        </div>
-
-        <!-- IF S_HAS_ORPHANS -->
-        <dl>
-            <dt><label>{L_ACP_SIMPLEDOWN_AVAILABLE_ORPHAN_FILES}:</label></dt>
-            <dd>
-                <select id="orphan_select" size="1">
-                    <option value="">{L_ACP_SIMPLEDOWN_SELECT_ONE_FILE}</option>
-                    <!-- BEGIN orphan_files -->
-                    <option value="{orphan_files.U_DELETE}">
-                        {orphan_files.FILENAME} ({orphan_files.SIZE})
-                    </option>
-                    <!-- END orphan_files -->
-                </select>
-            </dd>
-        </dl>
-
-        <div id="orphan-preview-container" style="display:none; margin-top:25px;">
-            <div style="text-align:center; padding:20px; background:var(--light-bg); border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow);">
-                <p style="margin-bottom:15px; font-weight:600;">
-                    <strong>{L_ACP_SIMPLEDOWN_ORPHAN_WARNING}</strong>
-                </p>
-                <p style="margin-bottom:20px; font-family:monospace; word-break:break-all;">
-                    <span id="orphan-filename"></span>
-                </p>
-                <div style="margin-top:20px;">
-                    <a id="delete-orphan-btn" href="javascript:void(0);" class="button2 danger">
-                        <i class="icon fa-trash fa-fw"></i> {L_ACP_SIMPLEDOWN_DELETE_THIS_FILE}
-                    </a>
-                </div>
-            </div>
-        </div>
-        <!-- ELSE -->
-        <p style="text-align:center; color:var(--text-light); font-style:italic; padding:20px;">
-            {L_ACP_SIMPLEDOWN_NO_ORPHAN_FILES_FOUND}
-        </p>
-        <!-- ENDIF -->
-    </fieldset>
 </div>
 
 <!-- SCRIPT PARA PREVIEW DE MINIATURAS E ÓRFÃOS -->
@@ -153,13 +142,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const thumbContainer = document.getElementById('thumb-preview-container');
     const thumbImg = document.getElementById('thumb-preview-img');
     const deleteThumbBtn = document.getElementById('delete-thumb-btn');
-
     if (thumbSelect) {
         thumbSelect.addEventListener('change', function() {
             const option = this.options[this.selectedIndex];
             const url = option.dataset.preview || '';
             const deleteUrl = this.value;
-
             if (url && deleteUrl) {
                 thumbImg.src = url + '?v=' + Date.now();
                 deleteThumbBtn.href = deleteUrl;
@@ -175,13 +162,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const orphanContainer = document.getElementById('orphan-preview-container');
     const orphanFilename = document.getElementById('orphan-filename');
     const deleteOrphanBtn = document.getElementById('delete-orphan-btn');
-
     if (orphanSelect) {
         orphanSelect.addEventListener('change', function() {
             const option = this.options[this.selectedIndex];
             const deleteUrl = this.value;
             const text = this.options[this.selectedIndex].text;
-
             if (deleteUrl && text) {
                 orphanFilename.textContent = text;
                 deleteOrphanBtn.href = deleteUrl;

@@ -256,18 +256,18 @@
 /* Toolbar BBCode - Minimalista (todos na mesma linha em desktop) */
 .bbcode-toolbar {
     display: flex;
-    flex-wrap: nowrap;              /* força mesma linha em desktop */
+    flex-wrap: nowrap;
     gap: 8px;
     padding: 10px;
     background: var(--light-bg);
     border: 1px solid var(--border);
     border-radius: var(--radius-sm);
     margin-bottom: 10px;
-    overflow-x: auto;               /* scroll horizontal se não couber em mobile */
+    overflow-x: auto;
 }
 
 .bbcode-btn,
-.size-select {                      /* estilo unificado para botões e select de tamanho */
+.size-select {
     padding: 8px 12px;
     background: var(--bg);
     border: 1px solid var(--border);
@@ -384,12 +384,12 @@
         font-size: 0.9em;
     }
     .bbcode-toolbar {
-        flex-wrap: wrap;            /* permite quebra em mobile */
+        flex-wrap: wrap;
     }
 }
 
 /* ========================================
-   Avisos de Segurança - Mais compacto (distância entre linhas reduzida)
+   Avisos de Segurança - Mais compacto
    ======================================== */
 .security-notices {
     display: grid;
@@ -400,16 +400,16 @@
 
 .warning-box,
 .allowed-box {
-    padding: 16px;                  /* padding ligeiramente reduzido */
+    padding: 16px;
     border-radius: var(--radius);
     box-shadow: var(--shadow-sm);
     font-size: 0.95em;
-    line-height: 1.3;               /* distância entre linhas reduzida (de 1.5 para 1.3) */
+    line-height: 1.3;
 }
 
 .warning-box p,
 .allowed-box p {
-    margin: 8px 0;                  /* margem menor entre parágrafos */
+    margin: 8px 0;
 }
 
 .warning-box {
@@ -424,9 +424,6 @@
 
 .warning-box strong,
 .allowed-box strong {
-/*    display: block;
-    font-size: 1.1em;
-    margin-bottom: 8px;             /* margem reduzida */
     color: var(--text);
 }
 
@@ -439,21 +436,135 @@
 
 /* Melhorar aparência do dropdown de fóruns no ACP */
 #announce_forum option:disabled {
-    font-weight: bold;          /* Categorias em negrito */
-    color: #000;                /* Cor preta forte */
-    background-color: #f0f8ff;  /* Fundo azul claro para destacar cabeçalhos */
-    padding-left: 10px;         /* Indentação extra */
-    font-style: italic;         /* Opcional: itálico para diferenciar */
+    font-weight: bold;
+    color: #000;
+    background-color: #f0f8ff;
+    padding-left: 10px;
+    font-style: italic;
 }
 
 #announce_forum option {
-    padding-left: 20px;         /* Indentação maior nos fóruns filhos */
+    padding-left: 20px;
 }
 
-/* Fundo geral do select */
 #announce_forum {
     width: 100%;
     max-width: 500px;
     padding: 8px;
     font-size: 14px;
+}
+
+/* ========================================
+   NOVO: ESTILOS PARA AS ABAS (TABS) NO ACP
+   ======================================== */
+.acp-tabs-container {
+    margin: 20px 0;
+}
+
+.acp-tabs-container ul.tabs {
+    list-style: none;
+    margin: 0 0 -1px 0;
+    padding: 0;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.acp-tabs-container ul.tabs li {
+    margin: 0;
+}
+
+.acp-tabs-container ul.tabs li a {
+    display: block;
+    padding: 10px 20px;
+    background: var(--light-bg);
+    border: 1px solid var(--border);
+    border-bottom: none;
+    border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+    text-decoration: none;
+    color: var(--text);
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+.acp-tabs-container ul.tabs li a:hover {
+    background: rgba(52, 152, 219, 0.1);
+    color: var(--primary);
+}
+
+.acp-tabs-container ul.tabs li.active a {
+    background: var(--bg);
+    border-bottom: 1px solid var(--bg);
+    color: var(--primary);
+    position: relative;
+    top: 1px;
+}
+
+.acp-tabs-container .tab-panel {
+    display: none;
+    padding: 30px 20px 20px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 0 var(--radius) var(--radius) var(--radius);
+    box-shadow: var(--shadow-sm);
+}
+
+.acp-tabs-container .tab-panel.active {
+    display: block;
+}
+
+/* Botão de salvar das configurações (visível em todas as abas de config) */
+.config-submit-wrapper {
+    text-align: right;
+    padding: 15px 20px;
+    background: var(--light-bg);
+    border-top: 1px solid var(--border);
+    margin: 20px -20px -20px;
+    border-radius: 0 0 var(--radius) var(--radius);
+}
+
+/* Responsivo para abas */
+@media (max-width: 768px) {
+    .acp-tabs-container ul.tabs {
+        flex-direction: column;
+    }
+    
+    .acp-tabs-container ul.tabs li a {
+        border-radius: var(--radius-sm);
+        border-bottom: 1px solid var(--border);
+    }
+    
+    .acp-tabs-container ul.tabs li.active a {
+        border-bottom: 1px solid var(--border);
+    }
+    
+    .config-submit-wrapper {
+        text-align: center;
+    }
+}
+
+/* ========================================
+   Ferramentas - Layout em Grid (2 colunas + full width)
+   ======================================== */
+.tools-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin-bottom: 30px;
+}
+
+.tools-column {
+    min-width: 0; /* evita overflow em colunas */
+}
+
+.tools-full-width {
+    grid-column: 1 / -1;
+}
+
+/* Responsivo: em telas menores, empilha tudo */
+@media (max-width: 992px) {
+    .tools-grid {
+        grid-template-columns: 1fr;
+    }
 }
