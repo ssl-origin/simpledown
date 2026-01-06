@@ -1,8 +1,8 @@
 <?php
 /**
  * @package mundophpbb/simpledown
- * @copyright (c) 2025 Mundo phpBB
- * @license http://opensource.org/licenses/gpl-license.php GNU General Public License, version 2.
+ * @copyright (c) 2026 Mundo phpBB
+ * @license http://opensource.org/licenses/gpl-2.0.php GNU General Public License v2
  */
 
 namespace mundophpbb\simpledown\controller;
@@ -32,6 +32,9 @@ class acp_files_controller
 
     protected $categories_table;
     protected $files_table;
+    protected $topics_table;
+    protected $posts_table;
+
     protected $u_action;
 
     public function __construct(
@@ -60,6 +63,8 @@ class acp_files_controller
 
         $this->categories_table  = $table_prefix . 'simpledown_categories';
         $this->files_table       = $table_prefix . 'simpledown_files';
+        $this->topics_table      = $table_prefix . 'topics';
+        $this->posts_table       = $table_prefix . 'posts';
     }
 
     public function set_page_url($u_action)
@@ -74,25 +79,31 @@ class acp_files_controller
         $action = $this->request->variable('action', '');
         $id     = $this->request->variable('id', 0);
 
+        // Deleção com confirmação
         if ($action === 'delete' && $id && confirm_box(true)) {
             $this->delete_file($id);
         } else if ($action === 'delete' && $id) {
             confirm_box(false, $this->language->lang('CONFIRM_DELETE_FILE'), build_hidden_fields(['id' => $id, 'action' => 'delete']));
         }
 
-        if ($action === 'edit' && $id) {
-            $this->edit_file($id);
-        }
-
+        // Salvamento da edição
         if ($this->request->is_set_post('submit_edit')) {
             if (!check_form_key('mundophpbb_simpledown')) {
                 trigger_error('FORM_INVALID', E_USER_WARNING);
             }
-            $this->save_edit_file($id);
-            redirect($this->u_action); // Força recarregamento
+            $this->save_edit_file($id); // redirect no final
         }
 
-        $this->list_files();
+        // Modo edição: prepara o form e limpa a tabela da listagem
+        if ($action === 'edit' && $id) {
+            $this->edit_file($id);
+            $this->list_files();
+            // Remove o block da tabela para não exibir a listagem no modo edição
+            $this->template->destroy_block_vars('files');
+        } else {
+            // Modo padrão: apenas a listagem
+            $this->list_files();
+        }
     }
 
     protected function list_files()
@@ -111,7 +122,22 @@ class acp_files_controller
 
             $effective_private = ($row['is_private'] !== null) ? (int)$row['is_private'] : $global_default_private;
 
-            $desc_short = $row['file_desc_short'] ?: ($row['file_desc'] ? truncate_string(strip_bbcode($row['file_desc']), 150) : $this->language->lang('ACP_SIMPLEDOWN_NO_DESCRIPTION'));
+            $desc_short = $row['file_desc_short'] ?? '';
+
+            if (!$desc_short && $row['file_desc']) {
+                $plain_text = generate_text_for_display(
+                    $row['file_desc'],
+                    $row['file_desc_bbcode_uid'] ?? '',
+                    $row['file_desc_bbcode_bitfield'] ?? '',
+                    $row['file_desc_bbcode_flags'] ?? 7
+                );
+                $plain_text = strip_tags($plain_text);
+                $desc_short = truncate_string($plain_text, 150);
+            }
+
+            if (!$desc_short) {
+                $desc_short = $this->language->lang('ACP_SIMPLEDOWN_NO_DESCRIPTION');
+            }
 
             $desc_formatted = generate_text_for_display(
                 $row['file_desc'] ?: '',
@@ -214,16 +240,28 @@ class acp_files_controller
         ]);
     }
 
+    /**
+     * Remove BBCode UID from text (standard hack used in many phpBB extensions)
+     */
+    protected function remove_bbcode_uid($text)
+    {
+        if (empty($text)) {
+            return $text;
+        }
+        return preg_replace('/\:[a-z0-9]+/i', '', $text);
+    }
+
     protected function save_edit_file($id)
     {
-        $name           = $this->request->variable('edit_file_name', '', true);
-        $desc_short     = $this->request->variable('edit_file_desc_short', '', true);
+        $name           = trim($this->request->variable('edit_file_name', '', true));
+        $desc_short     = trim($this->request->variable('edit_file_desc_short', '', true));
         $desc_full      = $this->request->variable('edit_file_desc', '', true);
-        $version        = $this->request->variable('edit_file_version', '', true);
+        $version        = trim($this->request->variable('edit_file_version', '', true));
         $category       = $this->request->variable('edit_category', 0);
         $existing_thumb = $this->request->variable('existing_thumb', '', true);
         $is_private     = $this->request->variable('is_private', 0);
 
+        // Processar BBCode para a base de dados da extensão
         $uid = $bitfield = $flags = '';
         generate_text_for_storage($desc_full, $uid, $bitfield, $flags, true, true, true);
 
@@ -231,98 +269,173 @@ class acp_files_controller
         $thumbs_dir = $this->root_path . 'ext/mundophpbb/simpledown/files/thumbs/';
 
         $sql_data = [
-            'file_name'                => $name,
-            'file_desc_short'          => $desc_short,
-            'file_desc'                => $desc_full,
-            'file_desc_bbcode_uid'     => $uid,
-            'file_desc_bbcode_bitfield'=> $bitfield,
-            'file_desc_bbcode_flags'   => $flags,
-            'version'                  => $version ?: null,
-            'category_id'              => (int)$category,
-            'is_private'               => (int)$is_private,
+            'file_name'                 => $name,
+            'file_desc_short'           => $desc_short,
+            'file_desc'                 => $desc_full,
+            'file_desc_bbcode_uid'      => $uid,
+            'file_desc_bbcode_bitfield' => $bitfield,
+            'file_desc_bbcode_flags'    => $flags,
+            'version'                   => $version ?: null,
+            'category_id'               => (int)$category,
+            'is_private'                => (int)$is_private,
         ];
 
-        // === SUBSTITUIÇÃO DO ARQUIVO PRINCIPAL – VERSÃO ANTIGA SIMPLES E CONFIÁVEL ===
+        // === SUBSTITUIÇÃO DO ARQUIVO PRINCIPAL ===
         $replace_file = $this->request->file('replace_upload');
-
         if (!empty($replace_file['name']) && empty($replace_file['error'])) {
-            if (!is_dir($upload_dir)) {
-                @mkdir($upload_dir, 0755, true);
-            }
-
-            // Apagar arquivo antigo
             $sql = 'SELECT file_realname FROM ' . $this->files_table . ' WHERE id = ' . (int)$id;
             $result = $this->db->sql_query_limit($sql, 1);
-            $current = $this->db->sql_fetchrow($result);
+            $current_file = $this->db->sql_fetchrow($result);
             $this->db->sql_freeresult($result);
 
-            if ($current && !empty($current['file_realname'])) {
-                $old_path = $upload_dir . $current['file_realname'];
+            if ($current_file && !empty($current_file['file_realname'])) {
+                $old_path = $upload_dir . $current_file['file_realname'];
                 if (file_exists($old_path)) {
                     @unlink($old_path);
                 }
             }
 
-            // Nome limpo do novo arquivo
             $original_name = $replace_file['name'];
             $ext = strtolower(pathinfo($original_name, PATHINFO_EXTENSION));
-            $basename = pathinfo($original_name, PATHINFO_FILENAME);
-            $basename = preg_replace('/[^a-zA-Z0-9._-]/', '_', $basename);
+            $basename = preg_replace('/[^a-zA-Z0-9._-]/', '_', pathinfo($original_name, PATHINFO_FILENAME));
             $new_filename = $basename . '.' . $ext;
-
             $destination = $upload_dir . $new_filename;
 
-            // Evita sobrescrita
             $counter = 1;
-            $temp_name = $new_filename;
             while (file_exists($destination)) {
-                $temp_name = $basename . '_' . $counter . '.' . $ext;
-                $destination = $upload_dir . $temp_name;
+                $new_filename = $basename . '_' . $counter . '.' . $ext;
+                $destination = $upload_dir . $new_filename;
                 $counter++;
             }
-            $new_filename = $temp_name;
 
             if (move_uploaded_file($replace_file['tmp_name'], $destination)) {
                 $sql_data['file_realname'] = $new_filename;
                 $sql_data['file_size']     = filesize($destination);
-            } else {
-                trigger_error($this->language->lang('ACP_SIMPLEDOWN_UPLOAD_FAILED') . adm_back_link($this->u_action), E_USER_WARNING);
+                $sql_data['file_hash']     = md5_file($destination);
             }
         }
 
         // === THUMBNAIL ===
         $thumb_file = $this->request->file('thumb_upload');
-        $new_thumb = null;
-
         if (!empty($thumb_file['name']) && empty($thumb_file['error'])) {
-            if (!is_dir($thumbs_dir)) {
-                @mkdir($thumbs_dir, 0755, true);
-            }
-
             $safe_thumb = preg_replace('/[^a-zA-Z0-9_\.\-]/', '_', $thumb_file['name']);
-            $thumb_dest = $thumbs_dir . $safe_thumb;
-
-            if (move_uploaded_file($thumb_file['tmp_name'], $thumb_dest)) {
-                $this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'LOG_SIMPLEDOWN_THUMB_ADDED', false, [$safe_thumb]);
-                $new_thumb = $safe_thumb;
+            if (move_uploaded_file($thumb_file['tmp_name'], $thumbs_dir . $safe_thumb)) {
+                $sql_data['thumbnail'] = $safe_thumb;
             }
-        }
-
-        if ($new_thumb !== null) {
-            $sql_data['thumbnail'] = $new_thumb;
         } elseif ($existing_thumb !== '') {
             $sql_data['thumbnail'] = $existing_thumb;
         } else {
             $sql_data['thumbnail'] = null;
         }
 
-        // Atualiza no banco
+        // Atualiza a tabela da extensão
         $sql = 'UPDATE ' . $this->files_table . ' SET ' . $this->db->sql_build_array('UPDATE', $sql_data) . ' WHERE id = ' . (int)$id;
         $this->db->sql_query($sql);
 
-        $this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'LOG_SIMPLEDOWN_FILE_EDITED', false, [$name]);
+        // === ATUALIZAÇÃO DO TÓPICO DE ANÚNCIO NO FÓRUM ===
+        $sql = 'SELECT topic_id FROM ' . $this->files_table . ' WHERE id = ' . (int)$id;
+        $result = $this->db->sql_query($sql);
+        $row = $this->db->sql_fetchrow($result);
+        $this->db->sql_freeresult($result);
 
-        // Redireciona para atualizar a listagem
+        $topic_id = (int)($row['topic_id'] ?? 0);
+
+        if ($topic_id > 0 && !empty($this->config['simpledown_auto_announce'])) {
+            $forum_id = (int)($this->config['simpledown_announce_forum'] ?? 0);
+
+            if ($forum_id > 0) {
+                $sql = 'SELECT t.*, p.icon_id AS post_icon_id
+                        FROM ' . $this->topics_table . ' t
+                        LEFT JOIN ' . $this->posts_table . ' p ON p.post_id = t.topic_first_post_id
+                        WHERE t.topic_id = ' . (int)$topic_id;
+                $result = $this->db->sql_query($sql);
+                $current_topic = $this->db->sql_fetchrow($result);
+                $this->db->sql_freeresult($result);
+
+                if ($current_topic) {
+                    $announce_type = $this->config['simpledown_announce_type'] ?? 'normal';
+                    $announce_locked = !empty($this->config['simpledown_announce_locked']);
+
+                    $topic_type = POST_NORMAL;
+                    switch ($announce_type) {
+                        case 'sticky':   $topic_type = POST_STICKY; break;
+                        case 'announce': $topic_type = POST_ANNOUNCE; break;
+                        case 'global':   $topic_type = POST_GLOBAL; break;
+                    }
+
+                    $details_url = generate_board_url() . '/downloads/details/' . $id;
+
+                    $download_link_bbcode = '[url=' . $details_url . ']Baixar ' . htmlspecialchars($name, ENT_QUOTES) . ($version ? ' v' . htmlspecialchars($version, ENT_QUOTES) : '') . '[/url]';
+
+                    $title_tpl = $this->config['simpledown_announce_title_template'] ?? '';
+                    $msg_tpl   = $this->config['simpledown_announce_message_template'] ?? '';
+
+                    $subject = str_replace(['{NAME}', '{VERSION}'], [$name, $version ?: ''], $title_tpl) ?: $name;
+
+                    // Limpeza da descrição
+                    $desc_full_clean = $this->remove_bbcode_uid($desc_full);
+                    $desc_full_clean = preg_replace('#<[./]?[a-zA-Z0-9]+.*?>#i', '', $desc_full_clean);
+
+                    $message_raw = str_replace(
+                        [
+                            '{NAME}',
+                            '{VERSION}',
+                            '{URL_DETAILS}',
+                            '{DESC_SHORT}',
+                            '{DESC_FULL_RAW}',
+                            '{DESC_FORMATTED}',
+                            '{URL_DOWNLOAD}'
+                        ],
+                        [
+                            $name,
+                            $version ?: '',
+                            $details_url,
+                            $desc_short,
+                            $desc_full_clean,
+                            $desc_full_clean,
+                            $download_link_bbcode
+                        ],
+                        $msg_tpl
+                    ) ?: $desc_full_clean;
+
+                    $m_uid = $m_bitfield = $m_flags = '';
+                    generate_text_for_storage($message_raw, $m_uid, $m_bitfield, $m_flags, true, true, true);
+
+                    $poll = [];
+                    $data = [
+                        'topic_id'               => (int)$topic_id,
+                        'post_id'                => (int)$current_topic['topic_first_post_id'],
+                        'forum_id'               => (int)$forum_id,
+                        'topic_title'            => $subject,
+                        'post_subject'           => $subject,
+                        'message'                => $message_raw,
+                        'message_md5'            => md5($message_raw),
+                        'bbcode_bitfield'        => $m_bitfield,
+                        'bbcode_uid'             => $m_uid,
+                        'bbcode_flags'           => $m_flags,
+                        'enable_bbcode'          => true,
+                        'enable_smilies'         => true,
+                        'enable_urls'            => true,
+                        'enable_sig'             => false,
+                        'poster_id'              => (int)$this->user->data['user_id'],
+                        'topic_type'             => $topic_type,
+                        'post_edit_locked'       => $announce_locked ? 1 : 0,
+                        'topic_status'           => $announce_locked ? ITEM_LOCKED : ITEM_UNLOCKED,
+                        'icon_id'                => (int)($current_topic['post_icon_id'] ?? 0),
+                        'post_edit_reason'       => '',
+                        'topic_posts_approved'   => (int)$current_topic['topic_posts_approved'],
+                        'topic_posts_unapproved' => (int)$current_topic['topic_posts_unapproved'],
+                        'topic_posts_softdeleted'=> (int)$current_topic['topic_posts_softdeleted'],
+                        'topic_first_post_id'    => (int)$current_topic['topic_first_post_id'],
+                        'topic_last_post_id'     => (int)$current_topic['topic_last_post_id'],
+                        'force_approved_state'   => true,
+                    ];
+
+                    submit_post('edit', $subject, $this->user->data['username'], $topic_type, $poll, $data);
+                }
+            }
+        }
+
         redirect($this->u_action);
     }
 

@@ -4,6 +4,7 @@
  * @copyright (c) 2026 Mundo phpBB
  * @license http://opensource.org/licenses/gpl-2.0.php GNU General Public License v2
  */
+
 namespace mundophpbb\simpledown\migrations;
 
 class install extends \phpbb\db\migration\migration
@@ -53,9 +54,11 @@ class install extends \phpbb\db\migration\migration
             ['config.add', ['simpledown_logs_retention_days', 0]],
             // CONFIGURAÇÕES PARA ANÚNCIOS AUTOMÁTICOS EM FÓRUNS
             ['config.add', ['simpledown_auto_announce', 0]],
-            ['config.add', ['simpledown_announce_forums', serialize([])]],
-            ['config.add', ['simpledown_announce_type', 'normal']],     // novo
-            ['config.add', ['simpledown_announce_locked', 0]],          // novo
+            ['config.add', ['simpledown_announce_forum', 0]],
+            ['config.add', ['simpledown_announce_title_template', '{NAME} {VERSION}']],
+            ['config.add', ['simpledown_announce_message_template', '{DESC_FORMATTED} {URL_DOWNLOAD}']],
+            ['config.add', ['simpledown_announce_type', 'normal']],
+            ['config.add', ['simpledown_announce_locked', 0]],
             // Criação das pastas de upload
             ['custom', [[$this, 'create_upload_dirs']]],
         ];
@@ -67,52 +70,52 @@ class install extends \phpbb\db\migration\migration
             'add_tables' => [
                 $this->table_prefix . 'simpledown_categories' => [
                     'COLUMNS' => [
-                        'id' => ['UINT', null, 'auto_increment'],
+                        'id'   => ['UINT', null, 'auto_increment'],
                         'name' => ['VCHAR:255', ''],
                     ],
                     'PRIMARY_KEY' => 'id',
                 ],
                 $this->table_prefix . 'simpledown_files' => [
                     'COLUMNS' => [
-                        'id' => ['UINT', null, 'auto_increment'],
-                        'file_name' => ['VCHAR:255', ''],
-                        'file_realname' => ['VCHAR:255', ''],
-                        'file_desc_short' => ['TEXT_UNI', ''],
-                        'file_desc' => ['MTEXT_UNI', ''],
-                        'file_desc_bbcode_uid' => ['VCHAR:8', ''],
+                        'id'                        => ['UINT', null, 'auto_increment'],
+                        'file_name'                 => ['VCHAR:255', ''],
+                        'file_realname'             => ['VCHAR:255', ''],
+                        'file_desc_short'           => ['TEXT_UNI', ''],
+                        'file_desc'                 => ['MTEXT_UNI', ''],
+                        'file_desc_bbcode_uid'      => ['VCHAR:8', ''],
                         'file_desc_bbcode_bitfield' => ['VCHAR:255', ''],
-                        'file_desc_bbcode_flags' => ['UINT', 0],
-                        'version' => ['VCHAR:50', null],
-                        'category_id' => ['UINT', 0],
-                        'downloads' => ['UINT', 0],
-                        'file_size' => ['UINT', 0],
-                        'file_hash' => ['VCHAR:32', ''],
-                        'thumbnail' => ['VCHAR:255', null],
-                        'is_private' => ['BOOL', 0],
-                        'topic_id' => ['UINT', 0],
+                        'file_desc_bbcode_flags'    => ['UINT', 0],
+                        'version'                   => ['VCHAR:50', null],
+                        'category_id'               => ['UINT', 0],
+                        'downloads'                 => ['UINT', 0],
+                        'file_size'                 => ['UINT', 0],
+                        'file_hash'                 => ['VCHAR:32', ''],
+                        'thumbnail'                 => ['VCHAR:255', null],
+                        'is_private'                => ['BOOL', 0],
+                        'topic_id'                  => ['UINT', 0],
                     ],
                     'PRIMARY_KEY' => 'id',
                 ],
                 $this->table_prefix . 'simpledown_logs' => [
                     'COLUMNS' => [
-                        'log_id' => ['UINT', null, 'auto_increment'],
-                        'file_id' => ['UINT', 0],
-                        'user_id' => ['UINT', 0],
-                        'username' => ['VCHAR:255', ''],
-                        'ip_address' => ['VCHAR:40', ''],
-                        'user_agent' => ['VCHAR_UNI:255', ''],
-                        'action' => ['VCHAR:50', ''],
-                        'log_time' => ['TIMESTAMP', 0],
+                        'log_id'      => ['UINT', null, 'auto_increment'],
+                        'file_id'     => ['UINT', 0],
+                        'user_id'     => ['UINT', 0],
+                        'username'    => ['VCHAR:255', ''],
+                        'ip_address'  => ['VCHAR:40', ''],
+                        'user_agent'  => ['VCHAR_UNI:255', ''],
+                        'action'      => ['VCHAR:50', ''],
+                        'log_time'    => ['TIMESTAMP', 0],
                     ],
                     'PRIMARY_KEY' => 'log_id',
                     'KEYS' => [
-                        'log_time' => ['INDEX', 'log_time'],
-                        'file_id' => ['INDEX', 'file_id'],
-                        'user_id' => ['INDEX', 'user_id'],
-                        'action' => ['INDEX', 'action'],
-                        'time_file' => ['INDEX', ['log_time', 'file_id']],
-                        'time_user' => ['INDEX', ['log_time', 'user_id']],
-                        'time_action' => ['INDEX', ['log_time', 'action']],
+                        'log_time'     => ['INDEX', 'log_time'],
+                        'file_id'      => ['INDEX', 'file_id'],
+                        'user_id'      => ['INDEX', 'user_id'],
+                        'action'       => ['INDEX', 'action'],
+                        'time_file'    => ['INDEX', ['log_time', 'file_id']],
+                        'time_user'    => ['INDEX', ['log_time', 'user_id']],
+                        'time_action'  => ['INDEX', ['log_time', 'action']],
                     ],
                 ],
             ],
@@ -147,7 +150,9 @@ class install extends \phpbb\db\migration\migration
             ['config.remove', ['simpledown_logs_per_page']],
             ['config.remove', ['simpledown_logs_retention_days']],
             ['config.remove', ['simpledown_auto_announce']],
-            ['config.remove', ['simpledown_announce_forums']],
+            ['config.remove', ['simpledown_announce_forum']],
+            ['config.remove', ['simpledown_announce_title_template']],
+            ['config.remove', ['simpledown_announce_message_template']],
             ['config.remove', ['simpledown_announce_type']],
             ['config.remove', ['simpledown_announce_locked']],
             ['module.remove', ['acp', 'ACP_SIMPLEDOWN_TITLE', '']],
