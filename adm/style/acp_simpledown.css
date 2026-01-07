@@ -574,51 +574,66 @@
 }
 
 /* ========================================
-   Forçar botões Editar/Excluir lado a lado em TODAS as resoluções
+   Botões Editar/Excluir lado a lado - Compatível com Safari
    ======================================== */
 
-/* Célula de ações (última coluna da tabela) */
+/* Tabela geral - ajuda o Safari a respeitar larguras */
+#acp_simpledown .table1 {
+    table-layout: auto;           /* Permite ajuste natural, mas com controle */
+    width: 100%;
+}
+
+/* Cabeçalho da coluna de ações - largura mínima para caber os botões */
+#acp_simpledown .table1 th:last-child {
+    width: 180px;                 /* Largura mínima suficiente para os 2 botões lado a lado */
+    min-width: 180px;
+    white-space: nowrap;
+}
+
+/* Célula de ações - usa inline-block (mais compatível com Safari que flex em tabelas) */
 #acp_simpledown .table1 td:last-child {
-    display: flex;
-    flex-direction: row;          /* Sempre lado a lado */
-    flex-wrap: nowrap;            /* Não permite quebra de linha */
-    gap: 10px;                    /* Espaço entre os botões */
-    align-items: center;          /* Centraliza verticalmente */
-    justify-content: flex-start;  /* Alinha à esquerda (pode mudar para center se preferir) */
-    padding: 12px 10px;           /* Padding confortável */
-    white-space: nowrap;          /* Garante que os textos não quebrem */
-    overflow: hidden;             /* Evita overflow visível */
+    white-space: nowrap;          /* Impede quebra de linha */
+    text-align: left;             /* ou center, se preferir centralizado */
+    padding: 12px 10px;
+    overflow: hidden;
 }
 
-/* Botões dentro da coluna de ações */
+/* Botões - inline-block para garantir lado a lado no Safari */
 #acp_simpledown .table1 .button2 {
-    padding: 7px 14px;            /* Um pouco mais compacto que o padrão */
-    font-size: 0.9em;             /* Texto ligeiramente menor para caber melhor */
-    min-width: 80px;              /* Largura mínima para não encolher demais */
+    display: inline-block;
+    margin-right: 10px;           /* Espaço entre os botões */
+    padding: 7px 14px;
+    font-size: 0.9em;
+    min-width: 80px;
     text-align: center;
-    flex-shrink: 0;               /* Não permite que os botões encolham */
+    vertical-align: middle;
 }
 
-/* Em telas muito pequenas (≤768px), reduz ainda mais para garantir */
-@media (max-width: 768px) {
+/* Remove margem do último botão para não criar espaço extra */
+#acp_simpledown .table1 .button2:last-child {
+    margin-right: 0;
+}
+
+/* Em telas pequenas (mobile/tablet) - mantém lado a lado, mas mais compacto */
+@media (max-width: 1024px) {
+    #acp_simpledown .table1 th:last-child,
+    #acp_simpledown .table1 td:last-child {
+        width: 160px;
+        min-width: 160px;
+    }
+    
     #acp_simpledown .table1 .button2 {
         padding: 6px 12px;
         font-size: 0.85em;
         min-width: 70px;
-    }
-    
-    #acp_simpledown .table1 td:last-child {
-        gap: 6px;
-        padding: 10px 8px;
+        margin-right: 8px;
     }
 }
 
-/* Opcional: scroll horizontal na tabela em telas pequenas (já existente, mas reforçando) */
+/* Scroll horizontal se necessário (já tínhamos, mas reforçando) */
 @media (max-width: 1024px) {
     #acp_simpledown fieldset {
         overflow-x: auto;
-    }
-    #acp_simpledown .table1 {
-        min-width: 900px;  /* Mantém as colunas legíveis */
+        -webkit-overflow-scrolling: touch; /* Suaviza scroll no Safari iOS */
     }
 }
