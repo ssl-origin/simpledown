@@ -66,6 +66,7 @@ $lang = array_merge($lang, [
     // Catégories
     // ===================================================================
     'ACP_SIMPLEDOWN_CATEGORY'                => 'Catégorie',
+    'ACP_SIMPLEDOWN_CATEGORIES'              => 'Ajouter des catégories',    
     'ACP_SIMPLEDOWN_ADD_CATEGORY'            => 'Ajouter une catégorie',
     'ACP_SIMPLEDOWN_CATEGORY_NAME'           => 'Nom de la catégorie',
     'ACP_SIMPLEDOWN_DELETE_CATEGORY'         => 'Supprimer la catégorie',
@@ -284,4 +285,14 @@ $lang = array_merge($lang, [
     'TOO_SMALL'                             => 'La valeur fournie est trop petite.',
     'TOO_LARGE'                             => 'La valeur fournie est trop grande.',
 
+    // BBCode toolbar tooltips (added for full translation)
+    'ACP_SIMPLEDOWN_BBCODE_BOLD'       => 'Gras',
+    'ACP_SIMPLEDOWN_BBCODE_ITALIC'     => 'Italique',
+    'ACP_SIMPLEDOWN_BBCODE_UNDERLINE'  => 'Souligner',
+    'ACP_SIMPLEDOWN_BBCODE_QUOTE'      => 'Citer',
+    'ACP_SIMPLEDOWN_BBCODE_CODE'       => 'Code',
+    'ACP_SIMPLEDOWN_BBCODE_URL'        => 'Lien',
+    'ACP_SIMPLEDOWN_BBCODE_IMG'        => 'Image',
+    'ACP_SIMPLEDOWN_BBCODE_LIST'       => 'Liste',
+    'ACP_SIMPLEDOWN_BBCODE_COLOR'      => 'Couleur',
 ]);

@@ -285,5 +285,18 @@ $lang = array_merge($lang, [
     'TOO_MANY_CHARS'                        => 'O valor fornecido contém caracteres demais.',
     'TOO_SMALL'                             => 'O valor fornecido é muito pequeno.',
     'TOO_LARGE'                             => 'O valor fornecido é muito grande.',
+    
+        // ===================================================================
+    // Toolbar BBCode (novas chaves para os botões)
+    // ===================================================================
+    'ACP_SIMPLEDOWN_BBCODE_BOLD'       => 'Negrito',
+    'ACP_SIMPLEDOWN_BBCODE_ITALIC'     => 'Itálico',
+    'ACP_SIMPLEDOWN_BBCODE_UNDERLINE'  => 'Sublinhado',
+    'ACP_SIMPLEDOWN_BBCODE_QUOTE'      => 'Citação',
+    'ACP_SIMPLEDOWN_BBCODE_CODE'       => 'Código',
+    'ACP_SIMPLEDOWN_BBCODE_URL'        => 'Link',
+    'ACP_SIMPLEDOWN_BBCODE_IMG'        => 'Imagem',
+    'ACP_SIMPLEDOWN_BBCODE_LIST'       => 'Lista',
+    'ACP_SIMPLEDOWN_BBCODE_COLOR'      => 'Cor',
 
 ]);
