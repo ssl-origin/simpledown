@@ -1,5 +1,9 @@
 <!-- INCLUDE overall_header.html -->
+<!-- IF S_EDIT_MODE -->
+<h1>{L_ACP_SIMPLEDOWN_TITLE} - {L_ACP_SIMPLEDOWN_EDIT_DESCRIPTION}: <strong>{EDIT_FILE_NAME}</strong></h1>
+<!-- ELSE -->
 <h1>{L_ACP_SIMPLEDOWN_TITLE} - {L_ACP_SIMPLEDOWN_EXISTING_FILES}</h1>
+<!-- ENDIF -->
 <form id="acp_simpledown" method="post" action="{U_ACTION}" enctype="multipart/form-data">
     {S_FORM_TOKEN}
     <!-- ======================================== -->
@@ -110,7 +114,6 @@
                     <option value="{thumbs.FILENAME}" <!-- IF thumbs.FILENAME == EDIT_FILE_THUMBNAIL -->selected<!-- ENDIF -->>{thumbs.FILENAME}</option>
                     <!-- END thumbs -->
                 </select>
-
                 <div id="thumb-preview" style="margin-top: 15px; text-align: center; display: none;">
                     <p><strong>{L_ACP_SIMPLEDOWN_THUMB_PREVIEW}</strong></p>
                     <img id="thumb-preview-img" src="" alt="Pré-visualização da miniatura" style="max-width: 200px; max-height: 200px; border-radius: 8px; box-shadow: var(--shadow);" />
@@ -120,7 +123,6 @@
                 <!-- ENDIF -->
             </dd>
         </dl>
-
         <!-- Upload nova miniatura -->
         <fieldset>
             <legend>{L_ACP_SIMPLEDOWN_UPLOAD_THUMB}</legend>
@@ -138,15 +140,18 @@
                     </div>
                 </dd>
             </dl>
-        </fieldset>        <p class="submit-buttons">
+        </fieldset>
+        <p class="submit-buttons">
             <input class="button1" type="submit" name="submit_edit" value="{L_ACP_SIMPLEDOWN_SAVE_CHANGES}" />
             <a href="{U_ACTION}" class="button2">{L_ACP_SIMPLEDOWN_CANCEL}</a>
         </p>
     </fieldset>
     <!-- ENDIF -->
+
     <!-- ======================================== -->
-    <!-- LISTAGEM DE ARQUIVOS -->
+    <!-- LISTAGEM DE ARQUIVOS (só aparece quando NÃO está em modo edição) -->
     <!-- ======================================== -->
+    <!-- IF not S_EDIT_MODE -->
     <fieldset>
         <legend>{L_ACP_SIMPLEDOWN_EXISTING_FILES}</legend>
         <div class="acp-controls-top">
@@ -208,6 +213,7 @@
         <p style="text-align:center; color:var(--text-light); font-style:italic;">{L_ACP_SIMPLEDOWN_NO_FILES_YET}</p>
         <!-- ENDIF -->
     </fieldset>
+    <!-- ENDIF -->
 </form>
 <!-- ======================================== -->
 <!-- MODAIS -->
@@ -221,7 +227,6 @@
         <!-- ENDIF -->
     </div>
 </div>
-
 <div id="desc-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="desc-modal-title">
     <div class="modal-content">
         <span class="close-modal" title="{L_ACP_SIMPLEDOWN_CLOSE}" aria-label="{L_ACP_SIMPLEDOWN_CLOSE}">&times;</span>
@@ -229,7 +234,6 @@
         <div id="full-desc-content"></div>
     </div>
 </div>
-
 <!-- ======================================== -->
 <!-- SCRIPT UNIFICADO -->
 <!-- ======================================== -->
@@ -248,7 +252,6 @@ document.addEventListener('DOMContentLoaded', () => {
             textarea.selectionStart = start + open.length;
             textarea.selectionEnd = start + open.length + selected.length;
         };
-
         document.querySelectorAll('.bbcode-btn[data-tag]').forEach(btn => {
             btn.addEventListener('click', () => {
                 let open = '[' + btn.dataset.tag + ']';
@@ -261,7 +264,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 insertBBCode(open, close);
             });
         });
-
         const picker = document.getElementById('color-picker-edit');
         if (picker) {
             picker.addEventListener('change', () => {
@@ -269,7 +271,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 insertBBCode('[color=' + color + ']', '[/color]');
             });
         }
-
         document.querySelectorAll('.size-select').forEach(select => {
             select.addEventListener('change', () => {
                 const size = select.value;
@@ -278,15 +279,12 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
     }
-
     // Preview de thumbnail com anti-cache temporário
     const thumbSelect = document.getElementById('existing_thumb');
     const previewDiv = document.getElementById('thumb-preview');
     const previewImg = document.getElementById('thumb-preview-img');
-
     if (thumbSelect && previewDiv && previewImg) {
         const thumbsDir = '{THUMBS_DIR|escape("js")}';
-
         const updatePreview = () => {
             const val = thumbSelect.value.trim();
             if (val) {
@@ -299,11 +297,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 previewImg.src = '';
             }
         };
-
         thumbSelect.addEventListener('change', updatePreview);
         if (thumbSelect.value) updatePreview();
     }
-
     // Nome dos arquivos selecionados
     ['replace_upload', 'thumb_upload'].forEach(id => {
         const input = document.getElementById(id);
@@ -314,7 +310,6 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
     });
-
     // Modal de descrição completa
     document.querySelector('.compact-table')?.addEventListener('click', e => {
         const trigger = e.target.closest('.view-full-desc');
@@ -328,20 +323,17 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     });
-
     // Fechar modais
     document.querySelectorAll('.close-modal').forEach(btn => {
         btn.addEventListener('click', () => {
             btn.closest('.modal').style.display = 'none';
         });
     });
-
     window.addEventListener('click', e => {
         if (e.target.classList.contains('modal')) {
             e.target.style.display = 'none';
         }
     });
-
     // Mostrar modal de mensagem se houver
     if ('{ERROR_MESSAGE}' || '{SUCCESS_MESSAGE}') {
         document.getElementById('message-modal').style.display = 'flex';

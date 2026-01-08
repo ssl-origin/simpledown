@@ -3,7 +3,7 @@
     "type": "phpbb-extension",
     "description": "Simple Download System with ACP for uploads and categories",
     "homepage": "https://mundophpbb.com.br",
-    "version": "1.2.0 - RC",
+    "version": "1.5.0 - RC",
     "license": "GPL-2.0-or-later",
     "authors": [
         {

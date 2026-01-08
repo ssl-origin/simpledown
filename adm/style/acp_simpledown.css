@@ -32,9 +32,9 @@
 #acp_simpledown {
     font-family: 'Bai Jamjuree', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
     font-weight: 500;
-    max-width: 1400px;                /* Centraliza em telas grandes */
+    max-width: 1400px;
     margin: 20px auto;
-    padding: 30px;                    /* Mais espaço em desktops */
+    padding: 30px;
     background: var(--bg);
     border-radius: var(--radius);
     box-shadow: var(--shadow);
@@ -72,11 +72,12 @@
     margin-top: 4px;
 }
 
-/* Inputs, Textarea e Select - Responsivo */
+/* Inputs, Textarea, Number e Select - Base comum */
 #acp_simpledown input[type="text"],
+#acp_simpledown input[type="number"],
 #acp_simpledown textarea,
 #acp_simpledown select {
-    width: 100%;                      /* Ocupa toda a largura disponível */
+    width: 100%;
     max-width: 600px;
     padding: 10px 14px;
     border: 1px solid var(--border);
@@ -87,6 +88,7 @@
 }
 
 #acp_simpledown input[type="text"]:focus,
+#acp_simpledown input[type="number"]:focus,
 #acp_simpledown textarea:focus,
 #acp_simpledown select:focus {
     border-color: var(--primary);
@@ -94,23 +96,78 @@
     outline: none;
 }
 
-/* Aumenta largura máxima em telas ≥1200px */
-@media (min-width: 1200px) {
-    #acp_simpledown input[type="text"],
-    #acp_simpledown textarea,
-    #acp_simpledown select,
-    .custom-file-upload {
-        max-width: 800px;
-    }
+/* Sobrescrita para inputs numéricos - unidade ao lado */
+#acp_simpledown input[type="number"] {
+    width: auto;
+    min-width: 140px;
+    max-width: 250px;
+    display: inline-block;
+    vertical-align: middle;
+    text-align: center;
 }
 
-/* Dropdowns (Select) */
-#acp_simpledown select {
+/* Seta customizada apenas em selects simples (não multiple) */
+#acp_simpledown select:not([multiple]) {
     appearance: none;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23718096' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 12px center;
     padding-right: 36px;
+}
+
+/* Estilo extra para select múltiplo (Categorias privadas) */
+#acp_simpledown select[multiple] {
+    height: auto;
+    padding: 10px 14px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--primary) var(--light-bg);
+}
+
+#acp_simpledown select[multiple]::-webkit-scrollbar {
+    width: 8px;
+}
+
+#acp_simpledown select[multiple]::-webkit-scrollbar-track {
+    background: var(--light-bg);
+    border-radius: 4px;
+}
+
+#acp_simpledown select[multiple]::-webkit-scrollbar-thumb {
+    background: var(--primary);
+    border-radius: 4px;
+}
+
+#acp_simpledown select[multiple]::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-hover);
+}
+
+/* Remove largura fixa do announce_forum e padroniza */
+#acp_simpledown #announce_forum {
+    max-width: none;
+}
+
+/* Mantém estilos de opções do announce_forum */
+#announce_forum option:disabled {
+    font-weight: bold;
+    color: #000;
+    background-color: #f0f8ff;
+    padding-left: 10px;
+    font-style: italic;
+}
+
+#announce_forum option {
+    padding-left: 20px;
+}
+
+/* Em telas grandes: width auto conforme você pediu (remove o limite de max-width 800px) */
+@media (min-width: 1200px) {
+    #acp_simpledown input[type="text"],
+    #acp_simpledown input[type="number"],
+    #acp_simpledown textarea,
+    #acp_simpledown select,
+    .custom-file-upload {
+        width: auto;
+    }
 }
 
 /* Custom File Upload - Responsivo */
@@ -124,7 +181,7 @@
     border-radius: var(--radius);
     background: var(--light-bg);
     transition: var(--transition);
-    max-width: 100%;                  /* Agora ocupa toda a largura disponível */
+    max-width: 100%;
 }
 
 .custom-file-upload:hover {
@@ -230,7 +287,7 @@
 #acp_simpledown .table1 td {
     padding: 12px 16px;
     background: var(--bg);
-    border-bottom: 1px solid var(--border);
+    /*border-bottom: 1px solid var(--border);*/
 }
 
 #acp_simpledown .table1 tr:hover td {
@@ -238,13 +295,14 @@
 }
 
 /* Scroll horizontal em tabelas em telas menores */
-@media (max-width: 1024px) {
+/* Scroll horizontal apenas em tablets (769px a 1024px) */
+@media (min-width: 769px) and (max-width: 1024px) {
     #acp_simpledown fieldset {
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
     }
     #acp_simpledown .table1 {
-        min-width: 900px;   /* Garante que as colunas não quebrem demais */
+        min-width: 900px;
     }
 }
 
@@ -308,7 +366,6 @@
     font-size: 0.9em;
     cursor: pointer;
     transition: var(--transition);
-    min-width: auto;
     white-space: nowrap;
 }
 
@@ -449,26 +506,6 @@
     }
 }
 
-/* Dropdown de fóruns */
-#announce_forum option:disabled {
-    font-weight: bold;
-    color: #000;
-    background-color: #f0f8ff;
-    padding-left: 10px;
-    font-style: italic;
-}
-
-#announce_forum option {
-    padding-left: 20px;
-}
-
-#announce_forum {
-    width: 100%;
-    max-width: 500px;
-    padding: 8px;
-    font-size: 14px;
-}
-
 /* Abas (Tabs) */
 .acp-tabs-container {
     margin: 20px 0;
@@ -573,77 +610,87 @@
     }
 }
 
-/* ========================================
-   Botões Editar/Excluir lado a lado - Compatível com Safari
-   ======================================== */
-
-/* Tabela geral - ajuda o Safari a respeitar larguras */
-#acp_simpledown .table1 {
-    table-layout: auto;           /* Permite ajuste natural, mas com controle */
-    width: 100%;
-}
-
-/* Cabeçalho da coluna de ações - largura mínima para caber os botões */
-#acp_simpledown .table1 th:last-child {
-    width: 180px;                 /* Largura mínima suficiente para os 2 botões lado a lado */
-    min-width: 180px;
-    white-space: nowrap;
-}
-
-/* Célula de ações - usa inline-block (mais compatível com Safari que flex em tabelas) */
+/* Forçar botões Editar/Excluir lado a lado em TODAS as resoluções */
 #acp_simpledown .table1 td:last-child {
-    white-space: nowrap;          /* Impede quebra de linha */
-    text-align: left;             /* ou center, se preferir centralizado */
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 10px;
+    align-items: center;
+    justify-content: flex-start;
     padding: 12px 10px;
+    white-space: nowrap;
     overflow: hidden;
 }
 
-/* Botões - inline-block para garantir lado a lado no Safari */
 #acp_simpledown .table1 .button2 {
-    display: inline-block;
-    margin-right: 10px;           /* Espaço entre os botões */
     padding: 7px 14px;
     font-size: 0.9em;
     min-width: 80px;
     text-align: center;
-    vertical-align: middle;
+    flex-shrink: 0;
 }
 
-/* Remove margem do último botão para não criar espaço extra */
-#acp_simpledown .table1 .button2:last-child {
-    margin-right: 0;
-}
-
-/* Em telas pequenas (mobile/tablet) - mantém lado a lado, mas mais compacto */
-@media (max-width: 1024px) {
-    #acp_simpledown .table1 th:last-child,
-    #acp_simpledown .table1 td:last-child {
-        width: 160px;
-        min-width: 160px;
-    }
-    
+@media (max-width: 768px) {
     #acp_simpledown .table1 .button2 {
         padding: 6px 12px;
         font-size: 0.85em;
         min-width: 70px;
-        margin-right: 8px;
+    }
+    
+    #acp_simpledown .table1 td:last-child {
+        gap: 6px;
+        padding: 10px 8px;
     }
 }
 
-/* Scroll horizontal se necessário (já tínhamos, mas reforçando) */
 @media (max-width: 1024px) {
     #acp_simpledown fieldset {
         overflow-x: auto;
-        -webkit-overflow-scrolling: touch; /* Suaviza scroll no Safari iOS */
+    }
+    #acp_simpledown .table1 {
+        min-width: 900px;
     }
 }
 
-@media only screen and (max-width: 700px), only screen and (max-device-width: 700px) {
-    table.responsive,
-    table.responsive caption,
-    table.responsive tbody,
-    table.responsive tr,
-    table.responsive th,
-    table.responsive td {
-        display: contents;
+/* Responsivo para telas pequenas - adapta sem overflow e sem scroll horizontal em celular */
+@media (max-width: 768px) {
+    /* Remove o min-width rígido para permitir que a tabela encolha */
+    #acp_simpledown .table1 {
+        min-width: unset;
+        width: 100%;
     }
+
+    /* Permite quebra de palavras longas no nome do arquivo e descrição */
+    #acp_simpledown .table1 td:first-child,
+    #acp_simpledown .table1 td:first-child strong,
+    #acp_simpledown .table1 .desc-short {
+        word-break: break-word;
+        hyphens: auto;
+    }
+
+    /* Empilha os botões de ações verticalmente */
+    #acp_simpledown .table1 td:last-child {
+        flex-direction: column;
+        align-items: stretch;
+        white-space: normal;
+        gap: 8px;
+        padding: 10px 8px;
+    }
+
+    /* Botões ocupam toda a largura da célula quando empilhados */
+    #acp_simpledown .table1 .button2 {
+        width: 100%;
+        min-width: unset;
+        text-align: center;
+        padding: 8px 12px;
+        font-size: 0.9em;
+    }
+
+    /* Reduz um pouco o padding geral para ganhar espaço */
+    #acp_simpledown .table1 th,
+    #acp_simpledown .table1 td {
+        padding: 8px 6px;
+        font-size: 0.88em;
+    }
+}
