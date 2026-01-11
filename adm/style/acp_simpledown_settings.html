@@ -17,13 +17,13 @@
                 <fieldset>
                     <legend>{{ lang('ACP_SIMPLEDOWN_GENERAL_SETTINGS') }}</legend>
                     <dl>
-                        <dt><label for="max_upload_size">{{ lang('ACP_SIMPLEDOWN_MAX_UPLOAD_SIZE') }}:</label>
-                            <span>Máximo em MB (mínimo 1)</span>
+                                                <dt><label for="max_upload_size">{{ lang('ACP_SIMPLEDOWN_MAX_UPLOAD_SIZE') }}:</label>
+                            <span>{{ lang('ACP_SIMPLEDOWN_MAX_UPLOAD_SIZE_EXPLAIN') }}</span>
                         </dt>
                         <dd>
                             <div class="input-unit">
                                 <input type="number" name="max_upload_size" id="max_upload_size" value="{{ MAX_UPLOAD_SIZE }}" min="1" step="1" />
-                                <span class="unit">MB</span>
+                                <span class="unit">{{ lang('ACP_SIMPLEDOWN_UPLOAD_SIZE') }}</span>
                             </div>
                         </dd>
                     </dl>
@@ -319,6 +319,21 @@
                             </div>
                         </dd>
                     </dl>
+        <!-- Upload nova miniatura -->
+            <dl>
+                <dt><label for="thumb_upload">{L_ACP_SIMPLEDOWN_UPLOAD_THUMB}:</label>
+                    <span>{L_ACP_SIMPLEDOWN_UPLOAD_THUMB_EXPLAIN}</span>
+                </dt>
+                <dd>
+                    <div class="custom-file-upload">
+                        <input type="file" id="thumb_upload" name="thumb_upload" accept="image/jpeg,image/png,image/gif,image/webp" />
+                        <label for="thumb_upload" class="custom-file-label">
+                            <span>{L_ACP_SIMPLEDOWN_CHOOSE_FILE}</span>
+                        </label>
+                        <span class="file-name-display" id="thumb-name-display">{L_ACP_SIMPLEDOWN_NO_FILE_SELECTED}</span>
+                    </div>
+                </dd>
+            </dl>
                     <dl>
                         <dt><label for="existing_thumb">{{ lang('ACP_SIMPLEDOWN_SELECT_THUMB') }}:</label></dt>
                         <dd>
