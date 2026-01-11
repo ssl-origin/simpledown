@@ -1,6 +1,7 @@
 /* ========================================
    SimpleDown ACP - Design Flat & Minimalista 2026
    ======================================== */
+@import url('https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@400;500;600;700&display=swap');
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css');
 
 /* Variáveis - Paleta clean e moderna */
@@ -23,21 +24,32 @@
     --transition: all 0.2s ease;
 }
 
-/* Box-sizing global dentro do módulo */
+/* Box-sizing e font-family global dentro do módulo */
 #acp_simpledown * {
     box-sizing: border-box;
+    font-family: 'Bai Jamjuree', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
 }
 
 /* Container Principal */
 #acp_simpledown {
     font-family: 'Bai Jamjuree', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
     font-weight: 500;
-    max-width: 1400px;
+    max-width: 1600px;
     margin: 20px auto;
     padding: 30px;
     background: var(--bg);
     border-radius: var(--radius);
     box-shadow: var(--shadow);
+}
+
+/* Forçar font em elementos específicos */
+#acp_simpledown input,
+#acp_simpledown textarea,
+#acp_simpledown select,
+#acp_simpledown button,
+#acp_simpledown table,
+#acp_simpledown label {
+    font-family: 'Bai Jamjuree', sans-serif !important;
 }
 
 /* Fieldsets e Legendas */
@@ -47,6 +59,8 @@
     border-radius: var(--radius);
     padding: 20px;
     margin-bottom: 30px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 #acp_simpledown legend {
@@ -72,13 +86,12 @@
     margin-top: 4px;
 }
 
-/* Inputs, Textarea, Number e Select - Base comum */
+/* Inputs, Textarea e Select - Responsivo */
 #acp_simpledown input[type="text"],
-#acp_simpledown input[type="number"],
 #acp_simpledown textarea,
 #acp_simpledown select {
-    width: 100%;
     max-width: 600px;
+    line-height: 1.8;
     padding: 10px 14px;
     border: 1px solid var(--border);
     border-radius: var(--radius-sm);
@@ -88,7 +101,6 @@
 }
 
 #acp_simpledown input[type="text"]:focus,
-#acp_simpledown input[type="number"]:focus,
 #acp_simpledown textarea:focus,
 #acp_simpledown select:focus {
     border-color: var(--primary);
@@ -96,78 +108,23 @@
     outline: none;
 }
 
-/* Sobrescrita para inputs numéricos - unidade ao lado */
-#acp_simpledown input[type="number"] {
-    width: auto;
-    min-width: 140px;
-    max-width: 250px;
-    display: inline-block;
-    vertical-align: middle;
-    text-align: center;
+/* Aumenta largura máxima em telas ≥1200px */
+@media (min-width: 1200px) {
+    #acp_simpledown input[type="text"],
+    #acp_simpledown textarea,
+    #acp_simpledown select,
+    .custom-file-upload {
+        max-width: 800px;
+    }
 }
 
-/* Seta customizada apenas em selects simples (não multiple) */
-#acp_simpledown select:not([multiple]) {
+/* Dropdowns (Select) */
+#acp_simpledown select {
     appearance: none;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23718096' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 12px center;
     padding-right: 36px;
-}
-
-/* Estilo extra para select múltiplo (Categorias privadas) */
-#acp_simpledown select[multiple] {
-    height: auto;
-    padding: 10px 14px;
-    scrollbar-width: thin;
-    scrollbar-color: var(--primary) var(--light-bg);
-}
-
-#acp_simpledown select[multiple]::-webkit-scrollbar {
-    width: 8px;
-}
-
-#acp_simpledown select[multiple]::-webkit-scrollbar-track {
-    background: var(--light-bg);
-    border-radius: 4px;
-}
-
-#acp_simpledown select[multiple]::-webkit-scrollbar-thumb {
-    background: var(--primary);
-    border-radius: 4px;
-}
-
-#acp_simpledown select[multiple]::-webkit-scrollbar-thumb:hover {
-    background: var(--primary-hover);
-}
-
-/* Remove largura fixa do announce_forum e padroniza */
-#acp_simpledown #announce_forum {
-    max-width: none;
-}
-
-/* Mantém estilos de opções do announce_forum */
-#announce_forum option:disabled {
-    font-weight: bold;
-    color: #000;
-    background-color: #f0f8ff;
-    padding-left: 10px;
-    font-style: italic;
-}
-
-#announce_forum option {
-    padding-left: 20px;
-}
-
-/* Em telas grandes: width auto conforme você pediu (remove o limite de max-width 800px) */
-@media (min-width: 1200px) {
-    #acp_simpledown input[type="text"],
-    #acp_simpledown input[type="number"],
-    #acp_simpledown textarea,
-    #acp_simpledown select,
-    .custom-file-upload {
-        width: auto;
-    }
 }
 
 /* Custom File Upload - Responsivo */
@@ -219,37 +176,40 @@
     white-space: nowrap;
 }
 
-/* Botões */
+/* Botões - TODOS COM MESMO TAMANHO */
 #acp_simpledown .button1,
-#acp_simpledown input[type="submit"] {
+#acp_simpledown .button2,
+#acp_simpledown input[type="submit"],
+#acp_simpledown a.button2 {
     padding: 10px 24px;
-    background: var(--primary);
     border: none;
     border-radius: var(--radius-sm);
-    color: white;
     font-weight: 600;
+    font-size: 1.3em;
     cursor: pointer;
     transition: var(--transition);
+    white-space: nowrap;
 }
 
-#acp_simpledown .button1:hover {
+#acp_simpledown .button1,
+#acp_simpledown input[type="submit"] {
+    background: var(--primary);
+    color: white;
+}
+
+#acp_simpledown .button1:hover,
+#acp_simpledown input[type="submit"]:hover {
     background: var(--primary-hover);
 }
 
 #acp_simpledown .button2,
 #acp_simpledown a.button2 {
-    padding: 8px 18px;
     background: #718096;
-    border: none;
-    border-radius: var(--radius-sm);
     color: white;
-    font-weight: 600;
-    cursor: pointer;
-    transition: var(--transition);
-    font-size: 0.9em;
 }
 
-#acp_simpledown .button2:hover {
+#acp_simpledown .button2:hover,
+#acp_simpledown a.button2:hover {
     background: #4a5568;
 }
 
@@ -265,52 +225,127 @@
     background: var(--danger-hover);
 }
 
-/* Tabelas */
+/* ========================================
+   TABELAS - COM CORREÇÃO DE OVERFLOW
+   ======================================== */
 #acp_simpledown .table1 {
     width: 100%;
+    max-width: 100%;
     border-collapse: collapse;
     border-radius: var(--radius);
     overflow: hidden;
     box-shadow: var(--shadow);
     margin-top: 15px;
+    /* table-layout: fixed; /* força distribuição equilibrada das colunas */
+}
+
+#acp_simpledown .table1 th,
+#acp_simpledown .table1 td {
+    padding: 12px 16px;
+    text-align: left;
+    word-break: break-word;
+    hyphens: auto;
+    vertical-align: middle;
+    min-width: 0;
 }
 
 #acp_simpledown .table1 th {
     background: var(--primary);
     color: white;
-    padding: 12px 16px;
     font-weight: 600;
-    text-align: left;
     font-size: 0.9em;
 }
 
 #acp_simpledown .table1 td {
-    padding: 12px 16px;
     background: var(--bg);
-    /*border-bottom: 1px solid var(--border);*/
+    border-bottom: 1px solid var(--border);
 }
 
 #acp_simpledown .table1 tr:hover td {
     background: rgba(52, 152, 219, 0.05);
 }
 
-/* Scroll horizontal em tabelas em telas menores */
-/* Scroll horizontal apenas em tablets (769px a 1024px) */
-@media (min-width: 769px) and (max-width: 1024px) {
-    #acp_simpledown fieldset {
+/* Ellipsis em textos longos na coluna principal */
+#acp_simpledown .table1 td:nth-child(1) .desc-short,
+#acp_simpledown .table1 td:nth-child(1) small {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 100%;
+}
+
+/* Scroll horizontal interno apenas em desktop quando necessário */
+@media (min-width: 769px) {
+    #acp_simpledown fieldset > .table1 {
+        /*display: block; */
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
     }
-    #acp_simpledown .table1 {
-        min-width: 900px;
-    }
 }
 
+/* Responsivo - Stacked em mobile */
 @media (max-width: 768px) {
-    #acp_simpledown .table1 th,
+    #acp_simpledown .table1 {
+        border: 0;
+        table-layout: auto;
+    }
+
+    #acp_simpledown .table1 thead {
+        display: none;
+    }
+
+    #acp_simpledown .table1 tr {
+        display: grid;
+        margin-bottom: 20px;
+        padding: 15px;
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow-sm);
+    }
+
     #acp_simpledown .table1 td {
-        padding: 8px 10px;
-        font-size: 0.85em;
+        display: block;
+        padding: 8px 0;
+        border: none;
+        text-align: right;
+        position: relative;
+        padding-left: 50%;
+    }
+
+    #acp_simpledown .table1 td::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        width: 45%;
+        padding-right: 15px;
+        text-align: left;
+        font-weight: 600;
+        color: var(--text);
+    }
+
+    #acp_simpledown .table1 td:nth-child(1)::before { content: "Arquivo"; }
+    #acp_simpledown .table1 td:nth-child(2)::before { content: "Versão"; }
+    #acp_simpledown .table1 td:nth-child(3)::before { content: "Visibilidade"; }
+    #acp_simpledown .table1 td:nth-child(4)::before { content: "Categoria"; }
+    #acp_simpledown .table1 td:nth-child(5)::before { content: "Downloads / Tamanho"; }
+    #acp_simpledown .table1 td:nth-child(6)::before { content: "Ações"; }
+
+    #acp_simpledown .table1 td:nth-child(6) {
+        padding-left: 0;
+        text-align: center;
+    }
+    #acp_simpledown .table1 td:nth-child(6)::before {
+        display: none;
+    }
+
+    #acp_simpledown .table1 td:nth-child(1) {
+        text-align: left;
+        padding-left: 0;
+    }
+    #acp_simpledown .table1 td:nth-child(1)::before {
+        display: none;
     }
 }
 
@@ -344,7 +379,7 @@
     color: var(--primary);
 }
 
-/* Toolbar BBCode */
+/* Toolbar BBCode - Totalmente uniformizada */
 .bbcode-toolbar {
     display: flex;
     flex-wrap: nowrap;
@@ -355,11 +390,16 @@
     border-radius: var(--radius-sm);
     margin-bottom: 10px;
     overflow-x: auto;
+    align-items: center;
+    -webkit-overflow-scrolling: touch;
 }
 
+/* Todos os elementos da toolbar (botões, select e cor) com mesmo estilo */
 .bbcode-btn,
-.size-select {
-    padding: 8px 12px;
+.size-select,
+.bbcode-color-wrapper > .bbcode-btn {
+    min-height: 40px;
+    padding: 8px 14px;
     background: var(--bg);
     border: 1px solid var(--border);
     border-radius: var(--radius-sm);
@@ -367,21 +407,69 @@
     cursor: pointer;
     transition: var(--transition);
     white-space: nowrap;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
 }
 
 .bbcode-btn:hover,
-.size-select:hover {
+.size-select:hover,
+.bbcode-color-wrapper > .bbcode-btn:hover {
     background: var(--primary);
     color: white;
     border-color: var(--primary);
 }
 
+/* Select de tamanho como botão */
 .size-select {
     appearance: none;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23718096' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
-    background-position: right 8px center;
-    padding-right: 28px;
+    background-position: right 10px center;
+    padding-right: 30px;
+}
+
+/* Wrapper do botão de cor */
+.bbcode-color-wrapper {
+    position: relative;
+    display: inline-flex;
+}
+
+/* Dropdown de cores */
+.color-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow);
+    padding: 10px;
+    z-index: 100;
+    width: 180px;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    margin-top: 4px;
+}
+
+.color-dropdown.active {
+    display: flex;
+}
+
+.color-swatch {
+    width: 26px;
+    height: 26px;
+    border-radius: 4px;
+    cursor: pointer;
+    border: 1px solid var(--border);
+}
+
+.color-swatch:hover {
+    transform: scale(1.15);
+    box-shadow: 0 0 6px rgba(0,0,0,0.3);
 }
 
 /* Modais */
@@ -506,6 +594,26 @@
     }
 }
 
+/* Dropdown de fóruns */
+#announce_forum option:disabled {
+    font-weight: bold;
+    color: #000;
+    background-color: #f0f8ff;
+    padding-left: 10px;
+    font-style: italic;
+}
+
+#announce_forum option {
+    padding-left: 20px;
+}
+
+#announce_forum {
+    width: 100%;
+    max-width: 500px;
+    padding: 8px;
+    font-size: 14px;
+}
+
 /* Abas (Tabs) */
 .acp-tabs-container {
     margin: 20px 0;
@@ -610,87 +718,87 @@
     }
 }
 
-/* Forçar botões Editar/Excluir lado a lado em TODAS as resoluções */
-#acp_simpledown .table1 td:last-child {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    gap: 10px;
-    align-items: center;
-    justify-content: flex-start;
-    padding: 12px 10px;
-    white-space: nowrap;
+/* Inputs numéricos */
+#acp_simpledown input[type="number"] {
+    width: 100%;
+    max-width: 200px;
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--bg);
+    font-size: 1em;
+    transition: var(--transition);
+    -moz-appearance: textfield;
+}
+
+#acp_simpledown input[type="number"]::-webkit-inner-spin-button,
+#acp_simpledown input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+#acp_simpledown input[type="number"]:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.15);
+    outline: none;
+}
+
+/* Sobrescreve estilo phpBB antigo */
+#acp_simpledown input.inputbox,
+#acp_simpledown input[type="text"][size],
+#acp_simpledown input[type="text"].small {
+    width: 100% !important;
+    max-width: 200px !important;
+    padding: 10px 14px !important;
+    border-radius: var(--radius-sm) !important;
+    border: 1px solid var(--border) !important;
+}
+
+/* ========================================
+   CORREÇÃO DEFINITIVA PARA ÍCONES FONT AWESOME
+   ======================================== */
+#acp_simpledown i[class^="fa-"],
+#acp_simpledown i[class*=" fa-"] {
+    font-family: "Font Awesome 6 Free" !important;
+    font-weight: 900 !important;
+    font-style: normal !important;
+    display: inline-block;
+    line-height: 1;
+}
+
+#acp_simpledown i[class^="fab-"],
+#acp_simpledown i[class*=" fab-"] {
+    font-family: "Font Awesome 6 Brands" !important;
+    font-weight: normal !important;
+}
+
+.bbcode-toolbar .color-btn {
+    position: relative;
     overflow: hidden;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px !important;
 }
 
-#acp_simpledown .table1 .button2 {
-    padding: 7px 14px;
-    font-size: 0.9em;
-    min-width: 80px;
-    text-align: center;
-    flex-shrink: 0;
+.bbcode-toolbar .color-preview {
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    background: #000000;
+    display: inline-block;
 }
 
-@media (max-width: 768px) {
-    #acp_simpledown .table1 .button2 {
-        padding: 6px 12px;
-        font-size: 0.85em;
-        min-width: 70px;
-    }
-    
-    #acp_simpledown .table1 td:last-child {
-        gap: 6px;
-        padding: 10px 8px;
-    }
-}
-
-@media (max-width: 1024px) {
-    #acp_simpledown fieldset {
-        overflow-x: auto;
-    }
-    #acp_simpledown .table1 {
-        min-width: 900px;
-    }
-}
-
-/* Responsivo para telas pequenas - adapta sem overflow e sem scroll horizontal em celular */
-@media (max-width: 768px) {
-    /* Remove o min-width rígido para permitir que a tabela encolha */
-    #acp_simpledown .table1 {
-        min-width: unset;
-        width: 100%;
-    }
-
-    /* Permite quebra de palavras longas no nome do arquivo e descrição */
-    #acp_simpledown .table1 td:first-child,
-    #acp_simpledown .table1 td:first-child strong,
-    #acp_simpledown .table1 .desc-short {
-        word-break: break-word;
-        hyphens: auto;
-    }
-
-    /* Empilha os botões de ações verticalmente */
-    #acp_simpledown .table1 td:last-child {
-        flex-direction: column;
-        align-items: stretch;
-        white-space: normal;
-        gap: 8px;
-        padding: 10px 8px;
-    }
-
-    /* Botões ocupam toda a largura da célula quando empilhados */
-    #acp_simpledown .table1 .button2 {
-        width: 100%;
-        min-width: unset;
-        text-align: center;
-        padding: 8px 12px;
-        font-size: 0.9em;
-    }
-
-    /* Reduz um pouco o padding geral para ganhar espaço */
-    #acp_simpledown .table1 th,
-    #acp_simpledown .table1 td {
-        padding: 8px 6px;
-        font-size: 0.88em;
-    }
+.bbcode-toolbar .color-picker-input {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+    border: none;
+    padding: 0;
+    margin: 0;
 }

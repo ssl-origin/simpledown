@@ -65,7 +65,7 @@ class acp_tools_controller
 
     public function handle()
     {
-        // Confirmações de deleção (confirm_box nativo do phpBB)
+        // Confirmações de deleção
         if ($this->request->variable('delete_thumb', 0))
         {
             $filename = $this->request->variable('filename', '', true);
@@ -113,28 +113,41 @@ class acp_tools_controller
         $thumbs_dir = $this->root_path . 'ext/mundophpbb/simpledown/files/thumbs/';
         $thumbs_url = generate_board_url() . '/ext/mundophpbb/simpledown/files/thumbs/';
         $thumbnails = [];
+
         clearstatcache();
 
-        if (is_dir($thumbs_dir))
+        if (is_dir($thumbs_dir) && is_readable($thumbs_dir))
         {
-            $files = glob($thumbs_dir . '*.{jpg,jpeg,png,gif,webp,JPG,JPEG,PNG,GIF,WEBP}', GLOB_BRACE);
-            if ($files !== false)
+            $entries = scandir($thumbs_dir);
+            if ($entries !== false)
             {
-                foreach ($files as $file)
+                $allowed_ext = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+
+                foreach ($entries as $entry)
                 {
-                    if (is_file($file))
+                    if ($entry === '.' || $entry === '..' || is_dir($thumbs_dir . $entry) || $entry[0] === '.') {
+                        continue;
+                    }
+
+                    $ext = strtolower(pathinfo($entry, PATHINFO_EXTENSION));
+                    if (in_array($ext, $allowed_ext))
                     {
-                        $filename = basename($file);
-                        $size = filesize($file);
+                        $full_path = $thumbs_dir . $entry;
+                        $filename = basename($entry);
+                        $size = filesize($full_path);
                         $formatted_size = $this->format_filesize($size);
+                        $mtime = filemtime($full_path);
+
                         $thumbnails[] = [
-                            'FILENAME' => $filename,
-                            'SIZE' => $formatted_size,
-                            'PREVIEW_URL' => $thumbs_url . $filename,
-                            'U_DELETE' => $this->u_action . '&delete_thumb=1&filename=' . rawurlencode($filename),
+                            'FILENAME'     => $filename,
+                            'SIZE'         => $formatted_size,
+                            'PREVIEW_URL'  => $thumbs_url . $filename . '?t=' . $mtime, // cache buster
+                            'U_DELETE'     => $this->u_action . '&delete_thumb=1&filename=' . rawurlencode($filename),
                         ];
                     }
                 }
+
+                // Ordenação alfabética case-insensitive
                 usort($thumbnails, function($a, $b) {
                     return strcasecmp($a['FILENAME'], $b['FILENAME']);
                 });
@@ -147,8 +160,8 @@ class acp_tools_controller
         }
 
         $this->template->assign_vars([
-            'S_HAS_THUMBS' => !empty($thumbnails),
-            'TOTAL_THUMBS' => count($thumbnails),
+            'S_HAS_THUMBS'  => !empty($thumbnails),
+            'TOTAL_THUMBS'  => count($thumbnails),
         ]);
     }
 
@@ -156,6 +169,8 @@ class acp_tools_controller
     {
         $files_dir = $this->root_path . 'ext/mundophpbb/simpledown/files/';
         $web_root = generate_board_url() . '/ext/mundophpbb/simpledown/files/';
+
+        clearstatcache();
 
         $sql = 'SELECT file_realname, file_name, file_size
                 FROM ' . $this->files_table . '
@@ -173,10 +188,10 @@ class acp_tools_controller
                 $size = $row['file_size'] ?: filesize($full_path);
                 $formatted_size = $this->format_filesize($size);
                 $associated[] = [
-                    'FILENAME' => $filename,
+                    'FILENAME'     => $filename,
                     'DISPLAY_NAME' => $row['file_name'],
-                    'SIZE' => $formatted_size,
-                    'FILE_URL' => $web_root . $filename,
+                    'SIZE'         => $formatted_size,
+                    'FILE_URL'     => $web_root . $filename,
                 ];
             }
         }
@@ -210,7 +225,7 @@ class acp_tools_controller
         $orphan_files = [];
         clearstatcache();
 
-        if (is_dir($files_dir))
+        if (is_dir($files_dir) && is_readable($files_dir))
         {
             $entries = scandir($files_dir);
             if ($entries !== false)
@@ -227,7 +242,7 @@ class acp_tools_controller
                         $formatted_size = $this->format_filesize($size);
                         $orphan_files[] = [
                             'FILENAME' => $entry,
-                            'SIZE' => $formatted_size,
+                            'SIZE'     => $formatted_size,
                             'U_DELETE' => $this->u_action . '&delete_orphan=1&filename=' . rawurlencode($entry),
                         ];
                     }
@@ -256,6 +271,7 @@ class acp_tools_controller
 
         if (file_exists($file_path) && is_file($file_path) && @unlink($file_path))
         {
+            clearstatcache(); // limpa cache após delete
             $this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'LOG_SIMPLEDOWN_THUMB_DELETED', false, [$filename]);
             trigger_error($this->language->lang('ACP_SIMPLEDOWN_THUMB_DELETED', $filename) . adm_back_link($this->u_action));
         }
@@ -270,6 +286,7 @@ class acp_tools_controller
 
         if (file_exists($file_path) && is_file($file_path) && @unlink($file_path))
         {
+            clearstatcache();
             $this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'LOG_SIMPLEDOWN_ORPHAN_DELETED', false, [$filename]);
             trigger_error($this->language->lang('ACP_SIMPLEDOWN_ORPHAN_DELETED', $filename) . adm_back_link($this->u_action));
         }

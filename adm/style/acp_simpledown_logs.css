@@ -1,6 +1,7 @@
 /* ========================================
    SimpleDown ACP - Logs Design Flat & Minimalista 2026
    ======================================== */
+@import url('https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@400;500;600;700&display=swap');
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css');
 
 /* Variáveis - Paleta clean e moderna */
@@ -24,16 +25,32 @@
     --transition: all 0.2s ease;
 }
 
-/* Container Principal - com Bai Jamjuree aplicada (sem import externo) */
+/* Box-sizing e font-family global dentro do módulo */
+#acp_simpledown * {
+    box-sizing: border-box;
+    font-family: 'Bai Jamjuree', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+}
+
+/* Container Principal */
 #acp_simpledown {
     font-family: 'Bai Jamjuree', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
-    font-weight: 500;               /* peso médio para melhor legibilidade e visual moderno */
-    max-width: none;
+    font-weight: 500;
+    max-width: 1600px;
     margin: 20px auto;
-    padding: 20px;
+    padding: 30px;
     background: var(--bg);
     border-radius: var(--radius);
     box-shadow: var(--shadow);
+}
+
+/* Forçar font em elementos específicos */
+#acp_simpledown input,
+#acp_simpledown textarea,
+#acp_simpledown select,
+#acp_simpledown button,
+#acp_simpledown table,
+#acp_simpledown label {
+    font-family: 'Bai Jamjuree', sans-serif !important;
 }
 
 /* --- Estatísticas (Stats Box) --- */
@@ -79,6 +96,8 @@
     border-radius: var(--radius);
     padding: 20px;
     margin-bottom: 30px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 #acp_simpledown legend {
@@ -146,43 +165,43 @@
     padding-right: 36px;
 }
 
-/* --- Botões --- */
+/* --- Botões - TODOS COM MESMO TAMANHO --- */
 #acp_simpledown .button1,
-#acp_simpledown input[type="submit"] {
+#acp_simpledown .button2,
+#acp_simpledown input[type="submit"],
+#acp_simpledown a.button2 {
     padding: 10px 24px;
-    background: var(--primary);
     border: none;
     border-radius: var(--radius-sm);
-    color: white;
     font-weight: 600;
+    font-size: 1em;
     cursor: pointer;
     transition: var(--transition);
+    white-space: nowrap;
     display: inline-flex;
     align-items: center;
     gap: 8px;
 }
 
-#acp_simpledown .button1:hover {
+#acp_simpledown .button1,
+#acp_simpledown input[type="submit"] {
+    background: var(--primary);
+    color: white;
+}
+
+#acp_simpledown .button1:hover,
+#acp_simpledown input[type="submit"]:hover {
     background: var(--primary-hover);
 }
 
 #acp_simpledown .button2,
 #acp_simpledown a.button2 {
-    padding: 8px 20px;
     background: #718096;
-    border: none;
-    border-radius: var(--radius-sm);
     color: white;
-    font-weight: 600;
-    cursor: pointer;
-    transition: var(--transition);
-    font-size: 0.9em;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
 }
 
-#acp_simpledown .button2:hover {
+#acp_simpledown .button2:hover,
+#acp_simpledown a.button2:hover {
     background: #4a5568;
 }
 
@@ -204,12 +223,15 @@
     overflow-x: auto;
     border-radius: var(--radius);
     box-shadow: var(--shadow);
+    margin-top: 15px;
 }
 
 .table1 {
     width: 100%;
     border-collapse: collapse;
     background: var(--bg);
+    border-radius: var(--radius);
+    overflow: hidden;
 }
 
 .table1 th {
@@ -226,6 +248,7 @@
     border-bottom: 1px solid var(--border);
     font-size: 0.95em;
     color: var(--text);
+    vertical-align: middle;
 }
 
 .table1 tr:hover td {
@@ -247,6 +270,72 @@
 .view-action { background: var(--primary); }
 .denied-action { background: var(--danger); }
 
+/* Responsivo - Stacked em mobile para tabela de logs */
+@media (max-width: 768px) {
+    .table-responsive {
+        border: 0;
+    }
+
+    .table1 thead {
+        display: none;
+    }
+
+    .table1 tr {
+        display: block;
+        margin-bottom: 20px;
+        padding: 15px;
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow-sm);
+    }
+
+    .table1 td {
+        display: block;
+        padding: 8px 0;
+        border: none;
+        text-align: right;
+        position: relative;
+        padding-left: 50%;
+    }
+
+    .table1 td::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        width: 45%;
+        padding-right: 15px;
+        text-align: left;
+        font-weight: 600;
+        color: var(--text);
+    }
+
+    /* Ajuste os labels conforme as colunas reais da sua tabela de logs */
+    .table1 td:nth-child(1)::before { content: "Data/Hora"; }
+    .table1 td:nth-child(2)::before { content: "Usuário"; }
+    .table1 td:nth-child(3)::before { content: "IP"; }
+    .table1 td:nth-child(4)::before { content: "Arquivo"; }
+    .table1 td:nth-child(5)::before { content: "Ação"; }
+
+    /* Ação centralizada e sem label */
+    .table1 td:nth-child(5) {
+        padding-left: 0;
+        text-align: center;
+    }
+    .table1 td:nth-child(5)::before {
+        display: none;
+    }
+
+    /* Primeira coluna (data/hora) sem label à esquerda */
+    .table1 td:nth-child(1) {
+        text-align: left;
+        padding-left: 0;
+    }
+    .table1 td:nth-child(1)::before {
+        display: none;
+    }
+}
+
 /* --- Avisos e Erros --- */
 .errorbox {
     background: #fff5f5;
@@ -264,7 +353,7 @@
     font-size: 1.1em;
 }
 
-/* --- Responsividade --- */
+/* --- Responsividade geral --- */
 @media (max-width: 900px) {
     .control-group {
         flex-direction: column;
@@ -291,4 +380,23 @@
     .stat-item {
         padding: 14px;
     }
+}
+
+/* ========================================
+   CORREÇÃO DEFINITIVA PARA ÍCONES FONT AWESOME (evita retângulos)
+   ======================================== */
+#acp_simpledown i[class^="fa-"],
+#acp_simpledown i[class*=" fa-"] {
+    font-family: "Font Awesome 6 Free" !important;
+    font-weight: 900 !important;
+    font-style: normal !important;
+    display: inline-block;
+    line-height: 1;
+}
+
+/* Para ícones de brands (caso use no futuro) */
+#acp_simpledown i[class^="fab-"],
+#acp_simpledown i[class*=" fab-"] {
+    font-family: "Font Awesome 6 Brands" !important;
+    font-weight: normal !important;
 }

@@ -358,14 +358,20 @@ class acp_files_controller
 
                     $topic_type = POST_NORMAL;
                     switch ($announce_type) {
-                        case 'sticky':   $topic_type = POST_STICKY; break;
-                        case 'announce': $topic_type = POST_ANNOUNCE; break;
-                        case 'global':   $topic_type = POST_GLOBAL; break;
+                        case 'sticky':
+                            $topic_type = POST_STICKY;
+                            break;
+                        case 'announce':
+                            $topic_type = POST_ANNOUNCE;
+                            break;
+                        case 'global':
+                            $topic_type = POST_GLOBAL;
+                            break;
                     }
 
                     $details_url = generate_board_url() . '/downloads/details/' . $id;
 
-                    $download_link_bbcode = '[url=' . $details_url . ']Baixar ' . htmlspecialchars($name, ENT_QUOTES) . ($version ? ' v' . htmlspecialchars($version, ENT_QUOTES) : '') . '[/url]';
+                    $download_link_bbcode = '[url=' . $details_url . '] ' . htmlspecialchars($name, ENT_QUOTES) . ($version ? ' v' . htmlspecialchars($version, ENT_QUOTES) : '') . '[/url]';
 
                     $title_tpl = $this->config['simpledown_announce_title_template'] ?? '';
                     $msg_tpl   = $this->config['simpledown_announce_message_template'] ?? '';
@@ -432,6 +438,30 @@ class acp_files_controller
                     ];
 
                     submit_post('edit', $subject, $this->user->data['username'], $topic_type, $poll, $data);
+
+                    // Forçar atualização do lock
+                    $desired_topic_status = $announce_locked ? ITEM_LOCKED : ITEM_UNLOCKED;
+                    $desired_post_locked  = $announce_locked ? 1 : 0;
+
+                    $sql = 'UPDATE ' . $this->topics_table . '
+                            SET topic_status = ' . (int)$desired_topic_status . '
+                            WHERE topic_id = ' . (int)$topic_id;
+                    $this->db->sql_query($sql);
+
+                    $first_post_id = (int)$current_topic['topic_first_post_id'];
+                    $sql = 'UPDATE ' . $this->posts_table . '
+                            SET post_edit_locked = ' . (int)$desired_post_locked . '
+                            WHERE post_id = ' . $first_post_id;
+                    $this->db->sql_query($sql);
+
+                    $old_locked = ($current_topic['topic_status'] ?? ITEM_UNLOCKED) == ITEM_LOCKED;
+                    if ($old_locked != $announce_locked) {
+                        $this->log->add('admin', $this->user->data['user_id'], $this->user->ip,
+                            'LOG_SIMPLEDOWN_ANNOUNCE_LOCK_TOGGLED',
+                            false,
+                            [$name, $announce_locked ? 'locked' : 'unlocked']
+                        );
+                    }
                 }
             }
         }
@@ -441,7 +471,8 @@ class acp_files_controller
 
     protected function delete_file($id)
     {
-        $sql = 'SELECT file_realname, file_name, thumbnail FROM ' . $this->files_table . ' WHERE id = ' . (int)$id;
+        // Busca dados incluindo topic_id
+        $sql = 'SELECT file_realname, file_name, thumbnail, topic_id FROM ' . $this->files_table . ' WHERE id = ' . (int)$id;
         $result = $this->db->sql_query($sql);
         $row = $this->db->sql_fetchrow($result);
         $this->db->sql_freeresult($result);
@@ -453,6 +484,7 @@ class acp_files_controller
         $upload_dir = $this->root_path . 'ext/mundophpbb/simpledown/files/';
         $thumbs_dir = $this->root_path . 'ext/mundophpbb/simpledown/files/thumbs/';
 
+        // Remove arquivo físico
         if ($row['file_realname']) {
             $file_path = $upload_dir . $row['file_realname'];
             if (file_exists($file_path)) {
@@ -460,6 +492,7 @@ class acp_files_controller
             }
         }
 
+        // Remove thumbnail
         if ($row['thumbnail']) {
             $thumb_path = $thumbs_dir . $row['thumbnail'];
             if (file_exists($thumb_path)) {
@@ -467,10 +500,30 @@ class acp_files_controller
             }
         }
 
+        // === EXCLUSÃO DIRETA DO TÓPICO E POSTS (evita problemas com delete_posts em versões incompatíveis) ===
+        if (!empty($row['topic_id'])) {
+            $topic_id = (int)$row['topic_id'];
+
+            // Deleta todos os posts do tópico
+            $sql = 'DELETE FROM ' . $this->posts_table . ' WHERE topic_id = ' . $topic_id;
+            $this->db->sql_query($sql);
+
+            // Deleta o tópico
+            $sql = 'DELETE FROM ' . $this->topics_table . ' WHERE topic_id = ' . $topic_id;
+            $this->db->sql_query($sql);
+
+            // Log da exclusão do anúncio
+            $this->log->add('admin', $this->user->data['user_id'], $this->user->ip,
+                'LOG_SIMPLEDOWN_ANNOUNCE_DELETED', false, [$row['file_name']]);
+        }
+
+        // Remove o registro do arquivo
         $sql = 'DELETE FROM ' . $this->files_table . ' WHERE id = ' . (int)$id;
         $this->db->sql_query($sql);
 
-        $this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'LOG_SIMPLEDOWN_FILE_DELETED', false, [$row['file_name']]);
+        // Log da exclusão do arquivo
+        $this->log->add('admin', $this->user->data['user_id'], $this->user->ip,
+            'LOG_SIMPLEDOWN_FILE_DELETED', false, [$row['file_name']]);
 
         trigger_error($this->language->lang('ACP_SIMPLEDOWN_FILE_DELETED') . adm_back_link($this->u_action));
     }
