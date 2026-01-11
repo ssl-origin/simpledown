@@ -117,7 +117,7 @@ $lang = array_merge($lang, [
     'ACP_SIMPLEDOWN_VISIBILITY_EXPLAIN'     => 'Définissez si le fichier est public (tout visiteur) ou privé (seuls les utilisateurs connectés peuvent télécharger).',
     'ACP_SIMPLEDOWN_PUBLIC'                 => 'Public',
     'ACP_SIMPLEDOWN_PRIVATE'                => 'Privé',
-    'ACP_SIMPLEDOWN_UPLOAD_FILE'            => 'Uploader un fichier',
+    'ACP_SIMPLEDOWN_UPLOAD_FILE'            => 'Envoyer un fichier',
     'ACP_SIMPLEDOWN_REPLACE_FILE'           => 'Remplacer le fichier',
     'ACP_SIMPLEDOWN_REPLACE_FILE_EXPLAIN'   => 'Cochez pour uploader un nouveau fichier. L’ancien sera supprimé.',
     'ACP_SIMPLEDOWN_REPLACE_FILE_WARNING'   => 'L’ancien fichier sera supprimé définitivement lors de l’enregistrement.',
@@ -140,8 +140,8 @@ $lang = array_merge($lang, [
     // ===================================================================
     // Miniatures
     // ===================================================================
-    'ACP_SIMPLEDOWN_UPLOAD_THUMB'           => 'Uploader une miniature',
-    'ACP_SIMPLEDOWN_UPLOAD_THUMB_EXPLAIN'   => 'Uploadez une image à utiliser comme miniature sur la page de détails du fichier. Recommandé : 300x300px ou plus.',
+    'ACP_SIMPLEDOWN_UPLOAD_THUMB'           => 'Envoyer une miniature',
+    'ACP_SIMPLEDOWN_UPLOAD_THUMB_EXPLAIN'   => 'Envoyez une image à utiliser comme miniature sur la page de détails du fichier. Recommandé : 300x300px ou plus.',
     'ACP_SIMPLEDOWN_THUMB_ALREADY_EXISTS_WARNING' => '<strong style="color: #c62828;">Attention</strong> : Une miniature avec ce nom existait déjà et a été écrasée.',
     'ACP_SIMPLEDOWN_THUMB_UPLOAD_SUCCESS'   => 'Miniature uploadée avec succès !',
     'ACP_SIMPLEDOWN_SELECT_THUMB'           => 'Sélectionner une miniature existante',
@@ -322,5 +322,6 @@ $lang = array_merge($lang, [
     'TOO_MANY_CHARS'                        => 'La valeur fournie contient trop de caractères.',
     'TOO_SMALL'                             => 'La valeur fournie est trop petite.',
     'TOO_LARGE'                             => 'La valeur fournie est trop grande.',
+
 
 ]);
