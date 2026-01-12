@@ -200,7 +200,7 @@ $lang = array_merge($lang, [
     'ACP_SIMPLEDOWN_ASSOCIATED_FILES_EXPLAIN' => 'Fichiers présents dans le dossier <code>/files/</code> liés à un enregistrement actif dans la base de données (en utilisation).',
     'ACP_SIMPLEDOWN_TOTAL_ASSOCIATED'       => 'Nombre total de fichiers associés',
     'ACP_SIMPLEDOWN_NO_ASSOCIATED_FILES'    => 'Aucun fichier associé trouvé.',
-
+    	'ACP_SIMPLEDOWN_SIZE'                => 'Taille',
     // ===================================================================
     // Onglet Outils - Fichiers Orphelins
     // ===================================================================
