@@ -80,6 +80,8 @@ class acp_logs_controller
             $action = 'clear_old';
         } elseif ($this->request->is_set_post('clear_all')) {
             $action = 'clear_all';
+        } elseif ($this->request->is_set_post('remove_views')) {
+            $action = 'remove_views'; // ação temporária para limpeza inicial de views
         }
 
         if ($action) {
@@ -97,8 +99,8 @@ class acp_logs_controller
         $per_page = (int)($this->config['simpledown_logs_per_page'] ?? 50);
         $start = $this->request->variable('start', 0);
 
-        // Contagem total
-        $sql_count = 'SELECT COUNT(*) AS total FROM ' . $this->logs_table;
+        // Contagem total (apenas download + denied)
+        $sql_count = 'SELECT COUNT(*) AS total FROM ' . $this->logs_table . ' WHERE action IN ("download", "denied")';
         $result_count = $this->db->sql_query($sql_count);
         $total_logs = (int) $this->db->sql_fetchfield('total');
         $this->db->sql_freeresult($result_count);
@@ -113,11 +115,12 @@ class acp_logs_controller
             $start = max(0, $total_logs - $per_page);
         }
 
-        // Listagem
+        // Listagem (apenas download + denied)
         $sql = 'SELECT l.*, f.file_realname, u.username AS real_username, u.user_colour
                 FROM ' . $this->logs_table . ' l
                 LEFT JOIN ' . $this->table_prefix . 'simpledown_files f ON f.id = l.file_id
                 LEFT JOIN ' . USERS_TABLE . ' u ON u.user_id = l.user_id
+                WHERE l.action IN ("download", "denied")
                 ORDER BY l.log_time DESC';
         $result = $this->db->sql_query_limit($sql, $per_page, $start);
 
@@ -158,21 +161,19 @@ class acp_logs_controller
 
     protected function assign_stats(): void
     {
+        // Total de downloads
         $sql = 'SELECT COUNT(*) AS total FROM ' . $this->logs_table . ' WHERE action = "download"';
         $result = $this->db->sql_query($sql);
         $total_downloads = (int) $this->db->sql_fetchfield('total');
         $this->db->sql_freeresult($result);
 
-        $sql = 'SELECT COUNT(*) AS total FROM ' . $this->logs_table . ' WHERE action = "view"';
-        $result = $this->db->sql_query($sql);
-        $total_views = (int) $this->db->sql_fetchfield('total');
-        $this->db->sql_freeresult($result);
-
+        // Total de denied
         $sql = 'SELECT COUNT(*) AS total FROM ' . $this->logs_table . ' WHERE action = "denied"';
         $result = $this->db->sql_query($sql);
         $total_denied = (int) $this->db->sql_fetchfield('total');
         $this->db->sql_freeresult($result);
 
+        // Arquivo mais baixado
         $top_file_name = $this->language->lang('ACP_SIMPLEDOWN_NONE');
         $sql = 'SELECT f.file_realname, COUNT(*) AS cnt
                 FROM ' . $this->logs_table . ' l
@@ -191,7 +192,6 @@ class acp_logs_controller
 
         $this->template->assign_vars([
             'STATS_TOTAL_DOWNLOADS' => $total_downloads,
-            'STATS_TOTAL_VIEWS'     => $total_views,
             'STATS_TOTAL_DENIED'    => $total_denied,
             'STATS_TOP_FILE'        => $top_file_name,
         ]);
@@ -199,6 +199,8 @@ class acp_logs_controller
 
     protected function perform_action(string $action): void
     {
+        $where_action = ' AND action IN ("download", "denied")';
+
         switch ($action) {
             case 'delete_selected':
                 $log_ids = $this->request->variable('log_id', [0]);
@@ -207,7 +209,7 @@ class acp_logs_controller
                 }
 
                 $sql = 'DELETE FROM ' . $this->logs_table . '
-                        WHERE ' . $this->db->sql_in_set('log_id', $log_ids);
+                        WHERE ' . $this->db->sql_in_set('log_id', $log_ids) . $where_action;
                 $this->db->sql_query($sql);
 
                 $count = $this->db->sql_affectedrows();
@@ -217,7 +219,8 @@ class acp_logs_controller
 
             case 'clear_old':
                 $cutoff = time() - (180 * 86400); // 6 meses
-                $sql = 'DELETE FROM ' . $this->logs_table . ' WHERE log_time < ' . (int) $cutoff;
+                $sql = 'DELETE FROM ' . $this->logs_table . '
+                        WHERE log_time < ' . (int) $cutoff . $where_action;
                 $this->db->sql_query($sql);
 
                 $this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'LOG_SIMPLEDOWN_LOGS_CLEARED_OLD');
@@ -225,11 +228,21 @@ class acp_logs_controller
                 break;
 
             case 'clear_all':
-                $sql = 'TRUNCATE TABLE ' . $this->logs_table;
+                $sql = 'DELETE FROM ' . $this->logs_table . ' WHERE action IN ("download", "denied")';
                 $this->db->sql_query($sql);
 
                 $this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'LOG_SIMPLEDOWN_LOGS_CLEARED_ALL');
                 trigger_error($this->language->lang('LOGS_CLEARED_ALL_SUCCESS') . adm_back_link($this->u_action));
+                break;
+
+            case 'remove_views':
+                // Ação temporária: remover todos os logs de view existentes
+                $sql = 'DELETE FROM ' . $this->logs_table . ' WHERE action = "view"';
+                $this->db->sql_query($sql);
+                $count = $this->db->sql_affectedrows();
+
+                $this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'LOG_SIMPLEDOWN_LOGS_REMOVED_VIEWS', false, [$count]);
+                trigger_error($this->language->lang('LOGS_REMOVED_VIEWS_SUCCESS', $count) . adm_back_link($this->u_action));
                 break;
         }
     }

@@ -45,7 +45,6 @@ class install extends \phpbb\db\migration\migration
             ['config.add', ['simpledown_theme', 'light']],
             ['config.add', ['simpledown_cards_per_row', 3]],
             ['config.add', ['simpledown_allow_user_layout_choice', 0]],
-            // Mensagem de acesso privado agora será traduzida via idioma (sem valor fixo aqui)
             ['config.add', ['simpledown_private_message', '']],
             ['config.add', ['simpledown_thumbs_dir', 'ext/mundophpbb/simpledown/files/thumbs/']],
             // Configurações de logs
@@ -93,11 +92,15 @@ class install extends \phpbb\db\migration\migration
                         'thumbnail'                 => ['VCHAR:255', null],
                         'is_private'                => ['BOOL', 0],
                         'topic_id'                  => ['UINT', 0],
-
-                        // === DATA DE UPLOAD: USANDO BINT (BIGINT) COMPATÍVEL COM phpBB ===
                         'added_time'                => ['BINT', 0],
                     ],
                     'PRIMARY_KEY' => 'id',
+                    'KEYS' => [
+                        'cat_id'     => ['INDEX', 'category_id'],
+                        'added_time' => ['INDEX', 'added_time'],
+                        'is_private' => ['INDEX', 'is_private'],
+                        'topic_id'   => ['INDEX', 'topic_id'],
+                    ],
                 ],
                 $this->table_prefix . 'simpledown_logs' => [
                     'COLUMNS' => [
@@ -139,7 +142,7 @@ class install extends \phpbb\db\migration\migration
     public function revert_data()
     {
         return [
-            ['custom', [[$this, 'delete_all_files']]],
+            // Removido o delete_all_files → arquivos ficam no servidor (padrão mais seguro)
             ['config.remove', ['simpledown_max_upload_size']],
             ['config.remove', ['simpledown_short_desc_limit']],
             ['config.remove', ['simpledown_default_is_private']],
@@ -171,12 +174,13 @@ class install extends \phpbb\db\migration\migration
         foreach ($dirs as $dir) {
             $path = $base_dir . $dir;
             if (!is_dir($path)) {
-                @mkdir($path, 0755, true);
-                @chmod($path, 0755);
+                @mkdir($path, 0777, true);
+                @chmod($path, 0777);
             }
         }
     }
 
+    // Método mantido apenas como utilitário (pode ser usado em outra migration se quiser um "purge" manual)
     public function delete_all_files()
     {
         $root_path = $this->phpbb_root_path;
