@@ -802,3 +802,30 @@
     padding: 0;
     margin: 0;
 }
+
+/* ======================================== 
+   Correção: botões de ações em telas ~1200px 
+   ======================================== */
+#acp_simpledown .table1 th:nth-child(6),
+#acp_simpledown .table1 td:nth-child(6) {
+    min-width: 340px;        /* espaço suficiente para os 2 botões lado a lado */
+    text-align: center;      /* centraliza os botões */
+    white-space: nowrap;     /* evita quebra indesejada */
+}
+
+#acp_simpledown .table1 td:nth-child(6) a.button2 {
+    display: inline-block;
+    margin: 0 10px;          /* espaçamento horizontal entre os botões */
+}
+
+/* Opcional: deixa os botões um pouco menores em telas ≤1400px 
+   (reduz a chance de precisar de scroll horizontal) */
+@media (max-width: 1400px) {
+    #acp_simpledown .button1,
+    #acp_simpledown .button2,
+    #acp_simpledown input[type="submit"],
+    #acp_simpledown a.button2 {
+        padding: 9px 20px;
+        font-size: 1.15em;
+    }
+}

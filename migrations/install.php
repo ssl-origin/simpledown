@@ -55,7 +55,7 @@ class install extends \phpbb\db\migration\migration
             // CONFIGURAÇÕES PARA ANÚNCIOS AUTOMÁTICOS EM FÓRUNS
             ['config.add', ['simpledown_auto_announce', 0]],
             ['config.add', ['simpledown_announce_forum', 0]],
-            ['config.add', ['simpledown_announce_title_template', '{NAME} {VERSION}']],
+            ['config.add', ['simpledown_announce_title_template', '{NAME}']],
             ['config.add', ['simpledown_announce_message_template', '{DESC_FORMATTED} {URL_DOWNLOAD}']],
             ['config.add', ['simpledown_announce_type', 'normal']],
             ['config.add', ['simpledown_announce_locked', 0]],

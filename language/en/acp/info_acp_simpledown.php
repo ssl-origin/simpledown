@@ -139,6 +139,7 @@ $lang = array_merge($lang, [
     'ACP_SIMPLEDOWN_ANNOUNCE_EXPLAIN'        => 'When enabled, adding a new file will automatically create a topic in the configured forum.',
     'ACP_SIMPLEDOWN_AUTO_ANNOUNCE'           => 'Enable automatic topic creation',
     'ACP_SIMPLEDOWN_ANNOUNCE_FORUM'          => 'Announcement Forum',
+     'ACP_SIMPLEDOWN_FORUM_ANNOUNCE_EXPLAIN'  => 'Choose the forum in which a topic will be created to announce the new file available for download.',    
     'ACP_SIMPLEDOWN_NO_FORUM'                => '-- No forum selected --',
     'ACP_SIMPLEDOWN_ANNOUNCE_TYPE'           => 'Created topic type',
     'ACP_SIMPLEDOWN_ANNOUNCE_TYPE_EXPLAIN'   => 'Choose the type of topic that will be automatically created when adding a file.',

@@ -223,8 +223,8 @@ class main_controller
 
                     // Data de upload usando a coluna added_time
                     'UPLOAD_TIMESTAMP' => (int)($file['added_time'] ?? 0),
-                    //'UPLOAD_DATE' => $this->user->format_date((int)$file['added_time'], 0),
-                    'UPLOAD_DATE' => $this->user->format_date((int)$file['added_time'], 'd/m/Y'),
+                    'UPLOAD_DATE' => $this->user->format_date((int)$file['added_time'], 0),
+                    //'UPLOAD_DATE' => $this->user->format_date((int)$file['added_time'], 'd/m/Y'),
                 ]);
             }
         }
